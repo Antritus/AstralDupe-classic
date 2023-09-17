@@ -1,0 +1,410 @@
+main: xyz.prorickey.classicdupe.ClassicDupe
+name: ClassicDupe
+version: ${version}
+description: The core plugin behind everything that happens in ClassicDupe
+api-version: 1.19
+load: STARTUP
+authors:
+  - Prorickey
+  - ModdedKid
+  - BraveDishDealer
+website: classicdupe.tebex.io
+depend:
+  - LuckPerms
+  - PlaceholderAPI
+  - WorldGuard
+  - spark
+  - Vault
+prefix: ClassicDupe
+libraries:
+  - com.h2database:h2:2.1.214
+  - org.mariadb.jdbc:mariadb-java-client:3.1.4
+  - net.dv8tion:JDA:5.0.0-beta.10
+  - com.fasterxml.jackson.core:jackson-annotations:2.15.2
+commands:
+  dupe:
+    description: To dupe items. Can dupe up to 6 times
+    usage: "Usage: /dupe [1-6]"
+  filter:
+    description: To add, remove or list the filter
+    permission: admin.filter
+    usage: "Usage: /filter [add|remove|list] [word]"
+  random:
+    description: To toggle random items
+    usage: "Usage: /random"
+    aliases:
+      - randomitems
+      - toggleitems
+      - toggle
+  spawn:
+    description: Teleports you to spawn
+    usage: "Usage: /spawn [player]"
+  nether:
+    description: To go to the nether
+    usage: "Usage: /nether [player]"
+  overworld:
+    description: To go to the overworld
+    usage: "Usage: /overworld [player]"
+    aliases:
+      - ow
+  setspawn:
+    description: Sets the spawn to the players location
+    permission: admin.setspawn
+    usage: "Usage: /setspawn <spawn> [player]"
+  gamemode:
+    aliases:
+      - gm
+      - gmode
+    permission: admin.gamemode
+    description: To change the player's own gamemode or others
+    usage: "Usage: /gamemode <gamemode> [player]"
+  gmc:
+    aliases:
+      - gamemodecreative
+    permission: admin.gamemode.creative
+    description: To change the player's own gamemode or others to creative mode
+    usage: "Usage: /gmc [player]"
+  gms:
+    aliases:
+      - gamemodesurvival
+    permission: admin.gamemode.survival
+    description: To change the player's own gamemode or others to survival mode
+    usage: "Usage: /gms [player]"
+  gmsp:
+    aliases:
+      - gamemodespectator
+    permission: admin.gamemode.spectator
+    description: To change the player's own gamemode or others to spectator mode
+    usage: "Usage: /gmsp [player]"
+  gma:
+    aliases:
+      - gamemodeadventure
+    permission: admin.gamemode.adventure
+    description: To change the player's own gamemode or others to adventure mode
+    usage: "Usage: /gma [player]"
+  schedulerestart:
+    permission: admin.restart
+    description: To restart the server or cancel a server restart
+    usage: "Usage: /schedulerestart [cancel]"
+  mutechat:
+    permission: mod.mutechat
+    description: To mute or unmute the chat
+    usage: "Usage: /mutechat"
+  chatcolor:
+    permission: perks.colorchat
+    description: To change the color of your chat
+    usage: "Usage: /chatcolor [white|pink|red|aqua|blue|green|yellow|gold|gray]"
+  gradient:
+    permission: perks.gradient
+    description: To add a little zest to your messages
+    usage: "Usage: /gradient"
+  sc:
+    permission: mod.staffchat
+    description: To enable or disable staff chat 
+    aliases: 
+      - staffchat
+      - schat
+    usage: "Usage: /staffchat [on|off]"
+  repair:
+    permission: perks.repair
+    description: To repair the item in a players main hand
+    usage: "Usage: /repair"
+  clearchat:
+    permission: mod.clearchat
+    description: To clear the chat
+    aliases:
+      - cc
+    usage: "Usage: /clearchat"
+  pm:
+    description: To send a private message
+    usage: "Usage: /pm <player> <message>"
+  pmr:
+    description: To reply to a private message
+    usage: "Usage: /pmr <message>"
+  head:
+    description: To get the head of a player
+    permission: admin.head
+    usage: "Usage: /head <player>"
+  spec:
+    description: To switch between spectator and survival mode as a mod
+    permission: mod.spec
+    usage: "Usage: /spec"
+  broadcast:
+    description: To broadcast a message to the server
+    permission: mod.broadcast
+    usage: "Usage: /broadcast"
+  sudo:
+    description: To sudo another player
+    permission: admin.sudo
+    usage: "Usage: /sudo"
+  pv:
+    description: To open and access different private vaults
+    permission: perk.pv
+    usage: "Usage: /pv <num>"
+  pvadd:
+    description: To add a player vault to a player
+    permission: admin.pvadd
+    usage: "Usage: /pvadd <player>"
+  invsee:
+    description: TO open and see a player's inventory
+    permission: admin.invsee
+    usage: "Usage: /invsee <player>"
+  trash:
+    description: To throw stuff away in the trash
+    usage: "Usage: /trash"
+  suffix:
+    description: To change your suffix
+    permission: perks.suffix
+    usage: "Usage: /suffix [suffix]"
+  tpa:
+    description: To ask to teleport to someone
+    usage: "Usage: /tpa <player>"
+  tpaccept:
+    description: To accept a tpa request of someone
+    usage: "Usage: /tpaccept <player>"
+  tpadecline:
+    description: To decline the tpa request of someone
+    usage: "Usage: /tpadecline <player>"
+  tpacancel:
+    description: To cancel a tpa request sent
+    usage: "Usage: /tpacancel"
+  stats:
+    description: To get the stats of a player
+    usage: "Usage: /stats <player>"
+  discord:
+    description: To get the link to the discord
+    usage: "Usage: /discord"
+  enderchest:
+    description: To open your enderchest
+    usage: "Usage: /enderchest"
+    permission: perks.enderchest
+    aliases:
+      - ec
+  rules:
+    description: To get the rules of the server
+    usage: "Usage: /rules"
+  rename:
+    description: To rename an item in your main hand
+    usage: "Usage: /rename <itemname>"
+    permission: perks.rename
+  nickname:
+    description: To change your name in tab and in chat
+    usage: "Usage: /nickname <nickname>"
+    permission: perks.nickname
+    aliases:
+      - nick
+  nakedoff:
+    description: To turn off naked protection
+    usage: "Usage: /nakedoff"
+  link:
+    description: To link your account to your discord account
+    usage: "Usage: /link"
+  unlink:
+    description: To unlink your minecraft account to your discord account
+    usage: "Usage: /unlink"
+  feed:
+    description: To feed yourself
+    usage: "Usage: /feed"
+    permission: perks.feed
+  configreload:
+    description: To reload the config
+    usage: "Usage: /configreload"
+    permission: admin.reload
+  hat:
+    description: To put on a hat
+    usage: "Usage: /hat"
+    permissions: perks.hat
+  clan:
+    description: The main clans command for the server
+    usage: "Usage: /clan"
+    aliases:
+      - clans
+      - guild
+      - guilds
+  clanadmin:
+    description: The admin command for clans
+    usage: "Usage: /clanadmin"
+    permission: admin.clanadmin
+    aliases:
+      - cadmin
+  cspy:
+    description: To toggle command spy
+    usage: "Usage: /cspy"
+    permission: mod.cspy
+    aliases:
+      - commandspy
+      - cmdspy
+  koth:
+    description: To manage KOTH events
+    usage: "Usage: /koth"
+    permission: events.koth
+  report:
+    description: To report players
+    usage: "Usage: /report"
+  craft:
+    description: To open a crafting table on the go
+    usage: "Usage: /craft"
+    permission: perk.craft
+  back:
+    description: To teleport back to a previous location
+    usage: "Usage: /back"
+  staffteleport:
+    description: To teleport to a player while staffing. Puts you in spectator and saves your location
+    usage: "Usage: /staffteleport"
+    permission: mod.staffteleport
+    aliases:
+      - stafftp
+      - stp
+  maze:
+    description: Maze command
+    usage: "Usage: /maze <subcommand>"
+    permission: mod.maze
+    aliases:
+      - mz
+    subcommands:
+      spawn:
+        description: To set the spawn of the maze
+        usage: "Usage: /maze setspawn"
+      start:
+        description: To start the maze
+        usage: "Usage: /maze start"
+      stop:
+        description: To stop the maze
+        usage: "Usage: /maze stop"
+      set:
+        description: To set the maze
+        usage: "Usage: /maze set <maze>?"
+      join:
+        description: To join the maze
+        usage: "Usage: /maze join"
+      leave:
+        description: To leave the maze
+        usage: "Usage: /maze leave"
+      reset:
+        description: To reset the maze
+        usage: "Usage: /maze reset"
+      location:
+        description: To set the location of the mazes
+        usage: "Usage: /maze location"
+
+  joinmaze:
+    description: To join the maze
+    usage: "Usage: /joinmaze"
+#  blockcommands:
+#    description: Block players from using commands.
+#    usage: "Usage /blockcommands [player]"
+#    permission: mod.blockcommands
+#    aliases:
+#      - blockcmd
+#      - bcmd
+  night:
+    description: To toggle night vision on and off
+    usage: "Usage: /night"
+    aliases:
+      - nighttoggle
+      - nightvision
+  home:
+    description: To go to your home
+    usage: "Usage: /home"
+    aliases:
+      - h
+  sethome:
+    description: To set your home
+    usage: "Usage: /sethome"
+  delhome:
+    description: To delete your home
+    usage: "Usage: /delhome"
+  clanchat:
+    description: To toggle clan chat or send a message in clan chat
+    usage: "Usage: /clanchat"
+    aliases:
+      - cc
+      - cchat
+  shop:
+    description: To open the shop
+    usage: "Usage: /shop"
+  balance:
+    description: To check your balance and get the top balances
+    usage: "Usage: /balance"
+  customitem:
+    description: To get a custom item
+    usage: "Usage: /customitem <give|list>"
+    permission: admin.customitem
+    subcommands:
+        give:
+            description: To give a custom item
+            usage: "Usage: /customitem give <item>"
+        list:
+            description: To list all custom items
+            usage: "Usage: /customitem list"
+  headline:
+    description: Broadcast a headline
+    usage: /headline <message>
+    permission: headliner.perms
+    aliases: [ hl ]
+  alert:
+    description: Broadcast an alert
+    usage: /alert <message>
+    permission: headliner.broadcast
+  subhead:
+    description: Broadcast a subheader
+    usage: /subhead <message>
+    permission: headliner.subheader
+    aliases: [ sh ]
+  bounty:
+    description: To list and place bounties on players
+    usage: "Usage: /bounty"
+  deathmessages:
+    description: To turn death messages on and off
+    usage: "Usage: /deathmessages"
+  mutepings:
+    description: To mute pings in chat
+    usage: "Usage: /mutepings"
+  help:
+    description: To open the help menu
+    usage: "Usage: /help"
+  customset:
+    description: To get a custom armor
+    usage: "Usage: /customitem <armorSet>"
+    permission: admin.customset
+  afk:
+    description: To teleport to the afk area
+    usage: "Usage: /afk"
+  worldsize:
+    description: To get the sizes of the world
+    usage: "Usage: /worldsize"
+  pay:
+    description: To pay other players
+    usage: "Usage: /pay"
+  pvsee:
+    description: To see other players inventories
+    usage: "Usage: /pvsee"
+    permission: admin.pvsee
+permissions:
+  default.spawn.others:
+    description: Allows you to teleport others to spawn
+  default.nether.others:
+    description: Allows you to teleport others to the nether
+  perks.feed.legend:
+    description: Reduced cooldown for legend
+  perks.feed.mvp:
+    description: Reduced cooldown for mvp
+  admin.bypassnopvpinvanish:
+    description: Allows you to bypass no pvp in vanish
+  admin.customitem:
+    description: Allows you to use the customitem command
+  admin.bypassCustomItemCd:
+    description: Allows you to bypass the cooldown for custom items
+  default.bounty.forceset:
+    description: Allows you to force set a bounty
+  default.bounty.delete:
+    description: Allows you to delete a bounty
+  admin.headliner.perms:
+    description: Allows the user to use the headline command
+
+  admin.headliner.broadcast:
+    description: Allows the user to use the chat broadcast command
+
+  admin.headerliner.subheader:
+    description: Allows the user to use the subheader command
+
