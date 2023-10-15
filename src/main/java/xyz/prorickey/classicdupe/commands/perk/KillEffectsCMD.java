@@ -1,5 +1,8 @@
 package xyz.prorickey.classicdupe.commands.perk;
 
+import com.github.antritus.astral.AdvancedPlugin;
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.commands.AstralCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
@@ -22,17 +25,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
-import xyz.xenondevs.particle.ParticleBuilder;
-import xyz.xenondevs.particle.ParticleEffect;
 
 import java.util.*;
 
-public class KillEffectsCMD implements CommandExecutor, TabCompleter, Listener {
+public class KillEffectsCMD extends AstralCommand implements Listener {
 
     private static final Map<Player, Inventory> guis = new HashMap<>();
 
+    public KillEffectsCMD(AstralDupe main) {
+        super(main, "killeffects");
+        setPermission("astraldupe.perk.killeffect");
+        main.register(this);
+    }
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(!(sender instanceof Player p)) {
             sender.sendMessage(Utils.cmdMsg("<red>You cannot execute this command from console"));
             return true;
@@ -109,7 +116,7 @@ public class KillEffectsCMD implements CommandExecutor, TabCompleter, Listener {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
         return new ArrayList<>();
     }
 
@@ -132,16 +139,16 @@ public class KillEffectsCMD implements CommandExecutor, TabCompleter, Listener {
                 killer.getWorld().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 0.5F);
                 for(int i = 1; i < 15; i++) {
                     int finalI = i;
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(ClassicDupe.getPlugin(), () -> killer.getWorld().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, Float.parseFloat(String.valueOf(0.5+(0.1* finalI)))), 5*i);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(ClassicDupe.getInstance(), () -> killer.getWorld().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, Float.parseFloat(String.valueOf(0.5+(0.1* finalI)))), 5*i);
                 }
             }
             case "flames" -> {
                 killer.getWorld().playEffect(e.getPlayer().getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
-                new ParticleBuilder(ParticleEffect.FLAME, e.getPlayer().getLocation())
-                        .setOffsetY(1F)
-                        .setAmount(20)
-                        .setSpeed(0.1f)
-                        .display();
+                //new ParticleBuilder(ParticleEffect.FLAME, e.getPlayer().getLocation())
+                //        .setOffsetY(1F)
+                //        .setAmount(20)
+                //        .setSpeed(0.1f)
+                //        .display();
             }
             case "firework" -> {
                 Firework fw = e.getPlayer().getWorld().spawn(e.getPlayer().getLocation(), Firework.class);

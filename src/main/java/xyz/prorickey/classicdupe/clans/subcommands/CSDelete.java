@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe.clans.subcommands;
 
+import me.antritus.astraldupe.ForRemoval;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -8,12 +9,13 @@ import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.clans.builders.Clan;
 import xyz.prorickey.classicdupe.clans.builders.ClanMember;
 import xyz.prorickey.classicdupe.clans.builders.ClanSub;
-import xyz.prorickey.proutils.TabComplete;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public class CSDelete extends ClanSub {
 
     @Override
@@ -50,7 +52,7 @@ public class CSDelete extends ClanSub {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String[] args) {
-        if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], List.of("confirm"));
+        if(args.length == 1) return (List.of("confirm"));
         return new ArrayList<>();
     }
 }

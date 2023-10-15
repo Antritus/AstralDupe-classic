@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe.clans.subcommands;
 
+import me.antritus.astraldupe.ForRemoval;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -9,13 +10,14 @@ import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.clans.builders.Clan;
 import xyz.prorickey.classicdupe.clans.builders.ClanMember;
 import xyz.prorickey.classicdupe.clans.builders.ClanSub;
-import xyz.prorickey.proutils.TabComplete;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public class CSDemote extends ClanSub {
     @Override
     public void execute(CommandSender sender, String[] args) {
@@ -76,7 +78,7 @@ public class CSDemote extends ClanSub {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String[] args) {
-        if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], ClassicDupe.getOnlinePlayerUsernames());
+        if(args.length == 1) return (ClassicDupe.getOnlinePlayerUsernames());
         return new ArrayList<>();
     }
 }

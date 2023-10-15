@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe.clans.subcommands;
 
+import me.antritus.astraldupe.ForRemoval;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,11 +11,12 @@ import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.clans.builders.Clan;
 import xyz.prorickey.classicdupe.clans.builders.ClanMember;
 import xyz.prorickey.classicdupe.clans.builders.ClanSub;
-import xyz.prorickey.proutils.TabComplete;
 
 import java.util.*;
 
 @SuppressWarnings("unused")
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public class CSPromote extends ClanSub {
 
     private static final Map<UUID, OfflinePlayer> promoterToPromotee = new HashMap<>();
@@ -108,7 +110,7 @@ public class CSPromote extends ClanSub {
     public List<String> tabComplete(CommandSender sender, String[] args) {
         List<String> tabs = ClassicDupe.getOnlinePlayerUsernames();
         tabs.add("confirm");
-        if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], tabs);
+        if(args.length == 1) return (tabs);
         return new ArrayList<>();
     }
 }

@@ -1,5 +1,7 @@
 package xyz.prorickey.classicdupe.commands.default1;
 
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,15 +16,19 @@ import xyz.prorickey.classicdupe.database.PlayerData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MutePingsCMD implements CommandExecutor, TabCompleter {
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(!(sender instanceof Player player)) {
+public class MutePingsCMD extends AstralCommand {
+
+    public MutePingsCMD(AstralDupe astralDupe) {
+        super(astralDupe, "mutepings");
+    }
+
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(Utils.cmdMsg("<red>You cannot execute this command from console"));
             return true;
         }
         PlayerData playerData = ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(player.getUniqueId());
-        if(playerData.getMutePings()) {
+        if (playerData.getMutePings()) {
             playerData.setMutePings(false);
             player.sendMessage(Utils.cmdMsg("<green>Unmuted pings, you will not get dinged when someone pings you"));
         } else {
@@ -32,8 +38,7 @@ public class MutePingsCMD implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @Nullable List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
         return new ArrayList<>();
     }
 }

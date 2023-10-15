@@ -39,7 +39,7 @@ public class BountyDatabase {
      * This is done asynchronously
      */
     public void loadAllBounties() {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 ResultSet set = conn.prepareStatement("SELECT * FROM bounties").executeQuery();
                 while(set.next()) {
@@ -61,7 +61,7 @@ public class BountyDatabase {
      */
     public void setBounty(UUID uuid, Integer amount) {
         bounties.put(uuid, amount);
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat  = this.conn.prepareStatement("SELECT * FROM bounties WHERE uuid=?");
                 stat.setString(1, uuid.toString());
@@ -89,7 +89,7 @@ public class BountyDatabase {
      */
     public void deleteBounty(UUID uuid) {
         if(bounties.containsKey(uuid)) bounties.remove(uuid);
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat  = this.conn.prepareStatement("SELECT * FROM bounties WHERE uuid=?");
                 stat.setString(1, uuid.toString());
@@ -113,7 +113,7 @@ public class BountyDatabase {
      */
     public void removeBounty(UUID uuid, Integer amount) {
         if(bounties.containsKey(uuid)) bounties.put(uuid, bounties.get(uuid)-amount);
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat  = this.conn.prepareStatement("SELECT * FROM bounties WHERE uuid=?");
                 stat.setString(1, uuid.toString());
@@ -139,7 +139,7 @@ public class BountyDatabase {
     public void addBounty(UUID uuid, Integer amount) {
         if(bounties.containsKey(uuid)) bounties.put(uuid, bounties.get(uuid)+amount);
         else bounties.put(uuid, amount);
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat  = this.conn.prepareStatement("SELECT * FROM bounties WHERE uuid=?");
                 stat.setString(1, uuid.toString());

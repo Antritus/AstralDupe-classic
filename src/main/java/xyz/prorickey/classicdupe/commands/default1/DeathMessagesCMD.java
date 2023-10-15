@@ -1,12 +1,10 @@
 package xyz.prorickey.classicdupe.commands.default1;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.database.PlayerData;
@@ -14,15 +12,19 @@ import xyz.prorickey.classicdupe.database.PlayerData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeathMessagesCMD implements CommandExecutor, TabCompleter {
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(!(sender instanceof Player player)) {
+public class DeathMessagesCMD extends AstralCommand {
+
+    public DeathMessagesCMD(AstralDupe astralDupe) {
+        super(astralDupe, "death-messages");
+    }
+
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(Utils.cmdMsg("<red>You cannot execute this command from console"));
             return true;
         }
         PlayerData playerData = ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(player.getUniqueId());
-        if(playerData.getDeathMessages()) {
+        if (playerData.getDeathMessages()) {
             playerData.setDeathMessages(false);
             player.sendMessage(Utils.cmdMsg("<green>Turned off death messages"));
         } else {
@@ -32,8 +34,7 @@ public class DeathMessagesCMD implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
         return new ArrayList<>();
     }
 }

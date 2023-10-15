@@ -1,23 +1,34 @@
 package xyz.prorickey.classicdupe.commands.admin;
 
+import com.github.antritus.astral.AdvancedPlugin;
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.commands.AstralCommand;
 import net.kyori.adventure.text.Component;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilterCMD implements CommandExecutor, TabCompleter {
+public class FilterCMD extends AstralCommand {
+    public FilterCMD(AstralDupe main) {
+        super(main, "filter");
+        setPermission("astraldupe.admin.filter");
+    }
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
+        if(args.length == 1) return List.of("list", "add", "remove");
+        else if(args.length == 3) return List.of("true", "false");
+        return new ArrayList<>();
+    }
+
+    @Override
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(args.length == 0) {
-            Component message = Utils.format("<green>Current Filter Items<gray>(Fullword in red, Partword in green): ");
+            Component message = Utils.format("<green>Current Filter Items<gray>(Full word in red, Part word in green): ");
             StringBuilder sb = new StringBuilder();
             if(ClassicDupe.getDatabase().getFilterDatabase().getWordsFromFilter().size() == 0) {
                 sender.sendMessage(Utils.cmdMsg("<green>The filter is currently empty"));
@@ -70,12 +81,5 @@ public class FilterCMD implements CommandExecutor, TabCompleter {
             }
         }
         return true;
-    }
-
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(args.length == 1) return List.of("list", "add", "remove");
-        else if(args.length == 3) return List.of("true", "false");
-        return new ArrayList<>();
     }
 }

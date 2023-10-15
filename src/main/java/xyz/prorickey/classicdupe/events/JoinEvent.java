@@ -8,24 +8,17 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.inventory.meta.BundleMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Config;
 import xyz.prorickey.classicdupe.Utils;
-import xyz.prorickey.classicdupe.commands.default1.DupeCMD;
 import xyz.prorickey.classicdupe.commands.perk.ChatColorCMD;
 import xyz.prorickey.classicdupe.commands.perk.ChatGradientCMD;
 import xyz.prorickey.classicdupe.database.PlayerData;
@@ -52,10 +45,6 @@ public class JoinEvent implements Listener {
             nakedProtection.put(e.getPlayer(), System.currentTimeMillis());
 
             // Starting Gear
-            e.getPlayer().getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
-            e.getPlayer().getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
-            e.getPlayer().getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
-            e.getPlayer().getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
             e.getPlayer().getInventory().addItem(
                     new ItemStack(Material.IRON_SWORD),
                     new ItemStack(Material.IRON_PICKAXE),
@@ -66,7 +55,7 @@ public class JoinEvent implements Listener {
             RandomItemTask task = new RandomItemTask(e.getPlayer());
             randomItemList.add(e.getPlayer());
             randomTaskMap.put(e.getPlayer(), task);
-            task.runTaskTimer(ClassicDupe.getPlugin(), 0, 20*60);
+            task.runTaskTimer(ClassicDupe.getInstance(), 0, 20*60);
 
             e.getPlayer().sendMessage(Utils.cmdMsg("<green>You currently have naked protection on. This means you cannot pvp but you are safe for 10 minutes. To turn this off execute /nakedoff"));
             return;
@@ -80,7 +69,7 @@ public class JoinEvent implements Listener {
         if(playerData.night) nightVision.add(e.getPlayer());
         RandomItemTask task = new RandomItemTask(e.getPlayer());
         randomTaskMap.put(e.getPlayer(), task);
-        task.runTaskTimer(ClassicDupe.getPlugin(), 0, 20*60);
+        task.runTaskTimer(ClassicDupe.getInstance(), 0, 20*60);
         if(playerData.randomitem) {
             randomItemList.add(e.getPlayer());
             e.getPlayer().sendMessage(Utils.cmdMsg("<green>Every <yellow>60 <green>you will recieve a random item. Execute /random to disable or enable this"));
@@ -99,34 +88,6 @@ public class JoinEvent implements Listener {
         LinkRewards.checkRewardsForBoosting(e.getPlayer());
         e.joinMessage(Utils.format("<dark_gray>[<green>+<dark_gray>] ")
                 .append(MiniMessage.miniMessage().deserialize(Utils.getPrefix(e.getPlayer()) + e.getPlayer().getName())));
-
-        removeOpal(e.getPlayer().getInventory());
-        removeOpal(e.getPlayer().getEnderChest());
-    }
-
-    public static void removeOpal(Inventory inventory) {
-        for(int i = 0; i < inventory.getSize(); i++) {
-            ItemStack itemStack = inventory.getItem(i);
-            if(itemStack == null) continue;
-            if(DupeCMD.shulkerBoxes.contains(itemStack.getType())) removeOpal(((ShulkerBox) ((BlockStateMeta) itemStack.getItemMeta()).getBlockState()).getInventory());
-            if(itemStack.getItemMeta() instanceof BundleMeta) {
-                BundleMeta meta = ((BundleMeta) itemStack.getItemMeta());
-                meta.getItems().forEach(item -> {
-                    ItemMeta itemMeta2 = item.getItemMeta();
-                    if(itemMeta2 != null) {
-                        if(itemMeta2.getPersistentDataContainer().has(new NamespacedKey(ClassicDupe.getPlugin(), "opal"))) {
-                            meta.getItems().remove(item);
-                        }
-                    }
-                });
-                itemStack.setItemMeta(meta);
-            }
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            if(itemMeta == null) continue;
-            if(itemMeta.getPersistentDataContainer().has(new NamespacedKey(ClassicDupe.getPlugin(), "opal"))) {
-                inventory.setItem(i, new ItemStack(Material.AIR));
-            }
-        }
     }
 
     public static final Map<Player, Long> afkTime = new HashMap<>();

@@ -1,25 +1,40 @@
 package xyz.prorickey.classicdupe.commands.admin;
 
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.ForRemoval;
+import me.antritus.astraldupe.utils.PlayerUtils;
+import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
-import xyz.prorickey.proutils.TabComplete;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.bukkit.GameMode.*;
 
-public class GamemodeCMD implements CommandExecutor, TabCompleter {
+
+@ForRemoval(reason = "The default gamemode manager in minecraft is good.")
+@Deprecated(forRemoval = true)
+public class GamemodeCMD extends AstralCommand {
+
+    public GamemodeCMD(AstralDupe main) {
+        super(main, "gamemode");
+        setPermission("astraldupe.admin.gamemode");
+    }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
+        if(args.length == 1) return (List.of("creative", "survival", "spectator", "adventure"));
+        else if(args.length == 2) return (PlayerUtils.getVisiblePlayerNames(sender));
+        return new ArrayList<>();
+    }
 
+    @Override
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(args.length < 1) {
             if(sender instanceof ConsoleCommandSender) {
                 sender.sendMessage(Utils.cmdMsg("<red>You cannot execute this command from console"));
@@ -167,12 +182,4 @@ public class GamemodeCMD implements CommandExecutor, TabCompleter {
             }
         }
     }
-
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], List.of("creative", "survival", "spectator", "adventure"));
-        else if(args.length == 2) return TabComplete.tabCompletionsSearch(args[1], ClassicDupe.getOnlinePlayerUsernames());
-        return new ArrayList<>();
-    }
-
 }

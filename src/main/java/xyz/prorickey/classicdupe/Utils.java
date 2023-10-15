@@ -74,7 +74,7 @@ public class Utils {
      * @return The prefix of the player formatted with adventure color codes
      */
     public static String getPrefix(OfflinePlayer player) {
-        String prefix = ClassicDupe.getLPAPI().getUserManager().getUser(player.getUniqueId()).getCachedData().getMetaData().getPrefix();
+        String prefix = ClassicDupe.getLuckPerms().getUserManager().getUser(player.getUniqueId()).getCachedData().getMetaData().getPrefix();
         if(prefix != null) return convertColorCodesToAdventure(prefix) + "<b></b>";
         return "";
     }
@@ -90,7 +90,7 @@ public class Utils {
     }
 
     public static Integer getMaxHomes(OfflinePlayer player) {
-        String rank = ClassicDupe.getLPAPI().getUserManager().getUser(player.getUniqueId()).getCachedData().getMetaData().getPrimaryGroup();
+        String rank = ClassicDupe.getLuckPerms().getUserManager().getUser(player.getUniqueId()).getCachedData().getMetaData().getPrimaryGroup();
         if(Config.getConfig().getInt("ranks." + rank + ".homes") != 0) return Config.getConfig().getInt("ranks." + rank + ".homes");
         return 1;
     }
@@ -100,7 +100,7 @@ public class Utils {
         return false;
     }
 
-    public static String getSuffix(Player player) { return ClassicDupe.getLPAPI().getUserManager().getUser(player.getUniqueId()).getCachedData().getMetaData().getSuffix(); }
+    public static String getSuffix(Player player) { return ClassicDupe.getLuckPerms().getUserManager().getUser(player.getUniqueId()).getCachedData().getMetaData().getSuffix(); }
 
     public static String centerText(String text) {
         int maxWidth = 80,

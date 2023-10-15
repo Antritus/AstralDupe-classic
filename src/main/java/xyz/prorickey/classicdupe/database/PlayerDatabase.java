@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
-import xyz.prorickey.classicdupe.metrics.Metrics;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,7 +22,7 @@ public class PlayerDatabase {
 
     public PlayerDatabase(Connection conn) {
         this.conn = conn;
-        new BalanceTopTask().runTaskTimerAsynchronously(ClassicDupe.getPlugin(), 0, 20 * 60 * 5);
+        new BalanceTopTask().runTaskTimerAsynchronously(ClassicDupe.getInstance(), 0, 20 * 60 * 5);
     }
 
     /**
@@ -68,7 +67,7 @@ public class PlayerDatabase {
     public void playerDataUnload(UUID uuid) { playerDataMap.remove(uuid); }
 
     public void playerDataUpdateAndLoad(Player player) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = conn.prepareStatement("SELECT * FROM players WHERE uuid=?");
                 stat.setString(1, player.getUniqueId().toString());
@@ -198,12 +197,16 @@ public class PlayerDatabase {
     public static final Map<Integer, Integer> killStreakLeaderboardK = new HashMap<>();
 
     public void reloadLeaderboards() {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 ResultSet killsSet = conn.prepareStatement("SELECT * FROM stats ORDER BY kills DESC").executeQuery();
                 for(int i = 0; i < 10; i++) {
                     if(killsSet.next()) {
                         PlayerData data = getPlayerData(UUID.fromString(killsSet.getString("uuid")));
+                        if (data==null) {
+                            i--;
+                            continue;
+                        }
                         killsLeaderboard.put(i+1, data.name);
                         killsLeaderboardK.put(i+1, killsSet.getInt("kills"));
                     }
@@ -212,6 +215,10 @@ public class PlayerDatabase {
                 for(int i = 0; i < 10; i++) {
                     if(deathsSet.next()) {
                         PlayerData data = getPlayerData(UUID.fromString(deathsSet.getString("uuid")));
+                        if (data==null) {
+                            i--;
+                            continue;
+                        }
                         deathsLeaderboard.put(i+1, data.name);
                         deathsLeaderboardD.put(i+1, deathsSet.getInt("deaths"));
                     }
@@ -220,6 +227,10 @@ public class PlayerDatabase {
                 for(int i = 0; i < 10; i++) {
                     if(killStreakSet.next()) {
                         PlayerData data = getPlayerData(UUID.fromString(killStreakSet.getString("uuid")));
+                        if (data==null) {
+                            i--;
+                            continue;
+                        }
                         killStreakLeaderboard.put(i+1, data.name);
                         killStreakLeaderboardK.put(i+1, killStreakSet.getInt("killStreak"));
                     }
@@ -233,7 +244,7 @@ public class PlayerDatabase {
     private final Map<String, PlayerStats> stats = new HashMap<>();
 
     public void addKill(String uuid) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 conn.prepareStatement("UPDATE stats SET kills=kills+1 WHERE uuid='" + uuid +  "'").execute();
                 if(stats.containsKey(uuid)) stats.get(uuid).addKill();
@@ -245,7 +256,7 @@ public class PlayerDatabase {
     }
 
     public void setKills(UUID uuid, int kills) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 conn.prepareStatement("UPDATE stats SET kills=" + kills + " WHERE uuid='" + uuid +  "'").execute();
                 if(stats.containsKey(uuid.toString())) stats.get(uuid.toString()).kills = kills;
@@ -257,7 +268,7 @@ public class PlayerDatabase {
     }
 
     public void addDeath(String uuid) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 conn.prepareStatement("UPDATE stats SET deaths=deaths+1 WHERE uuid='" + uuid +  "'").execute();
                 if(stats.containsKey(uuid)) stats.get(uuid).addDeath();
@@ -269,7 +280,7 @@ public class PlayerDatabase {
     }
 
     public void setDeaths(UUID uuid, int deaths) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 conn.prepareStatement("UPDATE stats SET deaths=" + deaths + " WHERE uuid='" + uuid +  "'").execute();
                 if(stats.containsKey(uuid.toString())) stats.get(uuid.toString()).deaths = deaths;

@@ -1,0 +1,43 @@
+You will act now as a text replacer. Your mission is to replace all onCommand methods with execute methods.
+You will also need to detect onTabComplete methods and replace them with tabComplete.
+You will not import any classes which you do not see in the given class.
+You will not import packagaes like xyz.prorickey.astraldupe, xyz.prorickey.classicdupe.AstralCommand, xyz.prorickey.astraldupe.AstralDupe
+You will not import packagaes like me.antritus.classicdupe.*, me.antritus.classicdupe.ClassicDupe
+If you import any classes or packages and guess the import it will slowdown the progress. I have a system to automatically detect classes and import them.
+You are required to keep every field in the class even if they are not used.
+You are required to keep every method in the class even if they are not used.
+You ARE required to keep everything in the class which are not told to modify.
+
+You are required to create constructor matching this in every class:
+
+public ClassName(AstralDupe astralDupe){
+    super(astralDupe, "placeholder");
+}
+
+You are required to replace old command implementations in every class:
+
+public ClassName implements CommandExecutor, TabCompleter
+
+with
+
+public ClassName extends AstralCommand
+
+You are required to find ClassicDupe.getOnlinePlayerUsernames() and replace it with PlayerUtils.getVisiblePlayerNames(sender)
+
+You are required to replace
+
+public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String commandLabel, @NotNull String[] args)
+
+with
+
+public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args)
+
+
+You are required to replace
+
+public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
+
+with
+
+public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args)
+

@@ -1,22 +1,31 @@
 package xyz.prorickey.classicdupe.commands.admin;
 
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.ForRemoval;
+import me.antritus.astraldupe.utils.PlayerUtils;
+import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
-import xyz.prorickey.proutils.TabComplete;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GmaCMD implements CommandExecutor, TabCompleter {
+@ForRemoval(reason = "Staff commands should go to their own plugin.")
+@Deprecated(forRemoval = true)
+public class GmaCMD extends AstralCommand {
+
+
+    public GmaCMD(AstralDupe main) {
+        super(main, "gma");
+        setPermission("astraldupe.admin.gamemode.adventure");
+    }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(args.length < 1) {
             if(sender instanceof ConsoleCommandSender) {
                 sender.sendMessage(Utils.cmdMsg("<red>You cannot change console's gamemode"));
@@ -55,9 +64,8 @@ public class GmaCMD implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], ClassicDupe.getOnlinePlayerUsernames());
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
+        if(args.length == 1) return PlayerUtils.getVisiblePlayerNames(sender);
         return new ArrayList<>();
     }
-
 }

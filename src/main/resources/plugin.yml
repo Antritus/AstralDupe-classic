@@ -1,7 +1,6 @@
-main: xyz.prorickey.classicdupe.ClassicDupe
+main: me.antritus.astraldupe.AstralDupe
 name: ClassicDupe
 version: ${version}
-description: The core plugin behind everything that happens in ClassicDupe
 api-version: 1.19
 load: STARTUP
 authors:
@@ -15,6 +14,9 @@ depend:
   - WorldGuard
   - spark
   - Vault
+  - CosmicCapital
+  - Wormhole
+  - Fluffy
 prefix: ClassicDupe
 libraries:
   - com.h2database:h2:2.1.214
@@ -49,125 +51,115 @@ commands:
       - ow
   setspawn:
     description: Sets the spawn to the players location
-    permission: admin.setspawn
+    permission: classicdupe.admin.setspawn
     usage: "Usage: /setspawn <spawn> [player]"
   gamemode:
     aliases:
       - gm
       - gmode
-    permission: admin.gamemode
+    permission: classicdupe.admin.gamemode
     description: To change the player's own gamemode or others
     usage: "Usage: /gamemode <gamemode> [player]"
   gmc:
     aliases:
       - gamemodecreative
-    permission: admin.gamemode.creative
+    permission: classicdupe.admin.gamemode.creative
     description: To change the player's own gamemode or others to creative mode
     usage: "Usage: /gmc [player]"
   gms:
     aliases:
       - gamemodesurvival
-    permission: admin.gamemode.survival
+    permission: classicdupe.admin.gamemode.survival
     description: To change the player's own gamemode or others to survival mode
     usage: "Usage: /gms [player]"
   gmsp:
     aliases:
       - gamemodespectator
-    permission: admin.gamemode.spectator
+    permission: classicdupe.admin.gamemode.spectator
     description: To change the player's own gamemode or others to spectator mode
     usage: "Usage: /gmsp [player]"
   gma:
     aliases:
       - gamemodeadventure
-    permission: admin.gamemode.adventure
+    permission: classicdupe.admin.gamemode.adventure
     description: To change the player's own gamemode or others to adventure mode
     usage: "Usage: /gma [player]"
   schedulerestart:
-    permission: admin.restart
+    permission: classicdupe.admin.restart
     description: To restart the server or cancel a server restart
     usage: "Usage: /schedulerestart [cancel]"
   mutechat:
-    permission: mod.mutechat
+    permission: classicdupe.staff.mutechat
     description: To mute or unmute the chat
     usage: "Usage: /mutechat"
   chatcolor:
-    permission: perks.colorchat
+    permission: classicdupe.perks.colorchat
     description: To change the color of your chat
     usage: "Usage: /chatcolor [white|pink|red|aqua|blue|green|yellow|gold|gray]"
   gradient:
-    permission: perks.gradient
+    permission: classicdupe.perks.gradient
     description: To add a little zest to your messages
     usage: "Usage: /gradient"
   sc:
-    permission: mod.staffchat
+    permission: classicdupe.staff.chat
     description: To enable or disable staff chat 
     aliases: 
       - staffchat
       - schat
     usage: "Usage: /staffchat [on|off]"
   repair:
-    permission: perks.repair
+    permission: classicdupe.perks.repair
     description: To repair the item in a players main hand
     usage: "Usage: /repair"
   clearchat:
-    permission: mod.clearchat
+    permission: classicdupe.staff.clearchat
     description: To clear the chat
     aliases:
       - cc
     usage: "Usage: /clearchat"
   pm:
+    aliases: [msg, whisper, w]
     description: To send a private message
     usage: "Usage: /pm <player> <message>"
   pmr:
+    aliases: [msgr, reply, r]
     description: To reply to a private message
     usage: "Usage: /pmr <message>"
   head:
     description: To get the head of a player
-    permission: admin.head
+    permission: classicdupe.admin.head
     usage: "Usage: /head <player>"
   spec:
     description: To switch between spectator and survival mode as a mod
-    permission: mod.spec
+    permission: classicdupe.admin.spectate
     usage: "Usage: /spec"
   broadcast:
     description: To broadcast a message to the server
-    permission: mod.broadcast
+    permission: classicdupe.staff.broadcast
     usage: "Usage: /broadcast"
   sudo:
     description: To sudo another player
-    permission: admin.sudo
+    permission: classicdupe.admin.sudo
     usage: "Usage: /sudo"
   pv:
     description: To open and access different private vaults
-    permission: perk.pv
+    permission: classicdupe.perks.pv
     usage: "Usage: /pv <num>"
   pvadd:
     description: To add a player vault to a player
-    permission: admin.pvadd
+    permission: classicdupe.admin.pvadd
     usage: "Usage: /pvadd <player>"
   invsee:
     description: TO open and see a player's inventory
-    permission: admin.invsee
+    permission: classicdupe.admin.invsee
     usage: "Usage: /invsee <player>"
   trash:
     description: To throw stuff away in the trash
     usage: "Usage: /trash"
   suffix:
     description: To change your suffix
-    permission: perks.suffix
+    permission: classicdupe.perks.suffix
     usage: "Usage: /suffix [suffix]"
-  tpa:
-    description: To ask to teleport to someone
-    usage: "Usage: /tpa <player>"
-  tpaccept:
-    description: To accept a tpa request of someone
-    usage: "Usage: /tpaccept <player>"
-  tpadecline:
-    description: To decline the tpa request of someone
-    usage: "Usage: /tpadecline <player>"
-  tpacancel:
-    description: To cancel a tpa request sent
-    usage: "Usage: /tpacancel"
   stats:
     description: To get the stats of a player
     usage: "Usage: /stats <player>"
@@ -177,7 +169,7 @@ commands:
   enderchest:
     description: To open your enderchest
     usage: "Usage: /enderchest"
-    permission: perks.enderchest
+    permission: classicdupe.perks.enderchest
     aliases:
       - ec
   rules:
@@ -186,11 +178,11 @@ commands:
   rename:
     description: To rename an item in your main hand
     usage: "Usage: /rename <itemname>"
-    permission: perks.rename
+    permission: classicdupe.perks.rename
   nickname:
     description: To change your name in tab and in chat
     usage: "Usage: /nickname <nickname>"
-    permission: perks.nickname
+    permission: classicdupe.perks.nickname
     aliases:
       - nick
   nakedoff:
@@ -205,15 +197,15 @@ commands:
   feed:
     description: To feed yourself
     usage: "Usage: /feed"
-    permission: perks.feed
+    permission: classicdupe.perks.feed
   configreload:
     description: To reload the config
     usage: "Usage: /configreload"
-    permission: admin.reload
+    permission: classicdupe.admin.reload
   hat:
     description: To put on a hat
     usage: "Usage: /hat"
-    permissions: perks.hat
+    permissions: classicdupe.perks.hat
   clan:
     description: The main clans command for the server
     usage: "Usage: /clan"
@@ -224,72 +216,34 @@ commands:
   clanadmin:
     description: The admin command for clans
     usage: "Usage: /clanadmin"
-    permission: admin.clanadmin
+    permission: classicdupe.admin.clanadmin
     aliases:
       - cadmin
   cspy:
     description: To toggle command spy
     usage: "Usage: /cspy"
-    permission: mod.cspy
+    permission: classicdupe.staff.cspy
     aliases:
       - commandspy
       - cmdspy
-  koth:
-    description: To manage KOTH events
-    usage: "Usage: /koth"
-    permission: events.koth
+
   report:
     description: To report players
     usage: "Usage: /report"
   craft:
     description: To open a crafting table on the go
     usage: "Usage: /craft"
-    permission: perk.craft
+    permission: classicdupe.perks.craft
   back:
     description: To teleport back to a previous location
     usage: "Usage: /back"
   staffteleport:
     description: To teleport to a player while staffing. Puts you in spectator and saves your location
     usage: "Usage: /staffteleport"
-    permission: mod.staffteleport
+    permission: classicdupe.staff.staffteleport
     aliases:
       - stafftp
       - stp
-  maze:
-    description: Maze command
-    usage: "Usage: /maze <subcommand>"
-    permission: mod.maze
-    aliases:
-      - mz
-    subcommands:
-      spawn:
-        description: To set the spawn of the maze
-        usage: "Usage: /maze setspawn"
-      start:
-        description: To start the maze
-        usage: "Usage: /maze start"
-      stop:
-        description: To stop the maze
-        usage: "Usage: /maze stop"
-      set:
-        description: To set the maze
-        usage: "Usage: /maze set <maze>?"
-      join:
-        description: To join the maze
-        usage: "Usage: /maze join"
-      leave:
-        description: To leave the maze
-        usage: "Usage: /maze leave"
-      reset:
-        description: To reset the maze
-        usage: "Usage: /maze reset"
-      location:
-        description: To set the location of the mazes
-        usage: "Usage: /maze location"
-
-  joinmaze:
-    description: To join the maze
-    usage: "Usage: /joinmaze"
 #  blockcommands:
 #    description: Block players from using commands.
 #    usage: "Usage /blockcommands [player]"
@@ -323,33 +277,19 @@ commands:
   shop:
     description: To open the shop
     usage: "Usage: /shop"
-  balance:
-    description: To check your balance and get the top balances
-    usage: "Usage: /balance"
-  customitem:
-    description: To get a custom item
-    usage: "Usage: /customitem <give|list>"
-    permission: admin.customitem
-    subcommands:
-        give:
-            description: To give a custom item
-            usage: "Usage: /customitem give <item>"
-        list:
-            description: To list all custom items
-            usage: "Usage: /customitem list"
   headline:
     description: Broadcast a headline
     usage: /headline <message>
-    permission: headliner.perms
+    permission: classicdupe.admin.headline
     aliases: [ hl ]
   alert:
     description: Broadcast an alert
     usage: /alert <message>
-    permission: headliner.broadcast
+    permission: classicdupe.admin.headline
   subhead:
     description: Broadcast a subheader
     usage: /subhead <message>
-    permission: headliner.subheader
+    permission: classicdupe.admin.subhead
     aliases: [ sh ]
   bounty:
     description: To list and place bounties on players
@@ -366,7 +306,7 @@ commands:
   customset:
     description: To get a custom armor
     usage: "Usage: /customitem <armorSet>"
-    permission: admin.customset
+    permission: classicdupe.admin.customset
   afk:
     description: To teleport to the afk area
     usage: "Usage: /afk"
@@ -379,32 +319,4 @@ commands:
   pvsee:
     description: To see other players inventories
     usage: "Usage: /pvsee"
-    permission: admin.pvsee
-permissions:
-  default.spawn.others:
-    description: Allows you to teleport others to spawn
-  default.nether.others:
-    description: Allows you to teleport others to the nether
-  perks.feed.legend:
-    description: Reduced cooldown for legend
-  perks.feed.mvp:
-    description: Reduced cooldown for mvp
-  admin.bypassnopvpinvanish:
-    description: Allows you to bypass no pvp in vanish
-  admin.customitem:
-    description: Allows you to use the customitem command
-  admin.bypassCustomItemCd:
-    description: Allows you to bypass the cooldown for custom items
-  default.bounty.forceset:
-    description: Allows you to force set a bounty
-  default.bounty.delete:
-    description: Allows you to delete a bounty
-  admin.headliner.perms:
-    description: Allows the user to use the headline command
-
-  admin.headliner.broadcast:
-    description: Allows the user to use the chat broadcast command
-
-  admin.headerliner.subheader:
-    description: Allows the user to use the subheader command
-
+    permission: classicdupe.admin.pvsee

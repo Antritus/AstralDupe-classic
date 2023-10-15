@@ -1,15 +1,17 @@
 package xyz.prorickey.classicdupe.clans.adminsubcommands;
 
+import me.antritus.astraldupe.ForRemoval;
 import org.bukkit.command.CommandSender;
 import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.clans.builders.Clan;
 import xyz.prorickey.classicdupe.clans.builders.ClanSub;
-import xyz.prorickey.proutils.TabComplete;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public class CSForceDelete extends ClanSub {
 
     @Override
@@ -33,7 +35,7 @@ public class CSForceDelete extends ClanSub {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String[] args) {
-        if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], ClassicDupe.getClanDatabase().getLoadedClanNames());
+        if(args.length == 1) return (ClassicDupe.getClanDatabase().getLoadedClanNames());
         return new ArrayList<>();
     }
 

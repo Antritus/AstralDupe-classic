@@ -2,7 +2,6 @@ package xyz.prorickey.classicdupe.database;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Config;
 import xyz.prorickey.classicdupe.clans.databases.H2ClanDatabase;
@@ -10,9 +9,7 @@ import xyz.prorickey.classicdupe.clans.databases.MariaClanDatabase;
 
 import java.io.File;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Database {
@@ -28,20 +25,19 @@ public class Database {
     private LinkingDatabase linkingDatabase;
     private HomesDatabase homesDatabase;
     private BountyDatabase bountyDatabase;
-    public static List<Player> blockedToUseCommands = new ArrayList<>();
 
     public Database() {
         try {
             if(Config.getConfig().getBoolean("database.mariadb")) {
                 conn = DriverManager.getConnection(
-                        "jdbc:mariadb://" + Config.getConfig().getString("database.host") + ":3306/classicdupe",
+                        "jdbc:mariadb://" + Config.getConfig().getString("database.host") + ":3306/astraldupe",
                         Config.getConfig().getString("database.user"),
                         Config.getConfig().getString("database.password")
                 );
 
                 Bukkit.getLogger().info("Connected to MariaDB database!");
 
-                ClassicDupe.clanDatabase = new MariaClanDatabase(ClassicDupe.getPlugin(), conn);
+                ClassicDupe.clanDatabase = new MariaClanDatabase(ClassicDupe.getInstance(), conn);
 
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS players(uuid TEXT, name TEXT, nickname TEXT, " +
                         "timesjoined long, playtime long, randomitem BOOLEAN, " +
@@ -58,9 +54,9 @@ public class Database {
 
                 Bukkit.getLogger().info("Created tables!");
 
-                if(new File(ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "playerData.mv.db").exists()) {
+                if(new File(ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "playerData.mv.db").exists()) {
 
-                    playerConn = DriverManager.getConnection("jdbc:h2:" + ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "playerData");
+                    playerConn = DriverManager.getConnection("jdbc:h2:" + ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "playerData");
 
                     System.out.println("Connected to H2 database!");
 
@@ -124,15 +120,15 @@ public class Database {
                     }
 
                     playerConn.close();
-                    new File(ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "playerData.mv.db").delete();
+                    new File(ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "playerData.mv.db").delete();
 
                 }
 
                 playerConn = conn;
 
-                if(new File(ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "serverData.mv.db").exists()) {
+                if(new File(ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "serverData.mv.db").exists()) {
 
-                    serverConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "serverData");
+                    serverConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "serverData");
 
                     try(ResultSet set = conn.prepareStatement("SELECT * FROM filter").executeQuery()) {
                         if(!set.next()) {
@@ -168,14 +164,14 @@ public class Database {
                     }
 
                     serverConn.close();
-                    new File(ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "serverData.mv.db").delete();
+                    new File(ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "serverData.mv.db").delete();
                 }
 
                 serverConn = conn;
 
-                if(new File(ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "linkData.mv.db").exists()) {
+                if(new File(ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "linkData.mv.db").exists()) {
 
-                    linkingConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "linkData");
+                    linkingConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "linkData");
 
                     try (ResultSet set = conn.prepareStatement("SELECT * FROM link").executeQuery()) {
                         if (!set.next()) {
@@ -192,14 +188,14 @@ public class Database {
                     }
 
                     linkingConn.close();
-                    new File(ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "linkData.mv.db").delete();
+                    new File(ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "linkData.mv.db").delete();
                 }
 
                 linkingConn = conn;
 
-                if(new File(ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "homes.mv.db").exists()) {
+                if(new File(ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "homes.mv.db").exists()) {
 
-                    homesConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "homes");
+                    homesConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "homes");
 
                     try (ResultSet set = conn.prepareStatement("SELECT * FROM homes").executeQuery()) {
                         if (!set.next()) {
@@ -222,13 +218,13 @@ public class Database {
                     }
 
                     homesConn.close();
-                    new File(ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "homes.mv.db").delete();
+                    new File(ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "homes.mv.db").delete();
                 }
 
                 homesConn = conn;
 
-                if(new File(ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "bountyData.mv.db").exists()) {
-                    bountyConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "bountyData");
+                if(new File(ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "bountyData.mv.db").exists()) {
+                    bountyConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "bountyData");
 
                     try (ResultSet set = conn.prepareStatement("SELECT * FROM bounty").executeQuery()) {
                         if (!set.next()) {
@@ -245,7 +241,7 @@ public class Database {
                     }
 
                     bountyConn.close();
-                    new File(ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "bountyData.mv.db").delete();
+                    new File(ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "bountyData.mv.db").delete();
                 }
 
                 bountyConn = conn;
@@ -257,13 +253,13 @@ public class Database {
                 bountyDatabase = new BountyDatabase(conn);
 
             } else {
-                ClassicDupe.clanDatabase = new H2ClanDatabase(ClassicDupe.getPlugin());
+                ClassicDupe.clanDatabase = new H2ClanDatabase(ClassicDupe.getInstance());
 
-                playerConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "playerData");
-                serverConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "serverData");
-                linkingConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "linkData");
-                homesConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "homes");
-                bountyConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "bountyData");
+                playerConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "playerData");
+                serverConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "serverData");
+                linkingConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "linkData");
+                homesConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "homes");
+                bountyConn = DriverManager.getConnection ("jdbc:h2:" + ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "bountyData");
 
                 playerConn.prepareStatement("CREATE TABLE IF NOT EXISTS players(uuid varchar, name varchar, nickname varchar, " +
                         "timesjoined long, playtime long, randomitem BOOLEAN, " +
@@ -295,7 +291,7 @@ public class Database {
 
     public void setSpawn(String name, Location loc) {
         spawns.put(name, loc);
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = serverConn.prepareStatement("INSERT INTO spawn(spawn, x, y, z, pitch, yaw, world) VALUES(?, ?, ?, ?, ?, ?, ?)");
                 stat.setString(1, name);
@@ -313,7 +309,7 @@ public class Database {
     }
 
     public void loadSpawns() {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 ResultSet set = serverConn.prepareStatement("SELECT * FROM spawn").executeQuery();
                 while(set.next()) {

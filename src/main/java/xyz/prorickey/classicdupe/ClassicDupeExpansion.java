@@ -2,14 +2,14 @@ package xyz.prorickey.classicdupe;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import xyz.prorickey.classicdupe.clans.builders.Clan;
 import xyz.prorickey.classicdupe.database.PlayerData;
 import xyz.prorickey.classicdupe.database.PlayerDatabase;
 import xyz.prorickey.classicdupe.metrics.PlayerMetrics;
 
-import java.util.stream.Collectors;
-
+@ApiStatus.OverrideOnly
 public class ClassicDupeExpansion extends PlaceholderExpansion {
 
     public ClassicDupeExpansion(ClassicDupe plugin) {
@@ -22,7 +22,7 @@ public class ClassicDupeExpansion extends PlaceholderExpansion {
     public @NotNull String getAuthor() { return "Prorickey"; }
 
     @Override
-    public @NotNull String getVersion() { return "1.0.0"; }
+    public @NotNull String getVersion() { return "1.0"; }
 
     @Override
     public boolean persist() { return true; }

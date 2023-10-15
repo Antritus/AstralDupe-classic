@@ -1,5 +1,7 @@
 package xyz.prorickey.classicdupe.commands.default1;
 
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,18 +18,21 @@ import xyz.prorickey.classicdupe.events.JoinEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NightVisionCMD implements CommandExecutor, TabCompleter {
+public class NightVisionCMD extends AstralCommand {
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String commandLabel, String[] args) {
-        if(!(sender instanceof Player player)) {
+    public NightVisionCMD(AstralDupe astralDupe) {
+        super(astralDupe, "nightvision");
+    }
+
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(Utils.cmdMsg("<red>You cannot execute this command from console"));
             return true;
         }
 
         PlayerData playerData = ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(player.getUniqueId());
 
-        if(JoinEvent.nightVision.contains(player)) {
+        if (JoinEvent.nightVision.contains(player)) {
             JoinEvent.nightVision.remove(player);
             playerData.setNightVision(false);
             player.removePotionEffect(PotionEffectType.NIGHT_VISION);
@@ -41,9 +46,7 @@ public class NightVisionCMD implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @Nullable List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
         return new ArrayList<>();
     }
-
 }

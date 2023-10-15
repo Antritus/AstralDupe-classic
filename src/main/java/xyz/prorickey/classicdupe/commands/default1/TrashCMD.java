@@ -1,10 +1,9 @@
 package xyz.prorickey.classicdupe.commands.default1;
 
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -14,10 +13,16 @@ import xyz.prorickey.classicdupe.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrashCMD implements CommandExecutor, TabCompleter {
+public class TrashCMD extends AstralCommand {
+
+    public TrashCMD(AstralDupe astralDupe) {
+        super(astralDupe, "trash");
+        setAliases(List.of("disposal", "garbage", "josh", "rubbish", "throwshitaway"));
+    }
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(!(sender instanceof Player p)) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+        if (!(sender instanceof Player p)) {
             sender.sendMessage(Utils.cmdMsg("<red>You cannot execute this command from console"));
             return true;
         }
@@ -27,7 +32,7 @@ public class TrashCMD implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @Nullable List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
         return new ArrayList<>();
     }
 }

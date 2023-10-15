@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe.clans.databases;
 
+import me.antritus.astraldupe.ForRemoval;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -24,9 +25,11 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public class MariaClanDatabase implements ClanDatabase {
 
-    private final JavaPlugin plugin;
+    private static ClassicDupe plugin;
     private final Connection conn;
 
     private final File dataDir;
@@ -41,8 +44,8 @@ public class MariaClanDatabase implements ClanDatabase {
 
     private final List<Player> clanChatMembers = new ArrayList<>();
 
-    public MariaClanDatabase(JavaPlugin plugin, Connection conn) {
-        this.plugin = plugin;
+    public MariaClanDatabase(ClassicDupe plugin, Connection conn) {
+        MariaClanDatabase.plugin = plugin;
         this.conn = conn;
 
         this.dataDir = new File(plugin.getDataFolder() + "/clansData/");
@@ -107,7 +110,7 @@ public class MariaClanDatabase implements ClanDatabase {
         allClanIds.add(id);
         allClanNames.add(clanName);
         loadedClans.put(id, clan);
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement insertClanStmt = this.conn.prepareStatement("INSERT INTO clans(clanId, clanName, clanKills, publicClan, clanColor) VALUES(?, ?, 0, false, '<yellow>')");
                 insertClanStmt.setString(1, id.toString());
@@ -134,7 +137,7 @@ public class MariaClanDatabase implements ClanDatabase {
         allClanNames.remove(clan.getClanName());
         loadedClans.remove(clan.getClanId());
 
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement stmt = this.conn.prepareStatement("DELETE FROM clans WHERE clanId=?");
                 stmt.setString(1, clan.getClanId().toString());
@@ -261,7 +264,7 @@ public class MariaClanDatabase implements ClanDatabase {
     @Override
     @SuppressWarnings("ConstantConditions")
     public void updateClanMemberInfo(Player player) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement stat = this.conn.prepareStatement("SELECT * FROM clanPlayers WHERE uuid=?");
                 stat.setString(1, player.getUniqueId().toString());
@@ -290,7 +293,7 @@ public class MariaClanDatabase implements ClanDatabase {
 
     @Override
     public void setClan(UUID uuid, Clan clan) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement statement = this.conn.prepareStatement("UPDATE clanPlayers SET clanId=?, clanName=?, level=0 WHERE uuid=?");
                 statement.setString(1, clan.getClanId().toString());
@@ -305,7 +308,7 @@ public class MariaClanDatabase implements ClanDatabase {
 
     @Override
     public void removeClan(ClanMember clanMember) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement stmt = this.conn.prepareStatement("UPDATE clanPlayers SET clanId=null, clanName=null, level=null WHERE uuid=?");
                 stmt.setString(1, clanMember.getOffPlayer().getUniqueId().toString());
@@ -319,7 +322,7 @@ public class MariaClanDatabase implements ClanDatabase {
 
     @Override
     public void setClanColor(Clan clan, String color) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 if(loadedClans.containsKey(clan.getClanId())) loadedClans.get(clan.getClanId()).setClanColor(color);
                 PreparedStatement statement = this.conn.prepareStatement("UPDATE clans SET clanColor=? WHERE clanId=?");
@@ -334,7 +337,7 @@ public class MariaClanDatabase implements ClanDatabase {
 
     @Override
     public void setPublicClan(Clan clan, boolean isPublic) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 if(loadedClans.containsKey(clan.getClanId())) loadedClans.get(clan.getClanId()).setPublicClan(isPublic);
                 PreparedStatement statement = this.conn.prepareStatement("UPDATE clans SET publicClan=? WHERE clanId=?");
@@ -349,7 +352,7 @@ public class MariaClanDatabase implements ClanDatabase {
 
     @Override
     public void setWarp(Clan clan, Warp warp) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             if(loadedClans.containsKey(clan.getClanId())) loadedClans.get(clan.getClanId()).setWarp(warp);
             try (PreparedStatement statement = this.conn.prepareStatement("INSERT INTO clanWarps(clanId, name, levelNeeded, x, y, z, pitch, yaw, world) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                 statement.setString(1, clan.getClanId().toString());
@@ -370,7 +373,7 @@ public class MariaClanDatabase implements ClanDatabase {
 
     @Override
     public void delWarp(Clan clan, String warpName) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             if(loadedClans.containsKey(clan.getClanId())) loadedClans.get(clan.getClanId()).delWarp(warpName);
             try (PreparedStatement statement = this.conn.prepareStatement("DELETE FROM clanWarps WHERE clanId=? AND name=?")) {
                 statement.setString(1, clan.getClanId().toString());
@@ -384,7 +387,7 @@ public class MariaClanDatabase implements ClanDatabase {
 
     @Override
     public void setPlayerLevel(ClanMember clanMember, int level) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             if(loadedClanMembers.containsKey(clanMember.getOffPlayer().getUniqueId())) loadedClanMembers.get(clanMember.getOffPlayer().getUniqueId()).setLevel(level);
             if(loadedClans.containsKey(clanMember.getClanID())) {
                 Clan clan = loadedClans.get(clanMember.getClanID());
@@ -434,7 +437,7 @@ public class MariaClanDatabase implements ClanDatabase {
     @Override
     public void addClanKill(Clan clan) {
         clan.setClanKills(clan.getClanKills()+1);
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement statement = this.conn.prepareStatement("UPDATE clans SET clanKills=clanKills+1 WHERE clanId=?");
                 statement.setString(1, clan.getClanId().toString());

@@ -1,35 +1,39 @@
 package xyz.prorickey.classicdupe.commands.default1;
 
+import me.antritus.astral.fluffycombat.FluffyCombat;
+import me.antritus.astral.fluffycombat.manager.CombatManager;
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
-import xyz.prorickey.classicdupe.events.Combat;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeCMD implements CommandExecutor, TabCompleter {
+public class HomeCMD extends AstralCommand {
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(!(sender instanceof Player player)) {
-            sender.sendMessage(Utils.cmdMsg("<red>You cannot execute this command from console"));
+    public HomeCMD(AstralDupe astralDupe) {
+        super(astralDupe, "home");
+    }
+
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Utils.cmdMsg("<red>You cannot execute this command from the console"));
             return true;
         }
-        if(Combat.inCombat.containsKey(player)) {
+        FluffyCombat fluffyCombat = AstralDupe.fluffyCombat;
+        CombatManager combatManager = fluffyCombat.getCombatManager();
+        if (combatManager.hasTags(player)) {
             sender.sendMessage(Utils.cmdMsg("<red>You cannot teleport while in combat"));
             return true;
         }
-        if(args.length == 0) {
+        if (args.length == 0) {
             Location loc = ClassicDupe.getDatabase().getHomesDatabase().getHome(player, "default");
-            if(loc == null) {
+            if (loc == null) {
                 sender.sendMessage(Utils.cmdMsg("<red>You do not have a default home set"));
                 return true;
             }
@@ -37,7 +41,7 @@ public class HomeCMD implements CommandExecutor, TabCompleter {
             player.sendMessage(Utils.cmdMsg("<green>Teleported to your default home"));
         } else {
             Location loc = ClassicDupe.getDatabase().getHomesDatabase().getHome(player, args[0]);
-            if(loc == null) {
+            if (loc == null) {
                 sender.sendMessage(Utils.cmdMsg("<red>The home <yellow>" + args[0] + " <red>does not exist"));
                 return true;
             }
@@ -47,10 +51,10 @@ public class HomeCMD implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(args.length == 1 && sender instanceof Player player) { return ClassicDupe.getDatabase().getHomesDatabase().getHomes(player.getUniqueId()).keySet().stream().toList(); }
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+        if (args.length == 1 && sender instanceof Player player) {
+            return ClassicDupe.getDatabase().getHomesDatabase().getHomes(player.getUniqueId()).keySet().stream().toList();
+        }
         return new ArrayList<>();
     }
-
 }

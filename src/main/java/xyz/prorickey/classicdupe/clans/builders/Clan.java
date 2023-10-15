@@ -1,9 +1,12 @@
 package xyz.prorickey.classicdupe.clans.builders;
 
+import me.antritus.astraldupe.ForRemoval;
 import org.bukkit.OfflinePlayer;
 
 import java.util.*;
 
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public class Clan {
 
     // Clan Stuff

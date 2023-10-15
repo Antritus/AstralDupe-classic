@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe.events;
 
+import me.antritus.astraldupe.ForRemoval;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,6 +10,7 @@ import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.commands.moderator.CspyCMD;
 import xyz.prorickey.classicdupe.discord.ClassicDupeBot;
 
+@ForRemoval(reason = "CommandSpy, command spy and other commands to staff plugin.")
 public class CSPY implements Listener {
 
     @EventHandler

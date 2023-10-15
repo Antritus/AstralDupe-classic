@@ -8,7 +8,6 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -28,36 +27,43 @@ import xyz.prorickey.classicdupe.discord.ClassicDupeBot;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("UnstableApiUsage")
 public class Chat implements Listener {
 
     public static Boolean mutedChat = false;
 
     public static final Map<Player, Long> chatCooldown = new HashMap<>();
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onAsyncChatDecorate(AsyncChatDecorateEvent e){
         MiniMessage mm = MiniMessage.miniMessage();
-        // serialize it to normal string format (STRING)
         String serialized = mm.serialize(e.originalMessage());
-        // Remove stupid tags
-        //if (!e.player().hasPermission("classicdupe.admin.tags")) {
-        serialized = mm.stripTags(serialized);
-        //}
-        if (e.player() == null){
-            e.result(mm.deserialize(serialized));
+        Player player = e.player();
+
+        if (player==null){
             return;
-            // getLogger().severe("Player is null in the chat decorate event! Player: " + e.player().getName())
         }
+        if(!player.hasPermission("astraldupe.chat.minimessagetags"))
+            serialized = mm.stripTags(serialized);
+        //}
         PlayerData data = ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(e.player().getUniqueId());
         
         // Checking all players in the message
         // Old for loop due to streaming needs final variables.
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if(serialized.contains("@" + onlinePlayer.getName())) {
+                if (Utils.isVanished(onlinePlayer)){
+                    if (!player.hasPermission("astraldupe.chat.pingvanished")){
+                        continue;
+                    }
+                }
                 serialized = serialized.replace("@" + onlinePlayer.getName(), "<yellow>@"+onlinePlayer.getName()+"</yellow>");
                 PlayerData playerData = ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(onlinePlayer.getUniqueId());
+                if (playerData==null){
+                    continue;
+                }
                 if(!playerData.getMutePings())
-                   onlinePlayer.playSound(Sound.sound(Key.key("block.note_block.pling"), Sound.Source.MASTER, 1, 1));
+                    onlinePlayer.playSound(Sound.sound(Key.key("block.note_block.pling"), Sound.Source.MASTER, 1, 1));
             }
         }
         ChatType chatType = ChatType.DEFAULT;
@@ -77,14 +83,14 @@ public class Chat implements Listener {
         e.result(mm.deserialize(serialized));
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onAsyncChat(AsyncChatEvent e) {
         if(!ClassicDupe.getDatabase().getFilterDatabase().checkMessage(PlainTextComponentSerializer.plainText().serialize(e.message()).toLowerCase())) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(Utils.cmdMsg("<red>Your message has been blocked by the filter"));
             return;
         }
-        if(mutedChat && !e.getPlayer().hasPermission("mod.mutechat.bypass")) {
+        if(mutedChat && !e.getPlayer().hasPermission("astraldupe.mutechat.bypass")) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(Utils.cmdMsg("<red>The chat is currently muted"));
             return;
@@ -98,7 +104,7 @@ public class Chat implements Listener {
         if(StaffChatCMD.staffChatPlayers.contains(e.getPlayer())) {
             e.setCancelled(true);
             StaffChatCMD.sendToStaffChat(
-                    Utils.format("<dark_gray>[<red>SC<dark_gray>] ")
+                    Utils.format("<aqua><b>STAFF ")
                             .append(MiniMessage.miniMessage().deserialize(((Utils.getPrefix(e.getPlayer()) != null) ? Utils.getPrefix(e.getPlayer()) : "") + e.getPlayer().getName()))
                             .append(Utils.format(" <gray>\u00BB "))
                             .append(e.message().color(TextColor.color(0x10F60E))));
@@ -119,11 +125,11 @@ public class Chat implements Listener {
             clanColor = ClassicDupe.getClanDatabase().getClan(ClassicDupe.getClanDatabase().getClanMember(e.getPlayer().getUniqueId()).getClanID()).getClanColor();
         }
 
-        String pgroup = ClassicDupe.getLPAPI().getUserManager().getUser(e.getPlayer().getUniqueId()).getPrimaryGroup();
-        if(pgroup.equalsIgnoreCase("default")) chatCooldown.put(e.getPlayer(), System.currentTimeMillis()+4000);
-        else if(pgroup.equalsIgnoreCase("vip")) chatCooldown.put(e.getPlayer(), System.currentTimeMillis()+3000);
-        else if(pgroup.equalsIgnoreCase("mvp")) chatCooldown.put(e.getPlayer(), System.currentTimeMillis()+2000);
-        else if(pgroup.equalsIgnoreCase("legend")) chatCooldown.put(e.getPlayer(), System.currentTimeMillis()+1000);
+        String pgroup = ClassicDupe.getLuckPerms().getUserManager().getUser(e.getPlayer().getUniqueId()).getPrimaryGroup();
+        if(pgroup.equalsIgnoreCase("default")) chatCooldown.put(e.getPlayer(), System.currentTimeMillis()+1000);
+        else if(pgroup.equalsIgnoreCase("vip")) chatCooldown.put(e.getPlayer(), System.currentTimeMillis()+500);
+        else if(pgroup.equalsIgnoreCase("mvp")) chatCooldown.put(e.getPlayer(), System.currentTimeMillis()+500);
+        else if(pgroup.equalsIgnoreCase("legend")) chatCooldown.put(e.getPlayer(), System.currentTimeMillis()+500);
 
         MiniMessage mm = MiniMessage.miniMessage();
         Component name;

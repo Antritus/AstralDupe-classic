@@ -1,5 +1,8 @@
 package xyz.prorickey.classicdupe.events;
 
+import me.antritus.astral.fluffycombat.FluffyCombat;
+import me.antritus.astral.fluffycombat.manager.CombatManager;
+import me.antritus.astraldupe.ForRemoval;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,15 +15,14 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import xyz.prorickey.classicdupe.ClassicDupe;
-import xyz.prorickey.classicdupe.Config;
 import xyz.prorickey.classicdupe.Utils;
-import xyz.prorickey.classicdupe.clans.builders.Clan;
 import xyz.prorickey.classicdupe.database.PlayerData;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@ForRemoval(reason="Bounty, create own bounty plugin later on.")
 public class DeathEvent implements Listener {
 
     @EventHandler
@@ -34,26 +36,16 @@ public class DeathEvent implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         Player player = e.getEntity();
-        Combat.inCombat.remove(player);
+        FluffyCombat fluffyCombat = FluffyCombat.getPlugin(FluffyCombat.class);
+        CombatManager combatManager = fluffyCombat.getCombatManager();
+        if (!combatManager.hasTags(player)){
+            return;
+        }
+//        Combat.inCombat.remove(player);
         Player killer = e.getEntity().getKiller();
         ClassicDupe.getDatabase().getPlayerDatabase().addDeath(e.getEntity().getUniqueId().toString());
         ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(e.getEntity().getUniqueId()).setKillStreak(0);
         if(e.getEntity().getKiller() != null && e.getEntity().getKiller() != player) {
-            if(killer != null && killer.getUniqueId() != player.getUniqueId()) {
-                ClassicDupe.getDatabase().getPlayerDatabase().addKill(killer.getUniqueId().toString());
-                ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(killer.getUniqueId()).addKillStreak(1);
-                ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(killer.getUniqueId()).addBalance(Config.getConfig().getInt("economy.moneyMaking.kill"));
-                if(ClassicDupe.getDatabase().getBountyDatabase().getBounty(player.getUniqueId()) != null) {
-                    ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(killer.getUniqueId())
-                            .addBalance(ClassicDupe.getDatabase().getBountyDatabase().getBounty(player.getUniqueId()));
-                    ClassicDupe.getDatabase().getBountyDatabase().deleteBounty(player.getUniqueId());
-                }
-                if(ClassicDupe.getClanDatabase().getClanMember(killer.getUniqueId()).getClanID() != null) ClassicDupe
-                        .getClanDatabase()
-                        .addClanKill(
-                                ClassicDupe.getClanDatabase()
-                                        .getClan(ClassicDupe.getClanDatabase().getClanMember(killer.getUniqueId()).getClanID()));
-            }
             ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) Bukkit.getItemFactory().getItemMeta(Material.PLAYER_HEAD);
             meta.setOwningPlayer(e.getEntity());

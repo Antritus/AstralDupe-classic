@@ -81,7 +81,7 @@ public class PlayerData {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = conn.prepareStatement("UPDATE players SET nickname=? WHERE uuid=?");
                 stat.setString(1, nickname);
@@ -95,7 +95,7 @@ public class PlayerData {
 
     public void resetNickname() {
         this.nickname = this.name;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = conn.prepareStatement("UPDATE players SET nickname=null WHERE uuid=?");
                 stat.setString(1, this.uuid.toString());
@@ -108,7 +108,7 @@ public class PlayerData {
 
     public void enableRandomItem() {
         this.randomitem = true;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = conn.prepareStatement("UPDATE players SET randomitem=true WHERE uuid=?");
                 stat.setString(1, this.uuid.toString());
@@ -131,7 +131,7 @@ public class PlayerData {
 
     public void disableRandomItem() {
         this.randomitem = false;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = conn.prepareStatement("UPDATE players SET randomitem=false WHERE uuid=?");
                 stat.setString(1, this.uuid.toString());
@@ -144,7 +144,7 @@ public class PlayerData {
 
     public void setChatColor(String color) {
         this.chatcolor = color;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = conn.prepareStatement("UPDATE players SET chatcolor=? WHERE uuid=?");
                 stat.setString(1, color);
@@ -168,7 +168,7 @@ public class PlayerData {
 
     private void enableGradient() {
         this.gradient = true;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = conn.prepareStatement("UPDATE players SET gradient=TRUE WHERE uuid=?");
                 stat.setString(1, this.uuid.toString());
@@ -181,7 +181,7 @@ public class PlayerData {
 
     private void disableGradient() {
         this.gradient = false;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = conn.prepareStatement("UPDATE players SET gradient=FALSE WHERE uuid=?");
                 stat.setString(1, this.uuid.toString());
@@ -202,7 +202,7 @@ public class PlayerData {
     public void setGradientProfile(ChatGradientCMD.GradientProfiles profile) {
         this.gradientfrom = profile.gradientFrom;
         this.gradientto = profile.gradientTo;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = conn.prepareStatement("UPDATE players SET gradientFrom=? WHERE uuid=?");
                 stat.setString(1, profile.gradientFrom);
@@ -220,7 +220,7 @@ public class PlayerData {
 
     public void setNightVision(boolean value) {
         this.night = value;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = conn.prepareStatement("UPDATE players SET night=? WHERE uuid=?");
                 stat.setBoolean(1, value);
@@ -234,7 +234,7 @@ public class PlayerData {
 
     public void subtractBalance(Integer sub) {
         this.balance -= sub;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement statement = conn.prepareStatement("UPDATE players SET balance=balance-? WHERE uuid=?");
                 statement.setInt(1, sub);
@@ -248,7 +248,7 @@ public class PlayerData {
 
     public void addBalance(Integer add) {
         this.balance += add;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement statement = conn.prepareStatement("UPDATE players SET balance=balance+? WHERE uuid=?");
                 statement.setInt(1, add);
@@ -262,7 +262,7 @@ public class PlayerData {
 
     public void setBalance(Integer balance) {
         this.balance = balance;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement statement = conn.prepareStatement("UPDATE players SET balance=? WHERE uuid=?");
                 statement.setInt(1, balance);
@@ -276,7 +276,7 @@ public class PlayerData {
 
     public void setDeathMessages(boolean deathMessages) {
         this.deathmessages = deathMessages;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement statement = conn.prepareStatement("UPDATE players SET deathMessages=? WHERE uuid=?");
                 statement.setBoolean(1, deathMessages);
@@ -290,7 +290,7 @@ public class PlayerData {
 
     public void setMutePings(boolean mutePings) {
         this.mutepings = mutePings;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement statement = conn.prepareStatement("UPDATE players SET mutepings=? WHERE uuid=?");
                 statement.setBoolean(1, mutePings);
@@ -304,7 +304,7 @@ public class PlayerData {
 
     public void setKillStreak(Integer killStreak) {
         this.killStreak = killStreak;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement statement = conn.prepareStatement("UPDATE players SET killstreak=? WHERE uuid=?");
                 statement.setInt(1, killStreak);
@@ -318,7 +318,7 @@ public class PlayerData {
 
     public void addKillStreak(Integer add) {
         this.killStreak += add;
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement statement = conn.prepareStatement("UPDATE players SET killstreak=killstreak+? WHERE uuid=?");
                 statement.setInt(1, add);

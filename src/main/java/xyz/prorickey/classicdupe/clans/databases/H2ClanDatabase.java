@@ -1,12 +1,12 @@
 package xyz.prorickey.classicdupe.clans.databases;
 
+import me.antritus.astraldupe.ForRemoval;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.h2.util.IOUtils;
 import xyz.prorickey.classicdupe.ClassicDupe;
@@ -21,8 +21,9 @@ import java.sql.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public class H2ClanDatabase implements ClanDatabase {
-
     public static File dataDir;
     public static File globalConfigFile;
     public static YamlConfiguration globalConfig;
@@ -37,8 +38,10 @@ public class H2ClanDatabase implements ClanDatabase {
 
     private static Map<Integer, Clan> topClanKills = new HashMap<>();
 
-    public H2ClanDatabase(JavaPlugin plugin) {
+    private static ClassicDupe plugin;
 
+    public H2ClanDatabase(ClassicDupe plugin) {
+        H2ClanDatabase.plugin = plugin;
         dataDir = new File(plugin.getDataFolder() + "/clansData/");
         dataDir.mkdirs();
         globalConfigFile = new File(plugin.getDataFolder() + "/clansData/global.yml");
@@ -53,7 +56,7 @@ public class H2ClanDatabase implements ClanDatabase {
 
         globalConfig = YamlConfiguration.loadConfiguration(globalConfigFile);
         try {
-            main = DriverManager.getConnection("jdbc:h2:" + ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + "/clansData/main");
+            main = DriverManager.getConnection("jdbc:h2:" + plugin.getDataFolder().getAbsolutePath() + "/clansData/main");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -148,7 +151,7 @@ public class H2ClanDatabase implements ClanDatabase {
             }
         });
 
-        new TopClanKills().runTaskTimerAsynchronously(ClassicDupe.getPlugin(), 0, 20 * 60);
+        new TopClanKills().runTaskTimerAsynchronously(plugin, 0, 20 * 60);
 
     }
 
@@ -175,7 +178,7 @@ public class H2ClanDatabase implements ClanDatabase {
         clansById.put(id, clan);
         clansByName.put(clan.getClanName(), clan);
         clanNames.add(clan.getClanName());
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement insertClanStmt = main.prepareStatement("INSERT INTO clans(clanId, clanName, clanKills, publicClan, clanColor) VALUES(?, ?, 0, false, '<yellow>')");
                 insertClanStmt.setString(1, id.toString());
@@ -206,7 +209,7 @@ public class H2ClanDatabase implements ClanDatabase {
         clansById.remove(clan.getClanId());
         clansByName.remove(clan.getClanName());
         clanNames.remove(clan.getClanName());
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement stmt = main.prepareStatement("DELETE FROM clans WHERE clanId=?");
                 stmt.setString(1, clanId.toString());
@@ -251,7 +254,7 @@ public class H2ClanDatabase implements ClanDatabase {
     public void updateClanMemberInfo(Player player) {
         if(clanMembers.containsKey(player.getUniqueId())) return;
         clanMembers.put(player.getUniqueId(), new ClanMember(player));
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try (PreparedStatement stmt = main.prepareStatement(
                     "INSERT INTO players(uuid, name, clanId, clanName, level, boosts) " +
                             "VALUES (?, ?, null, null, null, 0)")) {
@@ -266,7 +269,7 @@ public class H2ClanDatabase implements ClanDatabase {
 
     @Override
     public void setClan(UUID uuid, Clan clan) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement statement = main.prepareStatement("UPDATE players SET clanId=?, clanName=?, level=? WHERE uuid=?");
                 statement.setString(1, clan.getClanId().toString());
@@ -282,7 +285,7 @@ public class H2ClanDatabase implements ClanDatabase {
 
     @Override
     public void removeClan(ClanMember clanMember) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 main.prepareStatement("UPDATE players SET clanId=null, clanName=null, level=null WHERE uuid='" + clanMember.getOffPlayer().getUniqueId() + "'").execute();
                 if(clanChatMembers.contains(clanMember.getOffPlayer().getPlayer())) ClassicDupe.getClanDatabase().removeFromClanChat(clanMember.getOffPlayer().getPlayer());
@@ -294,7 +297,7 @@ public class H2ClanDatabase implements ClanDatabase {
 
     @Override
     public void setClanColor(Clan clan, String color) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement statement = main.prepareStatement("UPDATE clans SET clanColor=? WHERE clanId=?");
                 statement.setString(1, color);
@@ -308,7 +311,7 @@ public class H2ClanDatabase implements ClanDatabase {
 
     @Override
     public void setPublicClan(Clan clan, boolean isPublic) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement statement = main.prepareStatement("UPDATE clans SET publicClan=? WHERE clanId=?");
                 statement.setBoolean(1, isPublic);
@@ -322,7 +325,7 @@ public class H2ClanDatabase implements ClanDatabase {
 
     @Override
     public void setWarp(Clan clan, Warp warp) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try (PreparedStatement statement = main.prepareStatement("INSERT INTO clanWarps(clanId, name, levelNeeded, x, y, z, pitch, yaw, world) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                 statement.setString(1, clan.getClanId().toString());
                 statement.setString(2, warp.name);
@@ -342,7 +345,7 @@ public class H2ClanDatabase implements ClanDatabase {
 
     @Override
     public void delWarp(Clan clan, String warpName) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try (PreparedStatement statement = main.prepareStatement("DELETE FROM clanWarps WHERE clanId=? AND name=?")) {
                 statement.setString(1, clan.getClanId().toString());
                 statement.setString(2, warpName);
@@ -355,7 +358,7 @@ public class H2ClanDatabase implements ClanDatabase {
 
     @Override
     public void setPlayerLevel(ClanMember clanMember, int level) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement statement = main.prepareStatement("UPDATE players SET level=? WHERE uuid=?");
                 statement.setInt(1, level);
@@ -398,7 +401,7 @@ public class H2ClanDatabase implements ClanDatabase {
     @Override
     public void addClanKill(Clan clan) {
         clan.setClanKills(clan.getClanKills()+1);
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 PreparedStatement statement = main.prepareStatement("UPDATE clans SET clanKills=clanKills+1 WHERE clanId=?");
                 statement.setString(1, clan.getClanId().toString());

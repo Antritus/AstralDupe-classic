@@ -3,19 +3,27 @@ dev: true
 database:
   mariadb: false
   host: 172.18.0.1
-  user: classicdupe
-  password: LNWnNwZHy7xdFMw7rah9
-events:
-  koth:
-    timeInBetween: 43200000
-    schems:
-      - jungle
+  user: USER
+  password: PASSWORD
+help:
+  overworld: 1x1
+  nether: 2x2
+  end: 3x3
+
 discord:
-  guild: 1068991438391623836
-  staffchat: 1094672777287585832
-  cspy: 1094679599742459994
-  token: "MTA3ODEwMjgzNDg3NDE2NzM1Ng.GxuBo8.tcjGQ7mRT1cR6cg6QzSMk8kYYYjlx9TIArK7Hg"
-  reports: 1102272157314195476
+  guild: GUILD_ID
+  staffchat: CHANNEL_ID
+  cspy: CHANNEL_ID
+  token: CHANNEL_ID
+  reports: CHANNEL_ID
+  link: DISCORD_LINK
+  role:
+    system: ROLE_ID
+    link: ROLE_ID
+  loggers:
+    message: GUILD_ID
+    chat: GUILD_ID
+
 blockFromPlacing:
   - bedrock
   - barrier
@@ -25,45 +33,19 @@ blockFromPlacing:
 forbiddenDupes:
   - ender_dragon_spawn_egg
   - dragon_egg
-  - coast_armor_trim_smithing_template
-  - dune_armor_trim_smithing_template
-  - eye_armor_trim_smithing_template
-  - host_armor_trim_smithing_template
-  - raiser_armor_trim_smithing_template
-  - rib_armor_trim_smithing_template
-  - sentry_armor_trim_smithing_template
-  - shaper_armor_trim_smithing_template
-  - silence_armor_trim_smithing_template
-  - snout_armor_trim_smithing_template
-  - spire_armor_trim_smithing_template
-  - tide_armor_trim_smithing_template
-  - vex_armor_trim_smithing_template
-  - ward_armor_trim_smithing_template
-  - wayfinder_armor_trim_smithing_template
-  - wild_armor_trim_smithing_template
-  - netherite_upgrade_smithing_template
+  - wither_spawn_egg
+  - air
 forbiddenDupesInCombat:
   - totem_of_undying
   - enchanted_golden_apple
   - ender_pearl
 removedItems:
-  - coast_armor_trim_smithing_template
-  - dune_armor_trim_smithing_template
-  - eye_armor_trim_smithing_template
-  - host_armor_trim_smithing_template
-  - raiser_armor_trim_smithing_template
-  - rib_armor_trim_smithing_template
-  - sentry_armor_trim_smithing_template
-  - shaper_armor_trim_smithing_template
-  - silence_armor_trim_smithing_template
-  - snout_armor_trim_smithing_template
-  - spire_armor_trim_smithing_template
-  - tide_armor_trim_smithing_template
-  - vex_armor_trim_smithing_template
-  - ward_armor_trim_smithing_template
-  - wayfinder_armor_trim_smithing_template
-  - wild_armor_trim_smithing_template
-  - netherite_upgrade_smithing_template
+  - bedrock
+  - barrier
+  - command_block
+  - chain_command_block
+  - repeating_command_block
+
 economy:
   moneyMaking:
     kill: 1 # Amount of money you get per kill
@@ -73,57 +55,9 @@ economy:
     pages:
       - name: "<blue>Templates"
         items:
-          - material: coast_armor_trim_smithing_template
+          - material: bedrock
             cost: 1
-            lore: "<yellow>2% chance of striking enemy with lightning<br><yellow>Doubles trident damage"
-          - material: dune_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>10% chace of not taking damage from an attack"
-          - material: eye_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>10% chance of giving enemy blindness<br><yellow>5% chance of giving enemy poison"
-          - material: host_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>25% increased damage, protection and speed<br><yellow>10% chance of getting regeneration when hit<br><yellow>2% chance of losing 4 hearts when hit"
-          - material: raiser_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>25% chance of spawning a chomper"
-          - material: rib_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>5% chance of giving enemy wither when hit"
-          - material: sentry_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>50% increased bow and crossbow damage"
-          - material: shaper_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>10% chance of spawning in a vex"
-          - material: silence_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>25% chance of dealing half of enemys damage back to them"
-          - material: snout_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>75% reduction in fire damage<br><yellow>No lava damage<br><yellow>5% chance of setting enemy on fire"
-          - material: spire_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>50% more thorns damage"
-          - material: tide_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>25% chance of giving enemy weakness<br><yellow>50% more thorns damage"
-          - material: vex_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>50% more sword damage<br><yellow>Small speed buff"
-          - material: ward_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>25% more damage and protection<br><yellow>Slowness 1<br><yellow>75% reduced knockback"
-          - material: wayfinder_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>25% chance of getting speed when hit(Does stack)"
-          - material: wild_armor_trim_smithing_template
-            cost: 1
-            lore: "<yellow>5% chance of giving enemy poison<br><yellow>10% chance of giving enemy slowness"
-          - material: netherite_upgrade_smithing_template
-            cost: 1
-            lore: "<yellow>Needed to upgrade armor to netherite"
+            lore: "<yellow>Penis"
 ranks:
   admin:
     homes: 8
@@ -152,25 +86,3 @@ suffix:
   special: "&a&lSPECIAL"
   lava: "&c&lLAVA"
   pvp: "&e&lPVP"
-trimset:
-  vex:
-    swordAttackMultiplier: 1.5
-  coast:
-    tridentAttackMultiplier: 2
-  host:
-    attackMultiplier: 1.25
-    defenseMultiplier: 0.75
-  sentry:
-    arrowAttackMultiplier: 1.5
-  raiser:
-    reflectMultiplier: 0.5
-  snout:
-    fireDamageMultiplier: 0.25
-  spire:
-    thornsAttackMultiplier: 1.5
-  tide:
-    thornsAttackMultiplier: 1.5
-  ward:
-    attackMultiplier: 1.25
-    defenseMultiplier: 0.75
-    knockbackMultiplier: 0.5

@@ -1,6 +1,7 @@
 package xyz.prorickey.classicdupe.metrics;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,10 +12,7 @@ import xyz.prorickey.classicdupe.database.PlayerData;
 import xyz.prorickey.classicdupe.database.PlayerDatabase;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,23 +20,29 @@ import java.util.UUID;
 
 public class PlayerMetrics implements Listener {
 
-    private Connection conn;
+    private static Connection conn;
 
     public PlayerMetrics(JavaPlugin plugin) {
         try {
-            conn = DriverManager.getConnection("jdbc:h2:" + ClassicDupe.getPlugin().getDataFolder().getAbsolutePath() + File.separator + "metrics" + File.separator + "player");
-            conn.prepareStatement("CREATE TABLE IF NOT EXISTS playtime(uuid VARCHAR, alltime INT, season INT)").execute();
+            conn = DriverManager.getConnection("jdbc:h2:" + ClassicDupe.getInstance().getDataFolder().getAbsolutePath() + File.separator + "metrics" + File.separator + "player");
+            conn.prepareStatement("CREATE TABLE IF NOT EXISTS player_metrics(" +
+                    "uuid VARCHAR, " +
+                    "playtime BIGINT" +
+                    ")"
+            ).execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        new PlayerMetrics.PlaytimeTask().runTaskTimer(plugin, 0, 20);
+        new PlaytimeTask().runTaskTimer(plugin, 0, 20);
     }
 
     @Nullable
     public Long getPlaytime(UUID uuid) {
         try {
-            ResultSet set = conn.prepareStatement("SELECT * FROM playtime WHERE uuid='" + uuid + "'").executeQuery();
-            if(set.next()) return (long) set.getInt("alltime");
+            ResultSet set = conn.prepareStatement("SELECT * FROM player_metrics WHERE uuid='" + uuid + "'").executeQuery();
+            if(set.next()) {
+                return set.getLong("playtime");
+            }
             return null;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -66,34 +70,32 @@ public class PlayerMetrics implements Listener {
         return String.format("%02d:%02d:%02d", HH, MM, SS);
     }
 
-    public class PlaytimeTask extends BukkitRunnable {
+    public static class PlaytimeTask extends BukkitRunnable {
 
         private static final Map<Player, Long> lastUpdate = new HashMap<>();
 
         @Override
         public void run() {
-            Bukkit.getOnlinePlayers().forEach(p -> {
-                if(!lastUpdate.containsKey(p)) lastUpdate.put(p, System.currentTimeMillis());
-                Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+            Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
+                Bukkit.getOnlinePlayers().forEach(player-> {
+                    PreparedStatement stat2 = null;
                     try {
-                        if(getPlaytime(p.getUniqueId()) == null) conn.prepareStatement("INSERT INTO playtime(uuid, alltime, season) VALUES('" + p.getUniqueId() + "', 0, 0)").execute();
-                        long timeToLog = System.currentTimeMillis() - lastUpdate.get(p);
-                        lastUpdate.put(p, System.currentTimeMillis());
-                        conn.prepareStatement("UPDATE playtime SET alltime=alltime+" + timeToLog + ", season=season+" + timeToLog + " WHERE uuid='" + p.getUniqueId() + "'").execute();
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
+                        stat2 = conn.prepareStatement("UPDATE player_metrics SET playtime=? WHERE uuid=?");
+                        long playtime = player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20;
+                        stat2.setLong(1, playtime);
+                        stat2.setString(2, String.valueOf(player.getUniqueId()));
+                        stat2.execute();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
                     }
-
                 });
-            });
-            Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
                 try {
-                    ResultSet playtimeSet = conn.prepareStatement("SELECT * FROM playtime ORDER BY season DESC").executeQuery();
+                    ResultSet playtimeSet = conn.prepareStatement("SELECT * FROM player_metrics ORDER BY playtime DESC").executeQuery();
                     for(int i = 0; i < 10; i++) {
                         if(playtimeSet.next()) {
                             PlayerData data = ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(UUID.fromString(playtimeSet.getString("uuid")));
                             PlayerDatabase.playtimeLeaderboard.put(i+1, data.name);
-                            PlayerDatabase.playtimeLeaderboardP.put(i+1, playtimeSet.getLong("season"));
+                            PlayerDatabase.playtimeLeaderboardP.put(i+1, playtimeSet.getLong("playtime"));
                         }
                     }
                 } catch (SQLException ex) {

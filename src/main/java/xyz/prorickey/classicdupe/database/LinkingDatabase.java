@@ -1,6 +1,8 @@
 package xyz.prorickey.classicdupe.database;
 
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -31,7 +33,7 @@ public class LinkingDatabase {
         }
     }
 
-    public void unlinkByUUID(String uuid) {
+    public void unlinkByUUID(@NotNull String uuid) {
         try {
             conn.prepareStatement("DELETE FROM link WHERE uuid='" + uuid + "'").execute();
         } catch (SQLException e) {
@@ -39,7 +41,7 @@ public class LinkingDatabase {
         }
     }
 
-    public void setLink(String uuid, Long id) {
+    public void setLink(@NotNull String uuid, @NotNull Long id) {
         try {
             conn.prepareStatement("DELETE FROM link WHERE uuid='" + uuid + "'").execute();
             conn.prepareStatement("DELETE FROM link WHERE dscid=" + id + "").execute();
@@ -49,7 +51,8 @@ public class LinkingDatabase {
         }
     }
 
-    public Link getLinkFromUUID(String uuid) {
+    @Nullable
+    public Link getLinkFromUUID(@NotNull String uuid) {
         try {
             ResultSet set = conn.prepareStatement("SELECT * FROM link WHERE uuid='" + uuid + "'").executeQuery();
             if(set.next()) return new Link(set.getString("uuid"), set.getLong("dscid"));
@@ -60,7 +63,8 @@ public class LinkingDatabase {
         }
     }
 
-    public Link getLinkFromId(Long id) {
+    @Nullable
+    public Link getLinkFromId(@NotNull Long id) {
         try {
             ResultSet set = conn.prepareStatement("SELECT * FROM link WHERE dscid=" + id).executeQuery();
             if(set.next()) return new Link(set.getString("uuid"), set.getLong("dscid"));

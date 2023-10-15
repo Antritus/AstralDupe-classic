@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe.clans.subcommands;
 
+import me.antritus.astraldupe.ForRemoval;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public class CSCreate extends ClanSub {
     @Override
     public void execute(CommandSender sender, String[] args) {

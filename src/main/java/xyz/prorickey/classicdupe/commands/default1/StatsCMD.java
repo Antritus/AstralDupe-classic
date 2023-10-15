@@ -1,11 +1,11 @@
 package xyz.prorickey.classicdupe.commands.default1;
 
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.utils.PlayerUtils;
+import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,33 +14,45 @@ import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.database.PlayerData;
 import xyz.prorickey.classicdupe.database.PlayerDatabase;
 import xyz.prorickey.classicdupe.metrics.Metrics;
-import xyz.prorickey.proutils.TabComplete;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatsCMD implements CommandExecutor, TabCompleter {
+public class StatsCMD extends AstralCommand {
+
+    public StatsCMD(AstralDupe astralDupe) {
+        super(astralDupe, "stats");
+    }
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(!(sender instanceof Player player)) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(Utils.cmdMsg("<red>You cannot execute this command from console"));
             return true;
         }
-        if(args.length == 0) {
+        if (args.length == 0) {
             PlayerDatabase.PlayerStats stats = ClassicDupe.getDatabase().getPlayerDatabase().getStats(player.getUniqueId().toString());
             PlayerData data = ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(player.getUniqueId());
             player.sendMessage(Utils.cmdMsg("<green>Stats of <yellow>" + player.getName()));
             player.sendMessage(Utils.format("<gray>- <green>Kills: <yellow>" + stats.kills));
             player.sendMessage(Utils.format("<gray>- <green>Deaths: <yellow>" + stats.deaths));
             player.sendMessage(Utils.format("<gray>- <green>KDR: <yellow>" + stats.kdr));
-            player.sendMessage(Utils.format("<gray>- <green>Balance: <yellow>" + data.getBalance()));
+            try {
+                // Checking if cosmic capital is found.
+                // This is set, so we know if it is a beta season and cosmic capital
+                // is still in development.
+                Class.forName("me.antritus.astral.cosmiccapital.CosmicCapital");
+                player.sendMessage(Utils.format("<gray>- <green>Balance: <yellow>" + AstralDupe.cosmicCapital.getPlayerDatabase().get(player).getBalance()));
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
             player.sendMessage(Utils.format("<gray>- <green>Playtime: <yellow>" + Metrics.getPlayerMetrics().getPlaytimeFormatted(player.getUniqueId())));
             return true;
-        } else if(args.length == 1) {
+        } else if (args.length == 1) {
             OfflinePlayer tarj = Bukkit.getOfflinePlayer(args[0]);
             PlayerDatabase.PlayerStats stats = ClassicDupe.getDatabase().getPlayerDatabase().getStats(tarj.getUniqueId().toString());
             PlayerData data = ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(tarj.getUniqueId());
-            if(stats == null || data == null) {
+            if (stats == null || data == null) {
                 player.sendMessage(Utils.cmdMsg("<red>That player has not joined the server before"));
                 return true;
             }
@@ -48,27 +60,35 @@ public class StatsCMD implements CommandExecutor, TabCompleter {
             player.sendMessage(Utils.format("<gray>- <green>Kills: <yellow>" + stats.kills));
             player.sendMessage(Utils.format("<gray>- <green>Deaths: <yellow>" + stats.deaths));
             player.sendMessage(Utils.format("<gray>- <green>KDR: <yellow>" + stats.kdr));
-            player.sendMessage(Utils.format("<gray>- <green>Balance: <yellow>" + data.getBalance()));
+            // Checking if cosmic capital is found.
+            // This is set, so we know if it is a beta season and cosmic capital
+            // is still in development.
+            try {
+                Class.forName("me.antritus.astral.cosmiccapital.CosmicCapital");
+                player.sendMessage(Utils.format("<gray>- <green>Balance: <yellow>" + AstralDupe.cosmicCapital.getPlayerDatabase().get(tarj.getUniqueId()).getBalance()));
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
             player.sendMessage(Utils.format("<gray>- <green>Playtime: <yellow>" + Metrics.getPlayerMetrics().getPlaytimeFormatted(tarj.getUniqueId())));
             return true;
         }
-        if(!player.hasPermission("admin.editStats")) {
+        if (!player.hasPermission("admin.editStats")) {
             player.sendMessage(Utils.format("<red>You do not have permission to edit player stats"));
             return true;
         }
         OfflinePlayer tarj = Bukkit.getOfflinePlayer(args[0]);
         PlayerDatabase.PlayerStats stats = ClassicDupe.getDatabase().getPlayerDatabase().getStats(tarj.getUniqueId().toString());
-        if(stats == null) {
+        if (stats == null) {
             player.sendMessage(Utils.cmdMsg("<red>That player has not joined the server before"));
             return true;
         }
-        switch(args[1].toLowerCase()) {
+        switch (args[1].toLowerCase()) {
             case "setkills" -> {
-                if(args.length == 3) {
+                if (args.length == 3) {
                     int kills;
                     try {
                         kills = Integer.parseInt(args[2]);
-                    } catch(NumberFormatException e) {
+                    } catch (NumberFormatException e) {
                         player.sendMessage(Utils.format("<red>You must provide a number to set the kills to"));
                         return true;
                     }
@@ -80,11 +100,11 @@ public class StatsCMD implements CommandExecutor, TabCompleter {
                 }
             }
             case "setdeaths" -> {
-                if(args.length == 3) {
+                if (args.length == 3) {
                     int deaths;
                     try {
                         deaths = Integer.parseInt(args[2]);
-                    } catch(NumberFormatException e) {
+                    } catch (NumberFormatException e) {
                         player.sendMessage(Utils.format("<red>You must provide a number to set the kills to"));
                         return true;
                     }
@@ -100,9 +120,9 @@ public class StatsCMD implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], ClassicDupe.getOnlinePlayerUsernames());
-        if(args.length == 2 && sender.hasPermission("admin.editStats")) return TabComplete.tabCompletionsSearch(args[1], List.of("setkills", "setdeaths"));
+    public @Nullable List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+        if (args.length == 1) return PlayerUtils.getVisiblePlayerNames(sender);
+        if (args.length == 2 && sender.hasPermission("astraldupe.admin.set")) return List.of("setkills", "setdeaths");
         return new ArrayList<>();
     }
 }

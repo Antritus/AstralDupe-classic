@@ -14,7 +14,7 @@ public class BlockPlace implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
-        if(!e.getPlayer().hasPermission("admin.placeBannedBlocks") && bannedToPlaceBcAnnoyingASF.contains(e.getBlock().getType())) e.setCancelled(true);
+        if(!e.getPlayer().hasPermission("astraldupe.illegal.place") && bannedToPlaceBcAnnoyingASF.contains(e.getBlock().getType())) e.setCancelled(true);
         if(e.getBlock().getType().equals(Material.DRAGON_EGG)) e.setCancelled(true);
     }
 

@@ -17,7 +17,7 @@ public class FlowEvent implements Listener {
     public void onBlockFromTo(BlockFromToEvent e) {
         if(Config.getConfig().getBoolean("dev")) return;
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        ProtectedRegion spawnb = container.get(BukkitAdapter.adapt(Bukkit.getWorld("world"))).getRegion("spawnb");
+        ProtectedRegion spawnb = container.get(BukkitAdapter.adapt(Bukkit.getWorld("world"))).getRegion("spawn");
         Location loc = e.getToBlock().getLocation();
         if(spawnb.contains(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())) e.setCancelled(true);
     }

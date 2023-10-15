@@ -1,43 +1,68 @@
+//file:noinspection VulnerableLibrariesLocal
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
+    //NMS
+    id("io.papermc.paperweight.userdev") version "1.5.6"
 }
 
-group 'me.antritus.astraldupe'
-//group 'xyz.prorickey.classicdupe'
-version '0.0.1'
+group 'me.antritus'
+version '1.0'
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven { url "https://repo.papermc.io/repository/maven-public/" }
     maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
     maven { url "https://maven.enginehub.org/repo/" }
-    maven { url 'https://repo.prorickey.xyz/repository/maven-public'}
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    compileOnly 'io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT'
+    implementation('me.antritus:AstrolMiniAPI:1.0.0')
+    implementation('com.github.antritus:CosmicAPI:1.0')
 
-    compileOnly 'net.luckperms:api:5.4'
-    compileOnly 'me.clip:placeholderapi:2.11.2'
-    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9-SNAPSHOT'
-    compileOnly 'me.lucko:spark-api:0.1-SNAPSHOT'
+    //compileOnly 'io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT'
+    compileOnly ('net.luckperms:api:5.4')
+    compileOnly ('me.clip:placeholderapi:2.11.2')
+    compileOnly ('com.sk89q.worldguard:worldguard-bukkit:7.0.9-SNAPSHOT')
+    compileOnly ('me.lucko:spark-api:0.1-SNAPSHOT')
+    compileOnly ("com.github.MilkBowl:VaultAPI:1.7")
+    // Factions / TPA
+    compileOnly 'me.antritus:Wormhole:1.2'
+    // Factions / Economy
+    compileOnly 'me.antritus:CosmicCapitalAPI:1.2'
+//    compileOnly ('me.antritus:CosmicCapital:1.2')
+    // Factions / Auctionhouse
+    compileOnly ('me.antritus:Auctionverse:1.1')
+    // Factions / Combat
+    compileOnly ('me.antritus:FluffyCombat:1.0')
+    // Factions / Factions
+    compileOnly('me.antritus:FactionsAPI:1.2')
 
-    compileOnly 'com.h2database:h2:2.1.214'
+    compileOnly 'com.h2database:h2:2.2.224'
     compileOnly 'net.dv8tion:JDA:5.0.0-beta.10'
     compileOnly 'org.mariadb.jdbc:mariadb-java-client:3.1.4'
-    compileOnly 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
-    compileOnly "com.github.MilkBowl:VaultAPI:1.7.1"
 
-    implementation 'xyz.prorickey:proutils:1.0.1'
-    implementation 'xyz.xenondevs:particle:1.8.4'
-    implementation('com.github.antritus:CosmicAPI:1.0')
+    paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
+}
+
+
+
+// Some shit is importing 1.13 bukkit api and not 1.20.1 api
+configurations.compileOnly {
+    exclude group: 'org.spigotmc', module: 'spigot'
+    exclude group: 'org.spigotmc', module: 'spigot-api'
+    exclude group: 'org.bukkit', module: 'bukkit'
 }
 
 shadowJar {
     archiveClassifier = null
+}
+
+tasks.assemble {
+    dependsOn(reobfJar)
 }
 
 jar {
@@ -56,7 +81,7 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+    if (targetJavaVersion >= 12 || JavaVersion.current().isJava12Compatible()) {
         options.release = targetJavaVersion
     }
 }
@@ -65,7 +90,10 @@ processResources {
     def props = [version: version]
     inputs.properties props
     filteringCharset 'UTF-8'
-    filesMatching('plugin.yml') {
-        expand props
+    filesMatching(['*.yml']) {
+        expand([version: version])
     }
+}
+
+configurations {
 }

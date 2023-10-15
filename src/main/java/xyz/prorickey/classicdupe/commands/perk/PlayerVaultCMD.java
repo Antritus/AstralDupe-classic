@@ -1,11 +1,10 @@
 package xyz.prorickey.classicdupe.commands.perk;
 
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.commands.AstralCommand;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,7 +12,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
 
@@ -22,12 +20,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlayerVaultCMD implements CommandExecutor, TabCompleter, Listener {
+public class PlayerVaultCMD extends AstralCommand implements Listener {
 
     public static final Map<String, Inventory> vaultGuis = new HashMap<>();
 
+    public PlayerVaultCMD(AstralDupe main) {
+        super(main, "playervaults");
+        setPermission("astraldupe.perk.playervault");
+        setAliases(List.of("pv", "pvs", "playervaults"));
+        main.register(this);
+    }
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(!(sender instanceof Player p)) {
             sender.sendMessage(Utils.cmdMsg("<red>You cannot execute that command from console"));
             return true;
@@ -56,7 +61,7 @@ public class PlayerVaultCMD implements CommandExecutor, TabCompleter, Listener {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
         return new ArrayList<>();
     }
 

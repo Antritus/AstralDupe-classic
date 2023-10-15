@@ -1,25 +1,27 @@
 package xyz.prorickey.classicdupe.commands.default1;
 
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.utils.PlayerUtils;
+import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
-import xyz.prorickey.proutils.TabComplete;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class PrivateMessageCMD implements CommandExecutor, TabCompleter {
+public class PrivateMessageCMD extends AstralCommand {
 
     public static final Map<Player, Player> lastInConvo = new HashMap<>();
 
+    public PrivateMessageCMD(AstralDupe astralDupe) {
+        super(astralDupe, "pm");
+        setAliases(List.of("msg", "whisper", "w", "message"));
+    }
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(args.length == 0) {
             sender.sendMessage(Utils.cmdMsg("<red>You must include a recipient when privately messaging"));
             return true;
@@ -44,12 +46,13 @@ public class PrivateMessageCMD implements CommandExecutor, TabCompleter {
             lastInConvo.put(recipient, player);
             lastInConvo.put(player, recipient);
         }
+        AstralDupe.messageLogger.log(sender, recipient, msg.toString().trim(), false);
         return true;
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], ClassicDupe.getOnlinePlayerUsernames());
-        return new ArrayList<>();
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+        if(args.length == 1) return PlayerUtils.getVisiblePlayerNames(sender);
+        return Collections.emptyList();
     }
 }

@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe.clans;
 
+import me.antritus.astraldupe.ForRemoval;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import xyz.prorickey.classicdupe.clans.builders.Clan;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public interface ClanDatabase {
 
     YamlConfiguration getClanConfig();

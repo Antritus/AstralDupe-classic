@@ -1,5 +1,9 @@
 package xyz.prorickey.classicdupe.clans.subcommands;
 
+import me.antritus.astral.fluffycombat.FluffyCombat;
+import me.antritus.astral.fluffycombat.manager.CombatManager;
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.ForRemoval;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.prorickey.classicdupe.ClassicDupe;
@@ -8,13 +12,13 @@ import xyz.prorickey.classicdupe.clans.builders.Clan;
 import xyz.prorickey.classicdupe.clans.builders.ClanMember;
 import xyz.prorickey.classicdupe.clans.builders.ClanSub;
 import xyz.prorickey.classicdupe.clans.builders.Warp;
-import xyz.prorickey.classicdupe.events.Combat;
-import xyz.prorickey.proutils.TabComplete;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public class CSHome extends ClanSub {
     @Override
     public void execute(CommandSender sender, String[] args) {
@@ -22,7 +26,9 @@ public class CSHome extends ClanSub {
             sender.sendMessage(Utils.format("<red>You cannot execute this command from console"));
             return;
         }
-        if(Combat.inCombat.containsKey(player)) {
+        FluffyCombat fluffyCombat = AstralDupe.fluffyCombat;
+        CombatManager combatManager = fluffyCombat.getCombatManager();
+        if (combatManager.hasTags(player)){
             player.sendMessage(Utils.cmdMsg("<red>You cannot execute this command in combat"));
             return;
         }
@@ -55,7 +61,7 @@ public class CSHome extends ClanSub {
     public List<String> tabComplete(CommandSender sender, String[] args) {
         if(!(sender instanceof Player player) || ClassicDupe.getClanDatabase().getClanMember(player.getUniqueId()).getClanID() == null) return new ArrayList<>();
         ClanMember cmem = ClassicDupe.getClanDatabase().getClanMember(player.getUniqueId());
-        if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], ClassicDupe.getClanDatabase().getClan(cmem.getClanID()).getWarpNames());
+        if(args.length == 1) return (ClassicDupe.getClanDatabase().getClan(cmem.getClanID()).getWarpNames());
         return new ArrayList<>();
     }
 }

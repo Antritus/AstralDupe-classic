@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe.clans;
 
+import me.antritus.astraldupe.ForRemoval;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,10 +12,11 @@ import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.clans.adminsubcommands.CSForceDelete;
 import xyz.prorickey.classicdupe.clans.builders.ClanSub;
 import xyz.prorickey.classicdupe.clans.subcommands.*;
-import xyz.prorickey.proutils.TabComplete;
 
 import java.util.*;
 
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public class Clans implements CommandExecutor, TabCompleter {
 
     public static final Map<String, ClanSub> clanSubs = new HashMap<>();
@@ -46,7 +48,7 @@ public class Clans implements CommandExecutor, TabCompleter {
 
         adminClanSubs.put("forcedelete", new CSForceDelete());
 
-        new CSInvite.InviteTask().runTaskTimer(ClassicDupe.getPlugin(), 0, 20);
+        new CSInvite.InviteTask().runTaskTimer(ClassicDupe.getInstance(), 0, 20);
     }
 
     @Override
@@ -72,14 +74,14 @@ public class Clans implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(command.getName().equals("clanadmin")) {
-            if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], adminClanSubs.keySet().stream().toList());
+            if(args.length == 1) return (adminClanSubs.keySet().stream().toList());
             else if(args.length > 1) {
                 String[] subArgs = Arrays.copyOfRange(args, 1, args.length);
                 ClanSub sub = adminClanSubs.get(args[0].toLowerCase());
                 if(sub != null) return sub.tabComplete(sender, subArgs);
             }
         } else {
-            if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], clanSubs.keySet().stream().toList());
+            if(args.length == 1) return (clanSubs.keySet().stream().toList());
             else if(args.length > 1) {
                 String[] subArgs = Arrays.copyOfRange(args, 1, args.length);
                 ClanSub sub = clanSubs.get(args[0].toLowerCase());

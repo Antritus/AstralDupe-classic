@@ -25,7 +25,7 @@ public class HomesDatabase {
     public HomesDatabase(Connection conn) {
         this.conn = conn;
 
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             File file = new File("plugins/SetHomes/homes.yml");
             if(file.exists()) {
                 YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
@@ -72,7 +72,7 @@ public class HomesDatabase {
     public void addHome(Player player, String home, Location location) {
         if(homes.containsKey(player)) homes.get(player).put(home, location);
         else loadPlayer(player);
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat1 = conn.prepareStatement("SELECT * FROM homes WHERE uuid=? AND name=?");
                 stat1.setString(1, player.getUniqueId().toString());
@@ -110,7 +110,7 @@ public class HomesDatabase {
     public void delHome(Player player, String name) {
         if(homes.containsKey(player)) homes.get(player).remove(name);
         else loadPlayer(player);
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = conn.prepareStatement("DELETE FROM homes WHERE uuid=? AND name=?");
                 stat.setString(1, player.getUniqueId().toString());
@@ -159,7 +159,7 @@ public class HomesDatabase {
     }
 
     public void loadPlayer(Player player) {
-        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ClassicDupe.getInstance(), () -> {
             try {
                 PreparedStatement stat = conn.prepareStatement("SELECT * FROM homes WHERE uuid=?");
                 stat.setString(1, player.getUniqueId().toString());

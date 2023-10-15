@@ -1,0 +1,50 @@
+#file: noinspection YAMLSchemaValidation
+main: me.antritus.astraldupe.AstralDupe
+loader: me.antritus.astraldupe.AstralDupeLoader
+name: AstralDupe
+version: '1.0'
+api-version: '1.20'
+prefix: AstralDupe
+authors:
+  - Antritus (AstralDupe)
+  - Prorickey (ClassicDupe)
+  - ModdedKid (ClassicDupe)
+  - BraveDishDealer (ClassicDupe)
+description: Dupe core of astral dupe. This uses ClassicDupe plugin in it's internals.
+
+
+dependencies:
+  bootstrap:
+    Infuse:
+      required: true
+      load: OMIT
+    # Add a required "RequiredPlugin" dependency, which will load AFTER your plugin.
+  server:
+    LuckPerms:
+      load: AFTER
+      required: true
+      join-classpath: true
+    Vault:
+      load: AFTER
+      required: true
+      join-classpath: true
+    PlaceholderAPI:
+      load: AFTER
+      required: false
+    WorldGuard:
+      required: true
+    spark:
+      load: BEFORE
+      required: false
+    CosmicCapital:
+      load: AFTER
+      required: false
+    Wormhole:
+      load: AFTER
+      required: false
+    Fluffy:
+      load: AFTER
+      required: true
+    AntsFactions:
+      load: AFTER
+      required: false

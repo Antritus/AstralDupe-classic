@@ -1,5 +1,7 @@
 package xyz.prorickey.classicdupe.commands.perk;
 
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,21 +14,25 @@ import xyz.prorickey.classicdupe.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CraftCMD implements CommandExecutor, TabCompleter {
+public class CraftCMD extends AstralCommand {
 
+    public CraftCMD(@NotNull AstralDupe astralDupe) {
+        super(astralDupe, "craft");
+        setPermission("astraldupe.perk.craftingtable");
+    }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(!(sender instanceof Player player)) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(Utils.format("<red>You cannot execute this command from console"));
             return true;
         }
-        player.openWorkbench(null,true);
+        player.openWorkbench(null, true);
         return true;
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
         return new ArrayList<>();
     }
 }

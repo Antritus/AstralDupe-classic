@@ -1,9 +1,9 @@
 package xyz.prorickey.classicdupe.commands.moderator;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.ForRemoval;
+import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
@@ -12,11 +12,18 @@ import xyz.prorickey.classicdupe.events.Chat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MutechatCMD implements CommandExecutor, TabCompleter {
+@ForRemoval(reason = "Staff commands should go to their own plugin.")
+@Deprecated(forRemoval = true)
+public class MutechatCMD extends AstralCommand {
+
+    public MutechatCMD(AstralDupe astralDupe) {
+        super(astralDupe, "mutechat");
+        setPermission("astraldupe.staff.mutechat");
+    }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(Chat.mutedChat) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+        if (Chat.mutedChat) {
             Chat.mutedChat = false;
             ClassicDupe.rawBroadcast("<red>The chat has been unmuted");
         } else {
@@ -27,8 +34,7 @@ public class MutechatCMD implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @Nullable List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
         return new ArrayList<>();
     }
-
 }

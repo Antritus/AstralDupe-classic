@@ -1,0 +1,15 @@
+placeholders:
+  - name: prefix
+    text: ASTRALDUPE
+
+
+command-parse:
+  incorrect-format: "%prefix% %usage% <click:suggest_command:/%command%><hover:show_text:'<green>Click here to suggest the correct format!'><gray>/%command%</gray></hover>"
+  player-only: "%prefix% <red>You cannot execute <white>%command%.</white>"
+  console-only: "%prefix% <red>You cannot execute <white>%command%.</white>"
+  no-tab:
+    player: "< No players found >"
+
+
+dupe:
+  illegal-dupe:

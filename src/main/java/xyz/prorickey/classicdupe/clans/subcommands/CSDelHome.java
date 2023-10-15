@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe.clans.subcommands;
 
+import me.antritus.astraldupe.ForRemoval;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.prorickey.classicdupe.ClassicDupe;
@@ -7,12 +8,13 @@ import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.clans.builders.Clan;
 import xyz.prorickey.classicdupe.clans.builders.ClanMember;
 import xyz.prorickey.classicdupe.clans.builders.ClanSub;
-import xyz.prorickey.proutils.TabComplete;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public class CSDelHome extends ClanSub {
     @Override
     public void execute(CommandSender sender, String[] args) {
@@ -53,7 +55,7 @@ public class CSDelHome extends ClanSub {
     public List<String> tabComplete(CommandSender sender, String[] args) {
         if(!(sender instanceof Player player) || ClassicDupe.getClanDatabase().getClanMember(player.getUniqueId()).getClanID() == null) return new ArrayList<>();
         ClanMember cmem = ClassicDupe.getClanDatabase().getClanMember(player.getUniqueId());
-        if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], ClassicDupe.getClanDatabase().getClan(cmem.getClanName()).getWarpNames());
+        if(args.length == 1) return (ClassicDupe.getClanDatabase().getClan(cmem.getClanName()).getWarpNames());
         return new ArrayList<>();
     }
 }

@@ -1,5 +1,9 @@
 package xyz.prorickey.classicdupe.commands.admin;
 
+import com.github.antritus.astral.AdvancedPlugin;
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.ForRemoval;
+import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.*;
@@ -8,15 +12,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
-import xyz.prorickey.proutils.TabComplete;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GmcCMD implements CommandExecutor, TabCompleter {
+@ForRemoval(reason = "Staff commands should go to their own plugin.")
+@Deprecated(forRemoval = true)
+public class GmcCMD extends AstralCommand {
+
+    public GmcCMD(AstralDupe main) {
+        super(main, "gmc");
+        setPermission("astraldupe.admin.gamemode.creative");
+    }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(args.length < 1) {
             if(sender instanceof ConsoleCommandSender) {
                 sender.sendMessage(Utils.cmdMsg("<red>You cannot change console's gamemode"));
@@ -55,8 +65,8 @@ public class GmcCMD implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], ClassicDupe.getOnlinePlayerUsernames());
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
+        if(args.length == 1) return (ClassicDupe.getOnlinePlayerUsernames());
         return new ArrayList<>();
     }
 

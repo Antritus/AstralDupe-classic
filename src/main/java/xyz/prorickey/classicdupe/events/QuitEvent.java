@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe.events;
 
+import me.antritus.astral.fluffycombat.api.events.CombatLogEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -29,12 +30,9 @@ public class QuitEvent implements Listener {
         if(PrivateMessageCMD.lastInConvo.containsValue(e.getPlayer())) new HashMap<>(PrivateMessageCMD.lastInConvo).forEach((sender, recipient) -> PrivateMessageCMD.lastInConvo.remove(sender));
         e.quitMessage(Utils.format("<dark_gray>[<red>-<dark_gray>] ")
                 .append(Utils.format(Utils.getPrefix(e.getPlayer()) + e.getPlayer().getName())));
-        if(Combat.inCombat.containsKey(e.getPlayer())) {
-            e.quitMessage(Utils.format("<dark_gray>[<red>-<dark_gray>] ")
-                    .append(Utils.format(Utils.getPrefix(e.getPlayer()) + e.getPlayer().getName()))
-                    .append(Utils.format(" <dark_gray>| <red><bold>COMBAT LOG")));
-            ClassicDupe.getDatabase().getPlayerDatabase().addDeath(e.getPlayer().getUniqueId().toString());
-        }
     }
-
+    @EventHandler
+    public void onCombatLog(CombatLogEvent event){
+        ClassicDupe.getDatabase().getPlayerDatabase().addDeath(event.getWho().getUniqueId().toString());
+    }
 }

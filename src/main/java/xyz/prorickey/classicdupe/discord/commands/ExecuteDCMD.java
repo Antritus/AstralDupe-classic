@@ -4,11 +4,12 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.bukkit.scheduler.BukkitRunnable;
 import xyz.prorickey.classicdupe.ClassicDupe;
+import xyz.prorickey.classicdupe.Config;
 
 public class ExecuteDCMD {
 
     public static void execute(SlashCommandInteractionEvent inter) {
-        if(!inter.getMember().getRoles().contains(inter.getGuild().getRoleById(1068991520029552721L))) {
+        if(!inter.getMember().getRoles().contains(inter.getGuild().getRoleById(Config.getConfig().getLong("discord.role.system")))) {
             inter.reply("You cannot execute this command").setEphemeral(true).queue();
             return;
         }
@@ -17,7 +18,7 @@ public class ExecuteDCMD {
             public void run() {
                 ClassicDupe.executeConsoleCommand(inter.getOption("command", OptionMapping::getAsString));
             }
-        }.runTask(ClassicDupe.getPlugin());
+        }.runTask(ClassicDupe.getInstance());
         inter.reply("Executed the command `" + inter.getOption("command", OptionMapping::getAsString) + "`").setEphemeral(true).queue();
     }
 

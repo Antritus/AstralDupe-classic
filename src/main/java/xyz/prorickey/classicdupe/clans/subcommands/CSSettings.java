@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe.clans.subcommands;
 
+import me.antritus.astraldupe.ForRemoval;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.prorickey.classicdupe.ClassicDupe;
@@ -7,7 +8,6 @@ import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.clans.builders.Clan;
 import xyz.prorickey.classicdupe.clans.builders.ClanMember;
 import xyz.prorickey.classicdupe.clans.builders.ClanSub;
-import xyz.prorickey.proutils.TabComplete;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unused")
+@ForRemoval(reason = "Clans will be removed fully from the classic dupe plugin.")
+@Deprecated(forRemoval = true)
 public class CSSettings extends ClanSub {
 
     final Map<String, String> nameToCode = new HashMap<>() {{
@@ -94,11 +96,11 @@ public class CSSettings extends ClanSub {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String[] args) {
-        if(args.length == 1) return TabComplete.tabCompletionsSearch(args[0], List.of("publicClan", "clanColor"));
+        if(args.length == 1) return (List.of("publicClan", "clanColor"));
         else if(args.length == 2) {
             switch(args[0]) {
-                case "publicClan" -> { return TabComplete.tabCompletionsSearch(args[1], List.of("true", "false")); }
-                case "clanColor" -> { return TabComplete.tabCompletionsSearch(args[1], nameToCode.keySet().stream().toList()); }
+                case "publicClan" -> { return (List.of("true", "false")); }
+                case "clanColor" -> { return (nameToCode.keySet().stream().toList()); }
             }
         }
         return new ArrayList<>();

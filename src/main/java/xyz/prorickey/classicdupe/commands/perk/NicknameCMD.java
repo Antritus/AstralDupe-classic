@@ -1,26 +1,31 @@
 package xyz.prorickey.classicdupe.commands.perk;
 
+import com.github.antritus.astral.AdvancedPlugin;
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.commands.AstralCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NicknameCMD implements CommandExecutor, TabCompleter {
+public class NicknameCMD extends AstralCommand {
 
     private static String chars = "abcdefghijklmnopqrstuvxwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789_";
 
+    public NicknameCMD(AstralDupe main) {
+        super(main, "nickname");
+        setPermission("astraldupe.perk.nickname");
+        setAliases(List.of("nick", "name", "displayname"));
+    }
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(!(sender instanceof Player p)) {
             sender.sendMessage(Utils.cmdMsg("<red>You cannot execute this command from console"));
             return true;
@@ -32,6 +37,11 @@ public class NicknameCMD implements CommandExecutor, TabCompleter {
         }
         if(args.length > 1) {
             sender.sendMessage(Utils.cmdMsg("<red>You cannot have spaces in your nickname"));
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("-off") || args[0].equalsIgnoreCase("-reset")){
+            ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(p.getUniqueId()).resetNickname();
+            sender.sendMessage(Utils.cmdMsg("<green>Reset your nickname"));
             return true;
         }
         if(!args[0].matches("^[A-Za-z0-9_&]+$")) {
@@ -49,7 +59,10 @@ public class NicknameCMD implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+        if (args.length==1){
+            return List.of("-reset");
+        }
         return new ArrayList<>();
     }
 }
