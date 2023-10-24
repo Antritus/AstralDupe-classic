@@ -1,7 +1,6 @@
 placeholders:
   - name: prefix
-    text: ASTRALDUPE
-
+    text: "<dark_gray>[<yellow>i</yellow>]<reset>"
 
 command-parse:
   incorrect-format: "%prefix% %usage% <click:suggest_command:/%command%><hover:show_text:'<green>Click here to suggest the correct format!'><gray>/%command%</gray></hover>"
@@ -12,4 +11,9 @@ command-parse:
 
 
 dupe:
-  illegal-dupe:
+  cooldown: "%prefix% <red>You need to wait a few moments before duping again!"
+  illegal-item:
+    hand: "%prefix% <red>You cannot dupe your item."
+    shulker: "%prefix% <red>You cannot your shulker box as it contains illegals."
+    bundle: "%prefix% <red>You cannot your bundle as it contains illegal items."
+  super-dupe: "%prefix% <yellow>Super Duper Duper! Duped your items %times% times!"

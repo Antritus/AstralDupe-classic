@@ -1,4 +1,4 @@
-package me.antritus.astraldupe;
+package me.antritus.astraldupe.utils;
 
 import org.bukkit.entity.Player;
 
@@ -9,10 +9,10 @@ public final class HealthUtils {
 
 	public static double getFormattedHealth(Player player, int decimalPlaces) {
 		if (decimalPlaces == 0) {
-			return Double.parseDouble(new DecimalFormat("%").format(player.getHealth()));
+			return Double.parseDouble(new DecimalFormat("").format(player.getHealth()));
 		}
 
-		DecimalFormat numberFormat = new DecimalFormat("%." + "0".repeat(Math.max(0, decimalPlaces)));
+		DecimalFormat numberFormat = new DecimalFormat("." + "0".repeat(Math.max(0, decimalPlaces)));
 		return Double.parseDouble(numberFormat.format(player.getHealth()));
 	}
 

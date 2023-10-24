@@ -16,7 +16,8 @@ import java.util.List;
 public class SetSpawnCMD extends AstralCommand {
 
     public SetSpawnCMD(AstralDupe main) {
-        super(main, "placeholder");
+        super(main, "setspawn");
+        setPermission("astraldupe.admin.setspawn");
     }
 
     @Override

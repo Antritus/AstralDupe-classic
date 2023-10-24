@@ -10,7 +10,8 @@ authors:
   - Prorickey (ClassicDupe)
   - ModdedKid (ClassicDupe)
   - BraveDishDealer (ClassicDupe)
-description: Dupe core of astral dupe. This uses ClassicDupe plugin in it's internals.
+description: Dupe core of astral dupe. This uses ClassicDupe plugin in the internals.
+
 
 
 dependencies:
@@ -20,19 +21,17 @@ dependencies:
       load: OMIT
     # Add a required "RequiredPlugin" dependency, which will load AFTER your plugin.
   server:
-    LuckPerms:
-      load: AFTER
+    v2Discord:
+      load: BEFORE
       required: true
       join-classpath: true
-    Vault:
+    LuckPerms:
       load: AFTER
       required: true
       join-classpath: true
     PlaceholderAPI:
       load: AFTER
       required: false
-    WorldGuard:
-      required: true
     spark:
       load: BEFORE
       required: false

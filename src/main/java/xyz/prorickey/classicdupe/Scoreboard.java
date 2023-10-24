@@ -1,9 +1,9 @@
 package xyz.prorickey.classicdupe;
 
 import com.github.antritus.astral.utils.ColorUtils;
-import me.antritus.astral.cosmiccapital.CosmicCapital;
-import me.antritus.astral.cosmiccapital.api.PlayerAccount;
-import me.antritus.astral.cosmiccapital.database.PlayerAccountDatabase;
+import me.antritus.astral.cosmiccapital.api.CosmicCapitalAPI;
+import me.antritus.astral.cosmiccapital.api.managers.IAccountManager;
+import me.antritus.astral.cosmiccapital.api.types.IAccount;
 import me.antritus.astral.factions.api.FactionsAPI;
 import me.antritus.astral.factions.api.data.Faction;
 import me.antritus.astral.factions.api.data.User;
@@ -11,9 +11,11 @@ import me.antritus.astral.factions.api.database.UserDatabase;
 import me.antritus.astral.fluffycombat.FluffyCombat;
 import me.antritus.astral.fluffycombat.api.CombatTag;
 import me.antritus.astral.fluffycombat.api.CombatUser;
+import me.antritus.astral.fluffycombat.api.events.CombatEnterEvent;
+import me.antritus.astral.fluffycombat.api.events.CombatFullEndEvent;
 import me.antritus.astral.fluffycombat.manager.CombatManager;
 import me.antritus.astraldupe.AstralDupe;
-import me.antritus.astraldupe.HealthUtils;
+import me.antritus.astraldupe.utils.HealthUtils;
 import me.antritus.astraldupe.utils.PingUtils;
 import me.antritus.astraldupe.utils.PlayerUtils;
 import me.antritus.astraldupe.utils.TPSUtils;
@@ -21,6 +23,9 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -34,9 +39,10 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Scoreboard {
+public class Scoreboard implements Listener {
 
     private static final Map<Player, org.bukkit.scoreboard.Scoreboard> scoreboards = new HashMap<>();
+    private static org.bukkit.scoreboard.Scoreboard scoreboard;
 
     public static class ScoreboardTask extends BukkitRunnable {
         @Override
@@ -52,7 +58,30 @@ public class Scoreboard {
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onCombatExit(CombatFullEndEvent event){
+        Objective objAttacker = scoreboard.getObjective(event.getPlayer().getUniqueId().toString()) == null ?
+                scoreboard.registerNewObjective(event.getPlayer().getUniqueId().toString(), Criteria.DUMMY, Component.text("dummy")) :
+                scoreboard.getObjective(event.getPlayer().getUniqueId().toString());
+        objAttacker.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+    }
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onCombatEnter(CombatEnterEvent event){
+        CombatTag tag = event.getCombatTag();
+        Player attacker = Bukkit.getPlayer(tag.getAttacker().getUniqueId());
+        Player victim = Bukkit.getPlayer(tag.getVictim().getUniqueId());
+        Objective objAttacker = scoreboard.getObjective(attacker.getUniqueId().toString()) == null ?
+                scoreboard.registerNewObjective(attacker.getUniqueId().toString(), Criteria.DUMMY, Component.text("dummy")) :
+                scoreboard.getObjective(attacker.getUniqueId().toString());
+        Objective objVictim = scoreboard.getObjective(victim.getUniqueId().toString()) == null ?
+                scoreboard.registerNewObjective(victim.getUniqueId().toString(), Criteria.DUMMY, Component.text("dummy")) :
+                scoreboard.getObjective(victim.getUniqueId().toString());
+        objAttacker.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+        objVictim.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+    }
+
     private static void scoreboard(Player player, org.bukkit.scoreboard.Scoreboard board) {
+        Scoreboard.scoreboard = board;
         new BukkitRunnable() {
             /**
              * When an object implementing interface {@code Runnable} is used
@@ -67,6 +96,7 @@ public class Scoreboard {
              */
             @Override
             public void run() {
+
                 Objective obj = board.getObjective(player.getUniqueId().toString()) == null ?
                         board.registerNewObjective(player.getUniqueId().toString(), Criteria.DUMMY, Component.text("dummy")) :
                         board.getObjective(player.getUniqueId().toString());
@@ -80,39 +110,39 @@ public class Scoreboard {
 
                 if (AstralDupe.restartInProgress)
                     updateTeamScore(obj, board, 15, Utils.format("<dark_red><b>SERVER REBOOTING"));
-                updateTeamScore(obj, board, 14, ColorUtils.translateComp("<color:#7300de><b>Stats <italic>("+player.getName()+")"));
-                updateTeamScore(obj, board, 13, Utils.format("<color:#751ac9>  Rank: <white>"+Utils.getPrefix(player)));
+                updateTeamScore(obj, board, 14, ColorUtils.translateComp(""));
+                updateTeamScore(obj, board, 13, Utils.format("<gray> | <white>Rank: <gold>"+Utils.getPrefix(player)));
                 if (AstralDupe.factionsAPI!= null){
                     FactionsAPI<?> factionsAPI = AstralDupe.factionsAPI;
                     UserDatabase userDatabase = factionsAPI.getUserDatabase();
                     User user = userDatabase.get(player.getUniqueId());
                     Faction faction = user.getFactionInstance();
                     if (faction==null||!faction.exists()) {
-                        updateTeamScore(obj, board, 12, Utils.format("<color:#751ac9>  Clan: <dark_red>/clan"));
+                        updateTeamScore(obj, board, 12, Utils.format("<gray> | <white>Clan: <dark_red>/clan"));
                     } else {
-                        updateTeamScore(obj, board, 12, Utils.format("<color:#751ac9>  Clan: <white>"+faction.getName()));
+                        updateTeamScore(obj, board, 12, Utils.format("<gray> | <white>Clan: <yellow>"+faction.getName()));
                     }
                 } else {
-                    updateTeamScore(obj, board, 12, Utils.format("<color:#751ac9>  Clan: <dark_red><b>TODO"));
+                    updateTeamScore(obj, board, 12, Utils.format("<gray> | <white>Clan: <dark_red><b>TODO"));
                 }
                 String formatPing = PingUtils.getPingFormatMs(player);
-                updateTeamScore(obj, board, 11, Utils.format("<color:#751ac9>  Ping: <white>"+formatPing));
+                updateTeamScore(obj, board, 11, Utils.format("<gray> | <white>Ping: <green>"+formatPing));
 
                 // Checking if cosmic capital is found.
                 // This is set, so we know if it is a beta season and cosmic capital
                 // is still in development.
                 try {
                     Class.forName("me.antritus.astral.cosmiccapital.CosmicCapital");
-
-                    CosmicCapital cosmicCapital = AstralDupe.cosmicCapital;
-                    PlayerAccountDatabase accountDatabase = cosmicCapital.getPlayerDatabase();
-                    PlayerAccount account = accountDatabase.get(player.getUniqueId());
-                    double balance = account.getBalance();
+                    CosmicCapitalAPI cosmicCapital = AstralDupe.cosmicCapital;
+                    IAccountManager accountManager = cosmicCapital.playerManager();
+                    IAccount account = accountManager.getKnownNonNull(player.getUniqueId());
+                   double balance = account.balance();
                     String  balanceFormat = format(balance);
-                    updateTeamScore(obj, board, 10, Utils.format("<color:#751ac9>  Coins: <white>"+balanceFormat));
+                    updateTeamScore(obj, board, 10, Utils.format("<gray> | Coins: <aqua>"+balanceFormat));
                 } catch (ClassNotFoundException ignore) {
                 }
 
+                updateTeamScore(obj, board, 9, ColorUtils.translateComp(" "));
 
                 FluffyCombat fluffyCombat = AstralDupe.fluffyCombat;
                 CombatManager combatManager = fluffyCombat.getCombatManager();
@@ -154,37 +184,35 @@ public class Scoreboard {
                         timeRemaining = "~0";
                     }
 
-                    updateTeamScore(obj, board, 9, ColorUtils.translateComp("<color:#ed2828>><b>Combat"));
-                    updateTeamScore(obj, board, 8, Utils.format("<color:#ff3636>  Opponent: <white>"+name));
-                    updateTeamScore(obj, board, 7, Utils.format("<color:#ff3636>  Health: <white>"+health));
-                    updateTeamScore(obj, board, 6, Utils.format("<color:#ff3636>  Clan: <white>"+faction));
-                    updateTeamScore(obj, board, 5, Utils.format("<color:#ff3636>  Remaining: <white>"+timeRemaining+"s"));
+                    updateTeamScore(obj, board, 8, Utils.format("<gray> | <red>Opponent: <dark_red>"+name));
+                    updateTeamScore(obj, board, 7, Utils.format("<gray> | <red>Health: <red>"+health));
+                    updateTeamScore(obj, board, 6, Utils.format("<gray> | <red>Clan: <yellow>"+faction));
+                    updateTeamScore(obj, board, 5, Utils.format("<gray> | <red>Remaining: <green>"+timeRemaining+"s"));
                     BountyDatabase bountyDatabase = ClassicDupe.getDatabase().getBountyDatabase();
                     // Why are bounties not doubles??
                     Integer bounty = bountyDatabase.getBounty(opponent.getUniqueId());
                     if (bounty!=null) {
-                        updateTeamScore(obj, board, 4, Utils.format("<color:#55eded>  Bounty: <white>"+bounty));
+                        updateTeamScore(obj, board, 4, Utils.format("<gray> | <red>Bounty: <white>"+bounty));
                     }
                 } else {
-                    updateTeamScore(obj, board, 9, ColorUtils.translateComp("<color:#7300de><b>Server"));
                     double tps = TPSUtils.getTPS();
                     String tpsFormat = TPSUtils.getFormattedTPS(tps);
                     double tpsPercent = TPSUtils.getTPSPercent(tps);
                     int tpsPercent2 = (int) tpsPercent*100;
-                    updateTeamScore(obj, board, 8, Utils.format("<color:#751ac9>  TPS: <white>"+tpsFormat +" <gray>("+(tpsPercent2)+"%)"));
-                    updateTeamScore(obj, board, 7, Utils.format("<color:#751ac9>  Online: <white>"+ PlayerUtils.getVisiblePlayers(player).size()));
-                    updateTeamScore(obj, board, 6, Utils.format("<color:#751ac9>  Season Joins: <white>"+0));
+                    updateTeamScore(obj, board, 8, Utils.format("<gray> | <white>TPS: <white>"+tpsFormat +" <gray>("+(tpsPercent2)+"%)"));
+                    updateTeamScore(obj, board, 7, Utils.format("<gray> | <white>Online: <aqua>"+ PlayerUtils.getVisiblePlayers(player).size()));
                     if (tps<7){
                         updateTeamScore(obj, board, 7, Utils.format("<dark_red><b>CONTACT ADMIN!"));
                         updateTeamScore(obj, board, 6, Utils.format("<dark_red><b>TPS IS LOW!"));
                     }
-                    updateTeamScore(obj, board, 3, Utils.format("<color:#751ac9>  Uptime: <white>"+
+                    updateTeamScore(obj, board, 3, Utils.format("<gray> | <white>Uptime: <yellow>"+
                             Metrics.getServerMetrics().getServerUptimeFormatted()));
-                    updateTeamScore(obj, board, 4, Utils.format("<color:#751ac9>  Total Joins: <white>"+0));
+                    updateTeamScore(obj, board, 4, Utils.format("<gray> | <white>Joins: <white>"+0));
                 }
+                updateTeamScore(obj, board, 2, Utils.format(" "));
                 if (AstralDupe.restartInProgress)
                     updateTeamScore(obj, board, 2, Utils.format("<dark_red><b>SERVER REBOOTING"));
-                updateTeamScore(obj, board, 1, Utils.format("   <gray>AstralDupe.minehut.gg"));
+                updateTeamScore(obj, board, 1, Utils.format("      <gray>Astral.bet"));
             }
         }.runTaskAsynchronously(AstralDupe.getInstance());
     }

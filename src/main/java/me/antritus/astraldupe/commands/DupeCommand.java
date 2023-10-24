@@ -1,7 +1,6 @@
 package me.antritus.astraldupe.commands;
 
 import com.github.antritus.astral.utils.ColorUtils;
-import me.antritus.astral.fluffycombat.FluffyCombat;
 import me.antritus.astral.fluffycombat.manager.CombatManager;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astrolapi.minecraft.ShulkerBoxUtils;
@@ -13,11 +12,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BundleMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class DupeCommand extends AstralCommand {
+	private final static Map<UUID, Long> cooldown = new LinkedHashMap<>();
 	public final static NamespacedKey UNDUPABLE = new NamespacedKey("astraldupe", "undupable");
 	public DupeCommand(AstralDupe main) {
 		super(main, "dupe");
@@ -33,6 +31,14 @@ public class DupeCommand extends AstralCommand {
 	@Override
 	public boolean execute(@NotNull CommandSender commandSender, @NotNull String s, @NotNull String[] strings) {
 		if(commandSender instanceof Player player) {
+			CombatManager combatManager = AstralDupe.fluffyCombat.getCombatManager();
+			if (combatManager.hasTags(player)){
+				if (cooldown.get(player.getUniqueId())>System.currentTimeMillis()){
+					main.getMessageManager().message(player, "dupe.cooldown");
+					return true;
+				}
+				cooldown.put(player.getUniqueId(), System.currentTimeMillis()+333L);
+			}
 			ItemStack hand = player.getInventory().getItemInMainHand();
 			if (!checkItem(hand)){
 				main.getMessageManager().message(player, "dupe.illegal-item.hand");
@@ -46,8 +52,6 @@ public class DupeCommand extends AstralCommand {
 				main.getMessageManager().message(player, "dupe.illegal-item.shulker");
 				return true;
 			}
-			FluffyCombat fluffyCombat = AstralDupe.fluffyCombat;
-			CombatManager combatManager = fluffyCombat.getCombatManager();
 			if (combatManager.hasTags(player)) {
 				if (!checkCombat(hand)) {
 					main.getMessageManager().message(player, "dupe.illegal-item.combat");
@@ -94,10 +98,10 @@ public class DupeCommand extends AstralCommand {
 				}
 				newHand.setAmount(newAmount);
 				player.getInventory().addItem(newHand);
-				main.getMessageManager().message(player, "dupe.super-duper");
+				main.getMessageManager().message(player, "dupe.super-duper","%times%="+dupeAmount);
 			}
 		} else {
-			main.getMessageManager().message(commandSender, "command-parse.player-only","%command%=/dupe [dupe amount]");
+			main.getMessageManager().message(commandSender, "command-parse.player-only");
 		}
 		//main.getMessageManager().message(commandSender, "example!");
 		//main.getMessageManager().message(commandSender, "Hey %placeholder%! This is built-in placeholder from messages.yml: %prefix%", "%placeholder%=Antritus");
@@ -142,17 +146,23 @@ public class DupeCommand extends AstralCommand {
 			return true;
 		}
 		BundleMeta bundleMeta = (BundleMeta) itemStack.getItemMeta();
-		return bundleMeta.getItems().stream().noneMatch(this::checkItem);
+		return bundleMeta.getItems().stream().filter(Objects::nonNull).noneMatch(this::checkItem);
 	}
 	private boolean checkShulker(ItemStack itemStack){
 		// It gets the block form of the item.
 		// If the item is not shulker a box, it returns null
+		if (itemStack == null){
+			return true;
+		}
 		if (ShulkerBoxUtils.getShulkerBox(itemStack)==null)
 			return true;
 		List<ItemStack> items = ShulkerBoxUtils.getItemsIgnoreAir(itemStack);
 		if (items==null)
 			return true;
 		for (ItemStack item : items) {
+			if (item == null){
+				continue;
+			}
 			if (!checkItem(item)){
 				return false;
 			}

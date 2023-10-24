@@ -16,6 +16,7 @@ public class SudoCMD extends AstralCommand {
 
     public SudoCMD(AstralDupe main) {
         super(main, "sudo");
+        setPermission("astraldupe.admin.sudo");
     }
 
     @Override

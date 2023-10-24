@@ -1,8 +1,11 @@
 package xyz.prorickey.classicdupe.commands.default1;
 
+import me.antritus.astral.cosmiccapital.api.CosmicCapitalAPI;
+import me.antritus.astral.cosmiccapital.api.managers.IAccountManager;
+import me.antritus.astral.cosmiccapital.api.types.IAccount;
 import me.antritus.astraldupe.AstralDupe;
-import me.antritus.astraldupe.utils.PlayerUtils;
 import me.antritus.astraldupe.commands.AstralCommand;
+import me.antritus.astraldupe.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -36,13 +39,19 @@ public class StatsCMD extends AstralCommand {
             player.sendMessage(Utils.cmdMsg("<green>Stats of <yellow>" + player.getName()));
             player.sendMessage(Utils.format("<gray>- <green>Kills: <yellow>" + stats.kills));
             player.sendMessage(Utils.format("<gray>- <green>Deaths: <yellow>" + stats.deaths));
+            player.sendMessage(Utils.format("<gray>- <green>Killstreak: <yellow>" + data.getKillStreak()));
             player.sendMessage(Utils.format("<gray>- <green>KDR: <yellow>" + stats.kdr));
             try {
                 // Checking if cosmic capital is found.
                 // This is set, so we know if it is a beta season and cosmic capital
                 // is still in development.
                 Class.forName("me.antritus.astral.cosmiccapital.CosmicCapital");
-                player.sendMessage(Utils.format("<gray>- <green>Balance: <yellow>" + AstralDupe.cosmicCapital.getPlayerDatabase().get(player).getBalance()));
+                CosmicCapitalAPI cosmicCapitalAPI = AstralDupe.cosmicCapital;
+                IAccountManager manager = cosmicCapitalAPI.playerManager();
+                IAccount account = manager.get(player.getUniqueId());
+                if (account != null) {
+                    player.sendMessage(Utils.format("<gray>- <green>Balance: <yellow>" + account.balance()));
+                }
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -65,7 +74,12 @@ public class StatsCMD extends AstralCommand {
             // is still in development.
             try {
                 Class.forName("me.antritus.astral.cosmiccapital.CosmicCapital");
-                player.sendMessage(Utils.format("<gray>- <green>Balance: <yellow>" + AstralDupe.cosmicCapital.getPlayerDatabase().get(tarj.getUniqueId()).getBalance()));
+                CosmicCapitalAPI api = AstralDupe.cosmicCapital;
+                IAccountManager manager = api.playerManager();
+                IAccount account = manager.get(tarj.getUniqueId());
+                if (account != null) {
+                    player.sendMessage(Utils.format("<gray>- <green>Balance: <yellow>" + account.balance()));
+                }
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

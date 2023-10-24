@@ -22,17 +22,17 @@ repositories {
 dependencies {
     implementation('me.antritus:AstrolMiniAPI:1.0.0')
     implementation('com.github.antritus:CosmicAPI:1.0')
+    implementation group: 'com.h2database', name: 'h2', version: '2.1.214'
+    implementation('org.mariadb.jdbc:mariadb-java-client:3.1.4')
 
     //compileOnly 'io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT'
     compileOnly ('net.luckperms:api:5.4')
     compileOnly ('me.clip:placeholderapi:2.11.2')
-    compileOnly ('com.sk89q.worldguard:worldguard-bukkit:7.0.9-SNAPSHOT')
     compileOnly ('me.lucko:spark-api:0.1-SNAPSHOT')
-    compileOnly ("com.github.MilkBowl:VaultAPI:1.7")
     // Factions / TPA
     compileOnly 'me.antritus:Wormhole:1.2'
     // Factions / Economy
-    compileOnly 'me.antritus:CosmicCapitalAPI:1.2'
+    compileOnly 'me.antritus:CosmicCapitalAPI:1.2.1'
 //    compileOnly ('me.antritus:CosmicCapital:1.2')
     // Factions / Auctionhouse
     compileOnly ('me.antritus:Auctionverse:1.1')
@@ -41,9 +41,7 @@ dependencies {
     // Factions / Factions
     compileOnly('me.antritus:FactionsAPI:1.2')
 
-    compileOnly 'com.h2database:h2:2.2.224'
     compileOnly 'net.dv8tion:JDA:5.0.0-beta.10'
-    compileOnly 'org.mariadb.jdbc:mariadb-java-client:3.1.4'
 
     paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
 }
@@ -56,6 +54,7 @@ configurations.compileOnly {
     exclude group: 'org.spigotmc', module: 'spigot-api'
     exclude group: 'org.bukkit', module: 'bukkit'
 }
+
 
 shadowJar {
     archiveClassifier = null

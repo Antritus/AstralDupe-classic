@@ -76,6 +76,13 @@ ranks:
   default:
     homes: 1
 suffix:
+  golden: "&6&lGolden"
+  dupe: "&f&lDupe"
+  pvp: "&c&lPvP"
+  pvp-god: "&4&lPvP &cGod"
+
+
+
   god: "&6&lGOD"
   duper: "&d&lDUPER"
   simp: "&d&lSIMP"

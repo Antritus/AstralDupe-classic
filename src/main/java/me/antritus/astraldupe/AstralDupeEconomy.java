@@ -1,11 +1,11 @@
 package me.antritus.astraldupe;
 
-import me.antritus.astral.cosmiccapital.api.IEconomy;
+import me.antritus.astral.cosmiccapital.api.IEconomyProvider;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class AstralDupeEconomy implements IEconomy {
+public class AstralDupeEconomy implements IEconomyProvider {
 	private final AstralDupe astralDupe;
 
 	public AstralDupeEconomy(AstralDupe astralDupe) {

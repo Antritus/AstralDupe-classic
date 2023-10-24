@@ -4,7 +4,6 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import xyz.prorickey.classicdupe.clans.builders.Clan;
 import xyz.prorickey.classicdupe.database.PlayerData;
 import xyz.prorickey.classicdupe.database.PlayerDatabase;
 import xyz.prorickey.classicdupe.metrics.PlayerMetrics;
@@ -32,12 +31,6 @@ public class ClassicDupeExpansion extends PlaceholderExpansion {
         if(params.equalsIgnoreCase("name")) {
             if(player == null) return null;
             PlayerData data = ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(player.getUniqueId());
-            if(ClassicDupe.getClanDatabase().getClanMember(player.getUniqueId()).getClanID() != null) {
-                String clan = ClassicDupe.getClanDatabase().getClanMember(player.getUniqueId()).getClanName();
-                String clanColor = ClassicDupe.getClanDatabase().getClan(ClassicDupe.getClanDatabase().getClanMember(player.getUniqueId()).getClanID()).getClanColor();
-                if(data.getNickname()== null) return player.getName() + Utils.convertAdventureToColorCodes(" <dark_gray>[" + clanColor + clan + "<dark_gray>]");
-                else return Utils.convertAdventureToColorCodes(data.getNickname()) + Utils.convertAdventureToColorCodes(" <dark_gray>[" + clanColor + clan + "<dark_gray>]");
-            }
             if(data.getNickname() == null) return player.getName();
             else return Utils.convertAdventureToColorCodes(data.getNickname());
         }
@@ -55,28 +48,8 @@ public class ClassicDupeExpansion extends PlaceholderExpansion {
                 if(params.equalsIgnoreCase("top_deaths_" + (i2+1) + "_name")) return PlayerDatabase.deathsLeaderboard.get(i2+1);
                 else if(params.equalsIgnoreCase("top_deaths_" + (i2+1) + "_deaths")) return PlayerDatabase.deathsLeaderboardD.get(i2+1).toString();
             }
-        } else if(params.toLowerCase().startsWith("top_balance_")) {
-            for (int i3 = 0; i3 < 10; i3++) {
-                if (PlayerDatabase.balanceTop.size() < i3 + 1) return " ";
-                if (params.equalsIgnoreCase("top_balance_" + (i3 + 1) + "_name"))
-                    return PlayerDatabase.balanceTop.get(i3 + 1).getName();
-                else if (params.equalsIgnoreCase("top_balance_" + (i3 + 1) + "_balance"))
-                    return PlayerDatabase.balanceTop.get(i3 + 1).getBalance().toString();
-            }
-        } else if(params.toLowerCase().startsWith("top_clankills_")) {
-            for (int i4 = 0; i4 < 10; i4++) {
-                if (ClassicDupe.getClanDatabase().getTopClanKills().size()-1 < i4) return " ";
-                Clan clan = ClassicDupe.getClanDatabase().getTopClanKills().get(i4+1);
-                if(clan != null) {
-                    if (params.equalsIgnoreCase("top_clanKills_" + (i4 + 1) + "_name"))
-                        return clan.getClanName();
-                    else if (params.equalsIgnoreCase("top_clanKills_" + (i4 + 1) + "_kills"))
-                        return clan.getClanKills().toString();
-                } else {
-                    return " ";
-                }
-            }
-        } else if(params.toLowerCase().startsWith("top_playtime_")) {
+        }
+        else if(params.toLowerCase().startsWith("top_playtime_")) {
             for(int i5 = 0; i5 < 10; i5++) {
                 if(PlayerDatabase.playtimeLeaderboard.size() < i5+1) return " ";
                 if(params.equalsIgnoreCase("top_playtime_" + (i5+1) + "_name")) return PlayerDatabase.playtimeLeaderboard.get(i5+1);

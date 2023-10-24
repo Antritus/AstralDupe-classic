@@ -1,9 +1,9 @@
 package xyz.prorickey.classicdupe.commands.default1;
 
 import com.github.antritus.astral.utils.ColorUtils;
-import me.antritus.astral.cosmiccapital.CosmicCapital;
-import me.antritus.astral.cosmiccapital.api.PlayerAccount;
-import me.antritus.astral.cosmiccapital.database.PlayerAccountDatabase;
+import me.antritus.astral.cosmiccapital.api.CosmicCapitalAPI;
+import me.antritus.astral.cosmiccapital.api.managers.IAccountManager;
+import me.antritus.astral.cosmiccapital.api.types.IAccount;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.Bukkit;
@@ -27,6 +27,8 @@ import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.database.PlayerDatabase;
 
 import java.util.*;
+
+import static me.antritus.astral.cosmiccapital.api.types.IAccount.CustomAction.REMOVE;
 
 public class BountyCMD extends AstralCommand implements Listener {
 
@@ -74,9 +76,14 @@ public class BountyCMD extends AstralCommand implements Listener {
                         player.sendMessage(Utils.cmdMsg("<red>You need to provide a number greater than 0"));
                         return true;
                     }
-                    PlayerAccountDatabase playerAccountDatabase = CosmicCapital.getPlugin(CosmicCapital.class).getPlayerDatabase();
-                    PlayerAccount playerAccount = playerAccountDatabase.get(player);
-                    if (playerAccount.getBalance() < amount) {
+                    CosmicCapitalAPI api = AstralDupe.cosmicCapital;
+                    IAccountManager manager = api.playerManager();
+                    IAccount account = manager.get(player.getUniqueId());
+                    if (account == null){
+                        player.sendRichMessage("<red>Internal error! Couldn't set bounty because your economy account is not setup!");
+                        return true;
+                    }
+                    if (account.balance() < amount) {
                         player.sendMessage(Utils.cmdMsg("<red>You do not have enough money to place that bounty"));
                         return true;
                     }
@@ -87,7 +94,7 @@ public class BountyCMD extends AstralCommand implements Listener {
                     json.put("bounty", target.getUniqueId());
                     json.put("amount", amount);
                     json.put("date", System.currentTimeMillis());
-                    playerAccount.plugin(AstralDupe.economy, -amount, new JSONObject(json).toJSONString());
+                    account.custom(AstralDupe.economy, REMOVE, amount, new JSONObject(json));
                     ClassicDupe.getDatabase().getBountyDatabase().addBounty(target.getUniqueId(), amount);
                     player.sendMessage(Utils.cmdMsg("<green>You placed a bounty of <yellow>" + amount + "<green> on <yellow>" + target.getName()));
                     if (target.isOnline()) target.getPlayer().sendMessage(Utils.cmdMsg("<green>A bounty of <yellow>" + amount + "<green> has been placed on you by <yellow>" + player.getName()));
@@ -220,13 +227,14 @@ public class BountyCMD extends AstralCommand implements Listener {
             String playerName = Bukkit.getOfflinePlayer(uuid).getName();
             ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
             PlayerDatabase.PlayerStats stats = ClassicDupe.getDatabase().getPlayerDatabase().getStats(uuid.toString());
-            PlayerAccountDatabase playerDatabase = CosmicCapital.getPlugin(CosmicCapital.class).getPlayerDatabase();
-            PlayerAccount account = playerDatabase.get(uuid);
+            CosmicCapitalAPI api = AstralDupe.cosmicCapital;
+            IAccountManager accountManager = api.playerManager();
+            IAccount account = accountManager.get(uuid);
             double balance;
             if (account == null) {
                 balance = Double.NaN;
             } else {
-                balance = account.getBalance();
+                balance = account.balance();
             }
             skull.editMeta(meta -> {
                 meta.getPersistentDataContainer().set(noMoveKey, PersistentDataType.STRING, "noMoveKey");

@@ -5,7 +5,9 @@ import me.antritus.astral.fluffycombat.manager.CombatManager;
 import me.antritus.astraldupe.ForRemoval;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,8 +30,18 @@ public class DeathEvent implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent e) {
         if(!e.isBedSpawn() && !e.isAnchorSpawn()) {
-            if(e.getPlayer().getWorld().getName().equals("world_nether")) e.setRespawnLocation(ClassicDupe.getDatabase().getSpawn("nether"));
-            else e.setRespawnLocation(ClassicDupe.getDatabase().getSpawn("overworld"));
+            Location location = null;
+            if (e.getPlayer().getWorld().getEnvironment()== World.Environment.NETHER){
+                location = ClassicDupe.getDatabase().getSpawn("nether");
+            } else if (e.getPlayer().getWorld().getEnvironment()== World.Environment.THE_END){
+                location = ClassicDupe.getDatabase().getSpawn("end");
+            } else if (e.getPlayer().getWorld().getEnvironment()== World.Environment.NORMAL){
+                location = ClassicDupe.getDatabase().getSpawn("overworld");
+            }
+
+            if (location != null){
+                e.setRespawnLocation(location);
+            }
         }
     }
 

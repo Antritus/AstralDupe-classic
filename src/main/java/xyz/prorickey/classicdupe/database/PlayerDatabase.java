@@ -46,12 +46,7 @@ public class PlayerDatabase {
                         set.getLong("timesjoined"),
                         set.getLong("playtime"),
                         set.getBoolean("randomitem"),
-                        set.getString("chatcolor"),
-                        set.getBoolean("gradient"),
-                        set.getString("gradientfrom"),
-                        set.getString("gradientto"),
                         set.getBoolean("night"),
-                        set.getInt("balance"),
                         set.getBoolean("deathmessages"),
                         set.getBoolean("mutepings"),
                         set.getInt("killStreak")
@@ -85,12 +80,7 @@ public class PlayerDatabase {
                             set.getLong("timesjoined"),
                             set.getLong("playtime"),
                             set.getBoolean("randomitem"),
-                            set.getString("chatcolor"),
-                            set.getBoolean("gradient"),
-                            set.getString("gradientfrom"),
-                            set.getString("gradientto"),
                             set.getBoolean("night"),
-                            set.getInt("balance"),
                             set.getBoolean("deathmessages"),
                             set.getBoolean("mutepings"),
                             set.getInt("killStreak")
@@ -110,14 +100,9 @@ public class PlayerDatabase {
                             1,
                             0,
                             true,
-                            "<gray>",
-                            false,
-                            null,
-                            null,
                             true,
-                            0,
                             true,
-                            false,
+                            true,
                             0
                     ));
                 }

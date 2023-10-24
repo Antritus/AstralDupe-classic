@@ -1,8 +1,8 @@
 package xyz.prorickey.classicdupe.commands.default1;
 
-import me.antritus.astral.cosmiccapital.CosmicCapital;
-import me.antritus.astral.cosmiccapital.api.PlayerAccount;
-import me.antritus.astral.cosmiccapital.database.PlayerAccountDatabase;
+import me.antritus.astral.cosmiccapital.api.CosmicCapitalAPI;
+import me.antritus.astral.cosmiccapital.api.managers.IAccountManager;
+import me.antritus.astral.cosmiccapital.api.types.IAccount;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.commands.AstralCommand;
 import net.kyori.adventure.text.Component;
@@ -31,6 +31,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static me.antritus.astral.cosmiccapital.api.types.IAccount.CustomAction.REMOVE;
 
 public class ShopCMD extends AstralCommand implements Listener {
 
@@ -79,9 +81,14 @@ public class ShopCMD extends AstralCommand implements Listener {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
         skullMeta.setOwningPlayer(player);
-        PlayerAccountDatabase playerAccountDatabase = CosmicCapital.getPlugin(CosmicCapital.class).getPlayerDatabase();
-        PlayerAccount playerAccount = playerAccountDatabase.get(player);
-        skullMeta.displayName(Utils.format("<color:#11DE22>Your Balance <color:#8A8A8A>- <color:#E7D715>" + playerAccount.getBalance()));
+        CosmicCapitalAPI api = AstralDupe.cosmicCapital;
+        IAccountManager accountManager = api.playerManager();
+        IAccount playerAccount = accountManager.get(player.getUniqueId());
+        if (playerAccount == null){
+            player.sendRichMessage("<red>Internal Error! Couldn't load your economy account!");
+            return;
+        }
+        skullMeta.displayName(Utils.format("<color:#11DE22>Your Balance <color:#8A8A8A>- <color:#E7D715>" + playerAccount.balance()));
         head.setItemMeta(skullMeta);
 
         ItemStack moreBlank = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
@@ -102,9 +109,14 @@ public class ShopCMD extends AstralCommand implements Listener {
         ShopPage shopPage = shop.get(shopUsers.get(e.getWhoClicked()));
         if (shopPage.items.containsKey(e.getSlot())) {
             ShopItem shopItem = shopPage.items.get(e.getSlot());
-            PlayerAccountDatabase playerAccountDatabase = CosmicCapital.getPlugin(CosmicCapital.class).getPlayerDatabase();
-            PlayerAccount playerAccount = playerAccountDatabase.get(e.getWhoClicked().getUniqueId());
-            if (playerAccount.getBalance() < shopItem.price) {
+            CosmicCapitalAPI cosmicApi = AstralDupe.cosmicCapital;
+            IAccountManager accountManager = cosmicApi.playerManager();
+            IAccount account = accountManager.get(e.getWhoClicked().getUniqueId());
+            if (account == null){
+                e.getWhoClicked().sendRichMessage("<red>Internal Error! Couldn't load your economy account!");
+                return;
+            }
+            if (account.balance() < shopItem.price) {
                 e.getWhoClicked().sendMessage(Utils.cmdMsg("<red>You do not have enough money to buy this item"));
                 return;
             }
@@ -113,7 +125,7 @@ public class ShopCMD extends AstralCommand implements Listener {
             json.put("cost", shopItem.price);
             json.put("item", shopItem.getMaterial());
             JSONObject jsonObject = new JSONObject(json);
-            playerAccount.plugin(AstralDupe.economy, -shopItem.price, jsonObject.toJSONString());
+            account.custom(AstralDupe.economy, REMOVE, shopItem.price, jsonObject);
             ItemStack item = new ItemStack(shopItem.material);
             if (shopItem.undupable) {
                 item.editMeta(meta -> meta.getPersistentDataContainer().set(DupeCMD.undupableKey, PersistentDataType.BOOLEAN, true));

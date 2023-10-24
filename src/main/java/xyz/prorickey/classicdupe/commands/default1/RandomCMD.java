@@ -2,7 +2,6 @@ package xyz.prorickey.classicdupe.commands.default1;
 
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.commands.AstralCommand;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -12,7 +11,6 @@ import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.events.JoinEvent;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

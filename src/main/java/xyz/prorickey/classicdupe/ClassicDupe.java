@@ -4,7 +4,6 @@ import com.github.antritus.astral.AdvancedPlugin;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.ForRemoval;
 import net.luckperms.api.LuckPerms;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -17,7 +16,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import xyz.prorickey.classicdupe.clans.ClanDatabase;
 import xyz.prorickey.classicdupe.commands.admin.*;
 import xyz.prorickey.classicdupe.commands.default1.*;
 import xyz.prorickey.classicdupe.commands.moderator.*;
@@ -37,12 +35,10 @@ public class ClassicDupe extends AdvancedPlugin {
 
     public static ClassicDupe plugin;
     public static ClassicDupeBot bot;
-    public static Economy economy;
     public static LuckPerms lpapi;
     public static Database database;
     @ForRemoval(reason = "Removing clans fully.")
     @Deprecated(forRemoval = true)
-    public static ClanDatabase clanDatabase;
     public static PlayerVaultDatabase pvdatabase;
 
     public static final List<ItemStack> randomItems = new ArrayList<>();
@@ -67,8 +63,6 @@ public class ClassicDupe extends AdvancedPlugin {
         RegisteredServiceProvider<LuckPerms> lppro = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if(lppro != null) { lpapi = lppro.getProvider(); }
         //if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) new ClassicDupeExpansion(this).register();
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if(rsp != null) { economy = rsp.getProvider(); }
 
 
         Config.init(this);
@@ -138,8 +132,6 @@ public class ClassicDupe extends AdvancedPlugin {
         commands.add(new SpecCMD((AstralDupe) this));
         commands.add(new StaffChatCMD((AstralDupe) this));
         commands.add(new StaffTeleportCMD((AstralDupe) this));
-        commands.add(new ChatColorCMD((AstralDupe) this));
-        commands.add(new ChatGradientCMD((AstralDupe) this));
         commands.add(new CraftCMD((AstralDupe) this));
         commands.add(new EnderChestCMD((AstralDupe) this));
         commands.add(new FeedCMD((AstralDupe) this));
@@ -161,7 +153,6 @@ public class ClassicDupe extends AdvancedPlugin {
         getServer().getPluginManager().registerEvents(new VoidTeleport(), this);
         getServer().getPluginManager().registerEvents(new DeathEvent(), this);
         getServer().getPluginManager().registerEvents(new EntitySpawnEvent(), this);
-        getServer().getPluginManager().registerEvents(new FlowEvent(), this);
         getServer().getPluginManager().registerEvents(new GoldenAppleCooldown(), this);
         getServer().getPluginManager().registerEvents(new PearlCooldown(), this);
         getServer().getPluginManager().registerEvents(new CSPY(), this);
@@ -171,7 +162,7 @@ public class ClassicDupe extends AdvancedPlugin {
         // This is set, so we know if it is a beta season and cosmic capital
         // is still in development.
         try {
-            Class.forName("me.antritus.astral.cosmiccapital.CosmicCapital");
+            Class.forName("me.antritus.astral.cosmiccapital.api.CosmicCapitalAPI");
             ShopCMD.reloadShop();
             commands.add(new ShopCMD((AstralDupe) this));
             commands.add(new BountyCMD((AstralDupe) this));
@@ -217,7 +208,6 @@ public class ClassicDupe extends AdvancedPlugin {
     public static LuckPerms getLuckPerms() { return lpapi; }
     public static Database getDatabase() { return database; }
     public static PlayerVaultDatabase getPVDatabase() { return pvdatabase; }
-    public static ClanDatabase getClanDatabase() { return clanDatabase; }
 
     public static List<String> getOnlinePlayerUsernames() {
         List<String> list = new ArrayList<>();

@@ -1,10 +1,5 @@
 package xyz.prorickey.classicdupe.events;
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,10 +12,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import xyz.prorickey.classicdupe.ClassicDupe;
-import xyz.prorickey.classicdupe.Config;
 import xyz.prorickey.classicdupe.Utils;
-import xyz.prorickey.classicdupe.commands.perk.ChatColorCMD;
-import xyz.prorickey.classicdupe.commands.perk.ChatGradientCMD;
 import xyz.prorickey.classicdupe.database.PlayerData;
 import xyz.prorickey.classicdupe.discord.LinkRewards;
 
@@ -35,13 +27,11 @@ public class JoinEvent implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        ClassicDupe.getClanDatabase().updateClanMemberInfo(e.getPlayer());
         if(ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(e.getPlayer().getUniqueId()) == null) {
             ClassicDupe.getDatabase().getPlayerDatabase().playerDataUpdateAndLoad(e.getPlayer());
             if(ClassicDupe.getDatabase().getSpawn("hub") != null) e.getPlayer().teleport(ClassicDupe.getDatabase().getSpawn("hub"));
             e.joinMessage(Utils.format("<yellow>" + e.getPlayer().getName() + " <green>Just joined for the first time! Give them a warm welcome"));
             e.getPlayer().sendMessage(Utils.cmdMsg("<green>Every <yellow>60 <green>you will recieve a random item. Execute /random to disable or enable this"));
-            ChatColorCMD.colorProfiles.put(e.getPlayer().getUniqueId().toString(), "<gray>");
             nakedProtection.put(e.getPlayer(), System.currentTimeMillis());
 
             // Starting Gear
@@ -63,7 +53,6 @@ public class JoinEvent implements Listener {
         ClassicDupe.getDatabase().getPlayerDatabase().playerDataUpdateAndLoad(e.getPlayer());
         ClassicDupe.getDatabase().getHomesDatabase().loadPlayer(e.getPlayer());
         PlayerData playerData = ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(e.getPlayer().getUniqueId());
-        if(playerData.chatcolor.startsWith("&")) playerData.setChatColor(Utils.convertColorCodesToAdventure(playerData.chatcolor));
         if(playerData.nickname != null && Utils.convertColorCodesToAdventure(playerData.nickname).length() != playerData.nickname.length())
             playerData.setNickname(Utils.convertColorCodesToAdventure(playerData.nickname));
         if(playerData.night) nightVision.add(e.getPlayer());
@@ -73,16 +62,6 @@ public class JoinEvent implements Listener {
         if(playerData.randomitem) {
             randomItemList.add(e.getPlayer());
             e.getPlayer().sendMessage(Utils.cmdMsg("<green>Every <yellow>60 <green>you will recieve a random item. Execute /random to disable or enable this"));
-        }
-        if(playerData.chatcolor.startsWith("&")) {
-            playerData.setChatColor(Utils.convertColorCodesToAdventure(playerData.chatcolor));
-            ChatColorCMD.colorProfiles.put(e.getPlayer().getUniqueId().toString(), Utils.convertColorCodesToAdventure(playerData.chatcolor));
-        } else ChatColorCMD.colorProfiles.put(e.getPlayer().getUniqueId().toString(), playerData.chatcolor);
-        if(playerData.gradient) {
-            ChatGradientCMD.gradientProfiles.put(e.getPlayer().getUniqueId().toString(), new ChatGradientCMD.GradientProfiles(
-                    playerData.gradientfrom,
-                    playerData.gradientto
-            ));
         }
         LinkRewards.checkRewardsForLinking(e.getPlayer());
         LinkRewards.checkRewardsForBoosting(e.getPlayer());
@@ -111,20 +90,6 @@ public class JoinEvent implements Listener {
                     if(player.isOnline()) player.sendMessage(Utils.cmdMsg("<red>You are no longer protected by naked protection"));
                 }
             }
-            if(Config.getConfig().getBoolean("dev")) Bukkit.getOnlinePlayers().forEach(player -> {
-                RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-                RegionManager regions = container.get(BukkitAdapter.adapt(player.getWorld()));
-                ProtectedRegion region = regions.getRegion("afk");
-                if(region != null && region.contains(BukkitAdapter.asBlockVector(player.getLocation()))) {
-                    if(!afkTime.containsKey(player)) afkTime.put(player, System.currentTimeMillis()+AFK_TIME_NEEDED);
-                    else if(afkTime.get(player) < System.currentTimeMillis()) {
-                        afkTime.remove(player);
-                        ClassicDupe.getDatabase()
-                                .getPlayerDatabase()
-                                .getPlayerData(player.getUniqueId()).addBalance(1);
-                    }
-                } else if(afkTime.containsKey(player)) afkTime.remove(player);
-            });
         }
     }
 

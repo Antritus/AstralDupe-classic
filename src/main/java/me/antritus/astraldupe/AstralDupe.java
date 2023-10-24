@@ -1,7 +1,10 @@
 package me.antritus.astraldupe;
 
-import me.antritus.astral.cosmiccapital.CosmicCapital;
+
+import me.antritus.astral.cosmiccapital.api.CosmicCapitalAPI;
+import me.antritus.astral.cosmiccapital.api.providers.EconomyProvider;
 import me.antritus.astral.factions.api.FactionsAPI;
+import me.antritus.astral.factions.api.FactionsAPIProvider;
 import me.antritus.astral.fluffycombat.FluffyCombat;
 import me.antritus.astraldupe.commands.DupeCommand;
 import me.antritus.astraldupe.discord_loggers.ChatLogger;
@@ -13,8 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandMap;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class AstralDupe extends ClassicDupe {
 	public static ChatLogger chatLogger;
 	private static AstralDupe instance;
 	public static FactionsAPI<?> factionsAPI;
-	public static CosmicCapital cosmicCapital;
+	public static CosmicCapitalAPI cosmicCapital;
 	public static FluffyCombat fluffyCombat;
 	public static List<Material> illegalDupes = new ArrayList<>();
 
@@ -37,16 +38,13 @@ public class AstralDupe extends ClassicDupe {
 		super.enable();
 		instance = this;
 		try {
-			Class.forName("me.antritus.astral.factions.api");
-			@SuppressWarnings("rawtypes") @Nullable RegisteredServiceProvider<FactionsAPI> factions = getServer().getServicesManager().getRegistration(FactionsAPI.class);
-			if (factions != null) {
-				factionsAPI = factions.getProvider();
-			}
-		} catch (ClassNotFoundException ingore){
+			Class.forName("me.antritus.astral.factions.api.FactionsAPI");
+			factionsAPI = FactionsAPIProvider.get();
+		} catch (ClassNotFoundException ignored){
 		}
 
 		if (getServer().getPluginManager().getPlugin("CosmicCapital") != null) {
-			cosmicCapital = CosmicCapital.getPlugin(CosmicCapital.class);
+			cosmicCapital = EconomyProvider.getAPI();
 			economy = new AstralDupeEconomy(this);
 			register(new BountyClaimListener());
 			register(new GiveKillMoneyListener());
