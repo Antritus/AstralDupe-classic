@@ -92,7 +92,7 @@ public class Chat implements Listener {
         if(StaffChatCMD.staffChatPlayers.contains(e.getPlayer())) {
             e.setCancelled(true);
             StaffChatCMD.sendToStaffChat(
-                    Utils.format("<aqua><b>STAFF ")
+                    Utils.format("<aqua><b>STAFF</b> ")
                             .append(MiniMessage.miniMessage().deserialize(((Utils.getPrefix(e.getPlayer()) != null) ? Utils.getPrefix(e.getPlayer()) : "") + e.getPlayer().getName()))
                             .append(Utils.format(" <gray>\u00BB "))
                             .append(e.message().color(TextColor.color(0x10F60E))));
@@ -129,7 +129,7 @@ public class Chat implements Listener {
             name = mm.deserialize(Utils.getPrefix(e.getPlayer()) + data.nickname)
                     .hoverEvent(HoverEvent.showText(Utils.format("<yellow>Real Name: " + e.getPlayer().getName())));
         }
-        else name = Utils.format(Utils.getPrefix(e.getPlayer()) + e.getPlayer().getName());
+        else name = Utils.format(Utils.getPrefix(e.getPlayer())+ e.getPlayer().getName());
 
         Component finalName = name;
         String finalClanName = clanName;

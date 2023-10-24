@@ -1,39 +1,45 @@
 package xyz.prorickey.classicdupe;
 
-import java.io.File;
-
+import com.github.antritus.astral.configuration.Configuration;
+import me.antritus.astraldupe.AstralDupe;
 import org.bukkit.Material;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import xyz.prorickey.classicdupe.commands.default1.DupeCMD;
-import xyz.prorickey.classicdupe.commands.perk.SuffixCMD;
 import xyz.prorickey.classicdupe.events.BlockPlace;
 
-public class Config {
+import java.io.File;
 
-    private static FileConfiguration config;
-    private static File configFile;
+public class Config extends Configuration {
+    private static Config config;
+    private final ClassicDupe astralDupe;
 
-    public static void init(JavaPlugin p) {
-        configFile = new File(p.getDataFolder() + "/config.yml");
-        if(!configFile.exists()) {
-            p.saveResource("config.yml", false);
-        }
-        reloadConfig();
+    private Config(ClassicDupe astralDupe) {
+        super(astralDupe, new File(astralDupe.getDataFolder(), "config.yml"));
+        this.astralDupe = astralDupe;
     }
 
     public static void reloadConfig() {
-        config = YamlConfiguration.loadConfiguration(configFile);
+        config = new Config(AstralDupe.getInstance());
         Config.getConfig().getStringList("blockFromPlacing").forEach(str -> BlockPlace.bannedToPlaceBcAnnoyingASF.add(Material.valueOf(str.toUpperCase())));
         Config.getConfig().getStringList("forbiddenDupes").forEach(str -> DupeCMD.forbiddenDupes.add(Material.valueOf(str.toUpperCase())));
         Config.getConfig().getStringList("forbiddenDupesInCombat").forEach(str -> DupeCMD.forbiddenDupesInCombat.add(Material.valueOf(str.toUpperCase())));
         Config.getConfig().getStringList("removedItems").forEach(str -> ClassicDupe.randomItems.remove(new ItemStack(Material.valueOf(str.toUpperCase()))));
-        MemorySection sec = (MemorySection) Config.getConfig().get("suffix");
-        assert sec != null;
-        sec.getKeys(true).forEach((name) -> SuffixCMD.suffixes.put(name, Config.getConfig().getString("suffix." + name)));
+        ClassicDupe.configuration = config;
+    }
+
+    /**
+     * Use this method when astral dupe initializes as classic dupe plugin is still needed.
+     * When astral dupe can completely detach from the old sources, the normal method can be used
+     * @param classicDupe classic dupe
+     */
+    protected static void reloadConfig(ClassicDupe classicDupe) {
+        config = new Config(classicDupe);
+        Config.getConfig().getStringList("blockFromPlacing").forEach(str -> BlockPlace.bannedToPlaceBcAnnoyingASF.add(Material.valueOf(str.toUpperCase())));
+        Config.getConfig().getStringList("forbiddenDupes").forEach(str -> DupeCMD.forbiddenDupes.add(Material.valueOf(str.toUpperCase())));
+        Config.getConfig().getStringList("forbiddenDupesInCombat").forEach(str -> DupeCMD.forbiddenDupesInCombat.add(Material.valueOf(str.toUpperCase())));
+        Config.getConfig().getStringList("removedItems").forEach(str -> ClassicDupe.randomItems.remove(new ItemStack(Material.valueOf(str.toUpperCase()))));
+        ClassicDupe.configuration = config;
     }
     public static FileConfiguration getConfig() { return config; }
 

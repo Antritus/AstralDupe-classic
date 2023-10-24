@@ -2,10 +2,16 @@ package me.antritus.astraldupe;
 
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
+import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.ClassicDupeExpansion;
 
 public class AstralDupeExpansion extends ClassicDupeExpansion {
 	private final AstralDupe astralDupe;
+
+	public AstralDupeExpansion(){
+		super(ClassicDupe.getInstance());
+		astralDupe = AstralDupe.getInstance();
+	}
 	public AstralDupeExpansion(AstralDupe plugin) {
 		super(plugin);
 		astralDupe = plugin;

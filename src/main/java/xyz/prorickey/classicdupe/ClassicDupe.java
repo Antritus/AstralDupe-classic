@@ -1,6 +1,5 @@
 package xyz.prorickey.classicdupe;
 
-import com.github.antritus.astral.AdvancedPlugin;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.ForRemoval;
 import net.luckperms.api.LuckPerms;
@@ -13,9 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import xyz.prorickey.classicdupe.commands.admin.*;
 import xyz.prorickey.classicdupe.commands.default1.*;
 import xyz.prorickey.classicdupe.commands.moderator.*;
@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ApiStatus.OverrideOnly
-public class ClassicDupe extends AdvancedPlugin {
-
+public class ClassicDupe extends JavaPlugin {
+    protected static Config configuration;
     public static ClassicDupe plugin;
     public static ClassicDupeBot bot;
     public static LuckPerms lpapi;
@@ -48,8 +48,9 @@ public class ClassicDupe extends AdvancedPlugin {
     }
 
     @Override
-    public void enable() {
+    public void onEnable() {
         plugin = this;
+        Config.reloadConfig(this);
 
         try {
             Class.forName("org.h2.Driver");
@@ -65,7 +66,6 @@ public class ClassicDupe extends AdvancedPlugin {
         //if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) new ClassicDupeExpansion(this).register();
 
 
-        Config.init(this);
         database = new Database();
         pvdatabase = new PlayerVaultDatabase(this);
 
@@ -100,8 +100,9 @@ public class ClassicDupe extends AdvancedPlugin {
         commands.add(new GmsCMD((AstralDupe) this));
         commands.add(new HeadCMD((AstralDupe) this));
         commands.add(new InvseeCMD((AstralDupe) this));
-        commands.add(new PvAddCMD((AstralDupe) this));
-        commands.add(new PvSeeCMD((AstralDupe) this));
+        // PlayerVaultsX
+        //commands.add(new PvAddCMD((AstralDupe) this));
+        //commands.add(new PvSeeCMD((AstralDupe) this));
         commands.add(new ScheduleRestartCMD((AstralDupe) this));
         commands.add(new SetSpawnCMD((AstralDupe) this));
         commands.add(new SudoCMD((AstralDupe) this));
@@ -136,12 +137,10 @@ public class ClassicDupe extends AdvancedPlugin {
         commands.add(new EnderChestCMD((AstralDupe) this));
         commands.add(new FeedCMD((AstralDupe) this));
         commands.add(new HatCMD((AstralDupe) this));
-        commands.add(new KillEffectsCMD((AstralDupe) this));
         commands.add(new NicknameCMD((AstralDupe) this));
         commands.add(new PlayerVaultCMD((AstralDupe) this));
         commands.add(new RenameCMD((AstralDupe) this));
         commands.add(new RepairCMD((AstralDupe) this));
-        commands.add(new SuffixCMD((AstralDupe) this));
 
         CommandMap commandMap = getServer().getCommandMap();
         commandMap.registerAll("astraldupe", commands);
@@ -173,18 +172,10 @@ public class ClassicDupe extends AdvancedPlugin {
         //ticker
 
     }
-    @Override
-    public void updateConfig(@Nullable String s, String s1) {
-
-    }
 
     @Override
-    public void startDisable() {
+    public void onDisable() {
         ClassicDupeBot.jda.shutdown();
-    }
-
-    @Override
-    public void disable() {
     }
 
     public static void executeConsoleCommand(String cmd) {
@@ -258,4 +249,8 @@ public class ClassicDupe extends AdvancedPlugin {
         }, 20L * 60L);
     }
 
+    @Override
+    public @NotNull Config getConfig() {
+        return configuration;
+    }
 }

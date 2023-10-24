@@ -40,6 +40,10 @@ public class DupeCommand extends AstralCommand {
 				cooldown.put(player.getUniqueId(), System.currentTimeMillis()+333L);
 			}
 			ItemStack hand = player.getInventory().getItemInMainHand();
+			if (hand.getType()==Material.AIR){
+				main.messageManager().message(player, "dupe.illegal-item.hand");
+				return true;
+			}
 			if (!checkItem(hand)){
 				main.getMessageManager().message(player, "dupe.illegal-item.hand");
 				return true;
@@ -56,8 +60,6 @@ public class DupeCommand extends AstralCommand {
 				if (!checkCombat(hand)) {
 					main.getMessageManager().message(player, "dupe.illegal-item.combat");
 					return true;
-				}
-				if (!checkPotion(hand)){
 				}
 			}
 			int cAmount = hand.getAmount();
@@ -82,8 +84,8 @@ public class DupeCommand extends AstralCommand {
 					main.getMessageManager().message(commandSender, "dupe.negative");
 					return true;
 				}
-				if (dupeAmount>20){
-					main.getMessageManager().message(commandSender, "dupe.over-20");
+				if (dupeAmount>8){
+					main.getMessageManager().message(commandSender, "dupe.over-limit");
 					return true;
 				}
 				ItemStack newHand = hand.clone();

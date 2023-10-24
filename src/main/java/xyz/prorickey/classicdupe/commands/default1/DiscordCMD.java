@@ -15,6 +15,7 @@ public class DiscordCMD extends AstralCommand {
 
     public DiscordCMD(AstralDupe astralDupe) {
         super(astralDupe, "discord");
+        setAliases(List.of("discordlink"));
     }
 
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {

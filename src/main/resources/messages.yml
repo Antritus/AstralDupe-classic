@@ -16,4 +16,11 @@ dupe:
     hand: "%prefix% <red>You cannot dupe your item."
     shulker: "%prefix% <red>You cannot your shulker box as it contains illegals."
     bundle: "%prefix% <red>You cannot your bundle as it contains illegal items."
-  super-dupe: "%prefix% <yellow>Super Duper Duper! Duped your items %times% times!"
+  negative: "%prefix% <yellow>/dupe <1-8>"
+  over-limit: "%prefix% <yellow>/dupe <1-8>"
+  super-duper: "%prefix% <yellow>Super Duper Duper! Duped your items %times% times!"
+
+
+suffix:
+  set: "%prefix% <white>Updated your suffix to <reset>%suffix%<white>!"
+  no-permission: "%prefix% <red>You do not have permissions to use this command."

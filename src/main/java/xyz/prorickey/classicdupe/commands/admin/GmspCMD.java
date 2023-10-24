@@ -1,6 +1,5 @@
 package xyz.prorickey.classicdupe.commands.admin;
 
-import com.github.antritus.astral.AdvancedPlugin;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.ForRemoval;
 import me.antritus.astraldupe.commands.AstralCommand;

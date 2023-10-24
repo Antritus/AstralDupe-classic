@@ -49,7 +49,7 @@ public class HelpCMD extends AstralCommand implements Listener {
                 meta.lore(List.of(
                         Utils.format("<color:#26DE09>Overworld Border: " + config.getString("help.overworld")),
                         Utils.format("<color:#26DE09>Nether Border: " + config.getString("help.nether")),
-                        Utils.format("<color:#26DE09>Nether Border: " + config.getString("help.end")),
+                        Utils.format("<color:#26DE09>End Border: " + config.getString("help.end")),
                         Utils.format("<color:#26DE09>"),
                         Utils.format("<color:#26DE09>Overworld Spawn Command: /overworld"),
                         Utils.format("<color:#26DE09>Nether Spawn Command: /nether"),
@@ -175,7 +175,7 @@ public class HelpCMD extends AstralCommand implements Listener {
                 List<Component> components = List.of(
                         Utils.format("<color:#26DE09>Overworld Border: " + config.getString("help.overworld")),
                         Utils.format("<color:#26DE09>Nether Border: " + config.getString("help.nether")),
-                        Utils.format("<color:#26DE09>Nether Border: " + config.getString("help.end")),
+                        Utils.format("<color:#26DE09>End Border: " + config.getString("help.end")),
                         Utils.format("<color:#26DE09>"),
                         Utils.format("<color:#26DE09>Overworld Spawn Command: /overworld"),
                         Utils.format("<color:#26DE09>Nether Spawn Command: /nether"),

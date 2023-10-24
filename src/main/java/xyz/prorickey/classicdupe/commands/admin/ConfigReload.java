@@ -1,8 +1,8 @@
 package xyz.prorickey.classicdupe.commands.admin;
 
-import com.github.antritus.astral.AdvancedPlugin;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.commands.AstralCommand;
+import me.antritus.astraldupe.commands.SuffixCommand;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import xyz.prorickey.classicdupe.Config;
@@ -21,7 +21,8 @@ public class ConfigReload extends AstralCommand {
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         Config.reloadConfig();
         sender.sendMessage(Utils.cmdMsg("<green>The config has been reloaded"));
-        return false;
+        SuffixCommand.suffixCommand.loadSuffixes();
+        return true;
     }
 
     @Override

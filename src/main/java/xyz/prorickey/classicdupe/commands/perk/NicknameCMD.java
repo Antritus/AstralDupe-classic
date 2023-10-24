@@ -1,6 +1,5 @@
 package xyz.prorickey.classicdupe.commands.perk;
 
-import com.github.antritus.astral.AdvancedPlugin;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.commands.AstralCommand;
 import net.kyori.adventure.text.Component;

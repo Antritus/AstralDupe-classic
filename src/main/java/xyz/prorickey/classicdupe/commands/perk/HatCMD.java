@@ -1,18 +1,12 @@
 package xyz.prorickey.classicdupe.commands.perk;
 
-import com.github.antritus.astral.AdvancedPlugin;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.Utils;
 
 import java.util.ArrayList;

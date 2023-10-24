@@ -31,19 +31,19 @@ dependencies:
       join-classpath: true
     PlaceholderAPI:
       load: AFTER
-      required: false
+      required: true
     spark:
-      load: BEFORE
-      required: false
-    CosmicCapital:
       load: AFTER
+      required: true
+    CosmicCapital:
+      load: BEFORE
       required: false
     Wormhole:
       load: AFTER
       required: false
     Fluffy:
-      load: AFTER
+      load: BEFORE
       required: true
     AntsFactions:
-      load: AFTER
+      load: BEFORE
       required: false

@@ -1,15 +1,14 @@
 package xyz.prorickey.classicdupe.commands.admin;
 
-import com.github.antritus.astral.AdvancedPlugin;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.ForRemoval;
 import me.antritus.astraldupe.commands.AstralCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.command.*;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
 

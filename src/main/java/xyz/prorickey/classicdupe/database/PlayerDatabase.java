@@ -2,7 +2,6 @@ package xyz.prorickey.classicdupe.database;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
 
@@ -13,7 +12,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PlayerDatabase {
 
@@ -22,7 +20,6 @@ public class PlayerDatabase {
 
     public PlayerDatabase(Connection conn) {
         this.conn = conn;
-        new BalanceTopTask().runTaskTimerAsynchronously(ClassicDupe.getInstance(), 0, 20 * 60 * 5);
     }
 
     /**
@@ -86,7 +83,7 @@ public class PlayerDatabase {
                             set.getInt("killStreak")
                     ));
                 } else {
-                    PreparedStatement stat1 = conn.prepareStatement("INSERT INTO players(uuid, name, nickname, timesjoined, playtime, randomitem, chatcolor, gradient, gradientfrom, gradientto, night, balance, deathmessages, mutepings) VALUES (?, ?, null, 1, 0, true, '<gray>', false, null, null, true, 0, true, false)");
+                    PreparedStatement stat1 = conn.prepareStatement("INSERT INTO players(uuid, name, nickname, timesjoined, playtime, randomitem, night, deathmessages, mutepings) VALUES (?, ?, null, 1, 0, true, true, true, false)");
                     stat1.setString(1, player.getUniqueId().toString());
                     stat1.setString(2, player.getName());
                     stat1.execute();
@@ -113,25 +110,6 @@ public class PlayerDatabase {
 
     }
 
-    public static Map<Integer, PlayerData> balanceTop = new HashMap<>();
-
-    public class BalanceTopTask extends BukkitRunnable {
-        @Override
-        public void run() {
-            try {
-                PreparedStatement stat = conn.prepareStatement("SELECT * FROM players ORDER BY balance DESC LIMIT 10");
-                ResultSet set = stat.executeQuery();
-                AtomicInteger i = new AtomicInteger(1);
-                while(set.next()) balanceTop.put(
-                        i.getAndIncrement(),
-                        getPlayerData(UUID.fromString(set.getString("uuid")))
-                );
-            } catch (SQLException e) {
-                Bukkit.getLogger().severe(e.toString());
-            }
-        }
-    }
-
     public String getParticleEffect(UUID uuid) {
         try {
             ResultSet set = conn.prepareStatement("SELECT * FROM particleEffects WHERE uuid='" + uuid + "'").executeQuery();
@@ -140,35 +118,6 @@ public class PlayerDatabase {
         } catch (SQLException e) {
             Bukkit.getLogger().severe(e.toString());
             return null;
-        }
-    }
-
-    public String getKillEffect(UUID uuid) {
-        try {
-            ResultSet set = conn.prepareStatement("SELECT * FROM particleEffects WHERE uuid='" + uuid + "'").executeQuery();
-            if(set.next()) return set.getString("killEffect");
-            return null;
-        } catch (SQLException e) {
-            Bukkit.getLogger().severe(e.toString());
-            return null;
-        }
-    }
-
-    public void setParticleEffect(UUID uuid, @Nullable String particleEffect) {
-        if(particleEffect == null) particleEffect = "none";
-        try {
-            conn.prepareStatement("UPDATE particleEffects SET particleEffect='" + particleEffect + "' WHERE uuid='" + uuid + "'").execute();
-        } catch (SQLException e) {
-            Bukkit.getLogger().severe(e.toString());
-        }
-    }
-
-    public void setKillEffect(UUID uuid, @Nullable String killEffect) {
-        if(killEffect == null) killEffect = "none";
-        try {
-            conn.prepareStatement("UPDATE particleEffects SET killEffect='" + killEffect + "' WHERE uuid='" + uuid + "'").execute();
-        } catch (SQLException e) {
-            Bukkit.getLogger().severe(e.toString());
         }
     }
 

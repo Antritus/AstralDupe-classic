@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.events.JoinEvent;
@@ -18,6 +17,7 @@ public class RandomCMD extends AstralCommand {
 
     public RandomCMD(AstralDupe astralDupe) {
         super(astralDupe, "toggle");
+        setAliases(List.of("random"));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class RandomCMD extends AstralCommand {
     }
 
     @Override
-    public @Nullable List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
         return Collections.emptyList();
     }
 }

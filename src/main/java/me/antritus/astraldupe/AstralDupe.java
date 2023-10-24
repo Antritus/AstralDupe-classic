@@ -1,21 +1,26 @@
 package me.antritus.astraldupe;
 
 
+import com.github.antritus.astral.messages.MessageManager;
 import me.antritus.astral.cosmiccapital.api.CosmicCapitalAPI;
 import me.antritus.astral.cosmiccapital.api.providers.EconomyProvider;
 import me.antritus.astral.factions.api.FactionsAPI;
 import me.antritus.astral.factions.api.FactionsAPIProvider;
 import me.antritus.astral.fluffycombat.FluffyCombat;
 import me.antritus.astraldupe.commands.DupeCommand;
+import me.antritus.astraldupe.commands.StoreAnnouncementCommand;
+import me.antritus.astraldupe.commands.SuffixCommand;
 import me.antritus.astraldupe.discord_loggers.ChatLogger;
 import me.antritus.astraldupe.discord_loggers.MessageLogger;
 import me.antritus.astraldupe.listeners.BountyClaimListener;
 import me.antritus.astraldupe.listeners.ChatItemListener;
 import me.antritus.astraldupe.listeners.GiveKillMoneyListener;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandMap;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 import xyz.prorickey.classicdupe.ClassicDupe;
 
 import java.util.ArrayList;
@@ -32,11 +37,13 @@ public class AstralDupe extends ClassicDupe {
 	public static CosmicCapitalAPI cosmicCapital;
 	public static FluffyCombat fluffyCombat;
 	public static List<Material> illegalDupes = new ArrayList<>();
+	private MessageManager messageManager;
 
 	@Override
-	public void enable() {
-		super.enable();
+	public void onEnable() {
+		super.onEnable();
 		instance = this;
+		messageManager = new MessageManager(this);
 		try {
 			Class.forName("me.antritus.astral.factions.api.FactionsAPI");
 			factionsAPI = FactionsAPIProvider.get();
@@ -58,24 +65,11 @@ public class AstralDupe extends ClassicDupe {
 			return;
 		}
 
-		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) new AstralDupeExpansion(this).register();
+		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+			PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().register(AstralDupeExpansion.class);
 
 
 		List<String> forbiddenDupes = getConfig().getStringList("forbiddenDupes");
-		forbiddenDupes.forEach(item->{
-			try {
-				Material material = Material.valueOf(item);
-				illegalDupes.add(material);
-			} catch (IllegalArgumentException ignore){}
-		});
-		List<String> combatForbiddenItems = getConfig().getStringList("combat-forbiddenDupes");
-		forbiddenDupes.forEach(item->{
-			try {
-				Material material = Material.valueOf(item);
-				illegalDupes.add(material);
-			} catch (IllegalArgumentException ignore){}
-		});
-		List<String> combatForbiddenPotions = getConfig().getStringList("combat-potion-forbiddenDupes");
 		forbiddenDupes.forEach(item->{
 			try {
 				Material material = Material.valueOf(item);
@@ -91,11 +85,24 @@ public class AstralDupe extends ClassicDupe {
 
 		CommandMap commandMap = getServer().getCommandMap();
 		commandMap.register("astraldupe", new DupeCommand(this));
+		commandMap.register("astraldupe", new SuffixCommand(this));
+		commandMap.register("astraldupe", new StoreAnnouncementCommand(this));
 	}
 
 	@Override
-	public void disable() {
-		super.disable();
+	public void onDisable() {
+		super.onDisable();
+	}
+
+
+	@NotNull
+	public MessageManager messageManager() {
+		return messageManager;
+	}
+	@NotNull
+	@Deprecated(forRemoval = true)
+	public MessageManager getMessageManager() {
+		return messageManager;
 	}
 
 

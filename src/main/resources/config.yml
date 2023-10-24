@@ -76,20 +76,48 @@ ranks:
   default:
     homes: 1
 suffix:
-  golden: "&6&lGolden"
-  dupe: "&f&lDupe"
-  pvp: "&c&lPvP"
-  pvp-god: "&4&lPvP &cGod"
-
-
-
-  god: "&6&lGOD"
-  duper: "&d&lDUPER"
-  simp: "&d&lSIMP"
-  goddess: "&6&lGODDESS"
-  og: "&b&lOG"
-  mf: "&c&lMF"
-  pro: "&9&lPRO"
-  special: "&a&lSPECIAL"
-  lava: "&c&lLAVA"
-  pvp: "&e&lPVP"
+  - name: "Beta"
+    format: "<dark_aqua><b>B<aqua><b>E<dark_aqua><b>T<aqua><b>A"
+    material: NETHERITE_INGOT
+    receive: "Players who played in the beta has received this as a reward!"
+    category: "Limited Timed"
+  - name: "OG"
+    format: "<dark_aqua><b>O<aqua>G"
+    material: DIAMOND
+    receive: "The first 100 players who played the server received this a reward!"
+    category: "Limited Timed"
+  - name: "PvP"
+    format: "<red>PvP"
+    material: DIAMOND_SWORD
+    receive: "Received by buying suffix bundle from store!"
+    category: "Suffix Bundle"
+  - name: "Star"
+    format: "<yellow>S<white>T<yellow>A<white>R"
+    material: NETHER_STAR
+    receive: "Received by buying suffix bundle from store!"
+    category: "Suffix Bundle"
+  - name: "Potato"
+    format: "<yellow>Potato"
+    material: POTATO
+    receive: "Received by buying suffix bundle from store!"
+    category: "Suffix Bundle"
+  - name: KID RAGE
+    format: "<dark_red><b>KID RAGE"
+    material: SPIDER_EYE
+    receive: "Received by buying suffix bundle from store!"
+    category: "Suffix Bundle"
+  - name: Special
+    format: "<pink><u>Special"
+    material: DIRT
+    receive: "Received by buying suffix bundle from store!"
+    category: "Suffix Bundle"
+  - name: Support-1
+    format: "<green><b>/ʙᴜʏ"
+    material: CHEST
+    receive: "Unlocked by default"
+    category: "Free"
+  - name: Support-2
+    format: "<blue><b>/vote"
+    material: TRIPWIRE_HOOK
+    receive: "Unlocked by default"
+    category: "Free"
