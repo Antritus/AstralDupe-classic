@@ -1,6 +1,8 @@
 placeholders:
   - name: prefix
-    text: "<dark_gray>[<yellow>i</yellow>]<reset>"
+    text: "overridden"
+  - name: staff-chat
+    text: "<aqua><b>STAFF CHAT<reset>"
 
 command-parse:
   incorrect-format: "%prefix% %usage% <click:suggest_command:/%command%><hover:show_text:'<green>Click here to suggest the correct format!'><gray>/%command%</gray></hover>"
@@ -24,3 +26,19 @@ dupe:
 suffix:
   set: "%prefix% <white>Updated your suffix to <reset>%suffix%<white>!"
   no-permission: "%prefix% <red>You do not have permissions to use this command."
+
+staff-chat:
+  toggle:
+    true: "%staff-chat% <yellow>Enabled staff chat"
+    false: "%staff-chat% <yellow>Disabled staff chat"
+  format: "%staff-chat% <white>%who%<gray>: <white>%message%"
+
+toggle:
+  true: "%prefix% <yellow>You will now receive random items every 15 seconds!"
+  false: "%prefix% <yellow>You will no longer receive random items every 15 seconds!"
+
+chat:
+  cooldown: "%prefix% <yellow>You're on a chat cooldown! Wait %cooldown%s!"
+  item:
+    air: "<yellow><hover:show_text:'<white>Nothing to see here'>%player%<yellow>'s hand <aqua><b>%amount%x<reset>"
+    item: "<yellow>%item%%displayname% <aqua><b>%amount%x</hover><reset>"

@@ -1,7 +1,7 @@
 package xyz.prorickey.classicdupe;
 
-import com.github.antritus.astral.configuration.Configuration;
 import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.utils.Configuration;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;

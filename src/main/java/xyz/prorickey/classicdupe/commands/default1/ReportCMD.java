@@ -1,6 +1,7 @@
 package xyz.prorickey.classicdupe.commands.default1;
 
 import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.utils.ColorUtils;
 import me.antritus.astraldupe.utils.PlayerUtils;
 import me.antritus.astraldupe.commands.AstralCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -10,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import xyz.prorickey.classicdupe.Config;
 import xyz.prorickey.classicdupe.Utils;
-import xyz.prorickey.classicdupe.commands.moderator.StaffChatCMD;
 import xyz.prorickey.classicdupe.discord.ClassicDupeBot;
 
 import java.time.Instant;
@@ -23,7 +23,7 @@ public class ReportCMD extends AstralCommand {
 
     public ReportCMD(AstralDupe astralDupe) {
         super(astralDupe, "report");
-        setAliases(List.of("helpop"));
+        setAliases(List.of("helpop", "apuaapuaolenpulassa!"));
     }
 
     @Override
@@ -46,25 +46,27 @@ public class ReportCMD extends AstralCommand {
             return true;
         }
         if (!reasons.contains(args[1].toLowerCase())) args[1] = "other";
-        String reason = "No reason provided";
+        String reason;
         if (args.length > 2) {
             StringBuilder sb = new StringBuilder();
             for (int i = 2; i < args.length; i++) {
                 sb.append(args[i]).append(" ");
             }
             reason = sb.toString();
+        } else {
+            reason = "No reason provided";
         }
 
         player.sendMessage(Utils.cmdMsg("<green>Thank you for submitting a report, staff will look into it now"));
 
-        StaffChatCMD.sendToStaffChat(Utils.format("<dark_gray>[<red>REPORT<dark_gray>] <yellow>" +
-                player.getName() +
-                " <green>reported <yellow>" +
-                rep.getName() +
-                "<green> for <yellow>" +
-                args[1])
+        Bukkit.getOnlinePlayers().stream().filter(p->p.hasPermission("astraldupe.staff.chat")).forEach(p->p.sendMessage(ColorUtils.translateComp("<dark_gray>[<red>REPORT<dark_gray>] <yellow>" +
+                        player.getName() +
+                        " <green>reported <yellow>" +
+                        rep.getName() +
+                        "<green> for <yellow>" +
+                        args[1])
                 .appendNewline()
-                .append(Utils.format("<green>Reason: <yellow>" + reason)));
+                .append(Utils.format("<green>Reason: <yellow>" + reason))));
 
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Report Submitted!");

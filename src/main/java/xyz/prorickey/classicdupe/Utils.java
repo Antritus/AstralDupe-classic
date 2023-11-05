@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
@@ -93,6 +94,15 @@ public class Utils {
         String rank = ClassicDupe.getLuckPerms().getUserManager().getUser(player.getUniqueId()).getCachedData().getMetaData().getPrimaryGroup();
         if(Config.getConfig().getInt("ranks." + rank + ".homes") != 0) return Config.getConfig().getInt("ranks." + rank + ".homes");
         return 1;
+    }
+
+    public static boolean isVanished(CommandSender looking, Player who) {
+        if (looking instanceof Player player){
+            if (!player.canSee(who)){
+                return true;
+            }
+        }
+        return isVanished(who);
     }
 
     public static boolean isVanished(Player player) {

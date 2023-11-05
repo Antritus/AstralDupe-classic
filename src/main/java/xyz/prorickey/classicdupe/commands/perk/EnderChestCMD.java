@@ -14,7 +14,7 @@ public class EnderChestCMD extends AstralCommand {
     public EnderChestCMD(AstralDupe main) {
         super(main, "enderchest");
         setPermission("astraldupe.perk.enderchest");
-        setAliases(List.of("ec"));
+        setAliases(List.of("ec", "echest"));
     }
 
     @Override

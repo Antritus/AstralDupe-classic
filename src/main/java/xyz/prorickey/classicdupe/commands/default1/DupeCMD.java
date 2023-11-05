@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 
+@Deprecated
 @ForRemoval(reason = "Implement older astral command")
 public class DupeCMD extends AstralCommand {
 

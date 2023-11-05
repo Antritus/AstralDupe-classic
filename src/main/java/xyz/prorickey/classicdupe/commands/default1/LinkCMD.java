@@ -46,7 +46,7 @@ public class LinkCMD extends AstralCommand {
         }
         String code = genCode();
         linkCodes.put(code, new LinkCode(code, player, System.currentTimeMillis()));
-        player.sendMessage(Utils.cmdMsg("<green>Please go onto the ClassicDupe discord and execute the command ")
+        player.sendMessage(Utils.cmdMsg("<green>Please go onto the AstralDupe discord and execute the command ")
                 .append(Utils.format("<yellow>/link " + code))
                 .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "/link " + code))
                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Utils.format("<gray>Click to copy <white>/link " + code + " <gray> to your clipboard."))));

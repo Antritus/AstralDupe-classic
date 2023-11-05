@@ -11,18 +11,20 @@ help:
   end: 3x3
 
 discord:
+  link: DISCORD_LINK
   guild: GUILD_ID
-  staffchat: CHANNEL_ID
   cspy: CHANNEL_ID
   token: CHANNEL_ID
   reports: CHANNEL_ID
-  link: DISCORD_LINK
+  staff: CHANNEL_ID
   role:
     system: ROLE_ID
     link: ROLE_ID
   loggers:
     message: GUILD_ID
     chat: GUILD_ID
+    staff-chat: GUILD_ID
+
 
 blockFromPlacing:
   - bedrock
@@ -59,65 +61,70 @@ economy:
             cost: 1
             lore: "<yellow>Penis"
 ranks:
-  admin:
-    homes: 8
-  dev:
-    homes: 8
-  mod:
-    homes: 8
-  media:
-    homes: 8
-  legend:
-    homes: 8
-  mvp:
-    homes: 5
-  vip:
+  owner:
     homes: 3
+  developer:
+    homes: 3
+  administrator:
+    homes: 3
+  moderator:
+    homes: 3
+  quasar:
+    homes: 5
   default:
-    homes: 1
+    homes: 3
 suffix:
   - name: "Beta"
     format: "<dark_aqua><b>B<aqua><b>E<dark_aqua><b>T<aqua><b>A"
     material: NETHERITE_INGOT
     receive: "Players who played in the beta has received this as a reward!"
     category: "Limited Timed"
+    priority: 100
   - name: "OG"
     format: "<dark_aqua><b>O<aqua>G"
     material: DIAMOND
     receive: "The first 100 players who played the server received this a reward!"
     category: "Limited Timed"
+    priority: 99
   - name: "PvP"
     format: "<red>PvP"
     material: DIAMOND_SWORD
     receive: "Received by buying suffix bundle from store!"
     category: "Suffix Bundle"
+    priority: 30
   - name: "Star"
     format: "<yellow>S<white>T<yellow>A<white>R"
     material: NETHER_STAR
     receive: "Received by buying suffix bundle from store!"
     category: "Suffix Bundle"
+    priority: 30
   - name: "Potato"
     format: "<yellow>Potato"
     material: POTATO
     receive: "Received by buying suffix bundle from store!"
     category: "Suffix Bundle"
+    priority: 30
   - name: KID RAGE
     format: "<dark_red><b>KID RAGE"
     material: SPIDER_EYE
     receive: "Received by buying suffix bundle from store!"
     category: "Suffix Bundle"
+    priority: 30
   - name: Special
     format: "<pink><u>Special"
     material: DIRT
     receive: "Received by buying suffix bundle from store!"
     category: "Suffix Bundle"
+    priority: 30
   - name: Support-1
     format: "<green><b>/ʙᴜʏ"
     material: CHEST
     receive: "Unlocked by default"
     category: "Free"
+    priority: 0
   - name: Support-2
     format: "<blue><b>/vote"
     material: TRIPWIRE_HOOK
     receive: "Unlocked by default"
     category: "Free"
+    priority: 30

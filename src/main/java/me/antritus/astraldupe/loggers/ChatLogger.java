@@ -1,6 +1,8 @@
-package me.antritus.astraldupe.discord_loggers;
+package me.antritus.astraldupe.loggers;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.entity.AstralPlayer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,17 +16,21 @@ import java.util.Date;
 public class ChatLogger extends DiscordLogger implements Listener {
 	private final DateFormat dateFormat = new SimpleDateFormat("dd:MM:yyy hh:mm:ss");
 	private final MiniMessage miniMessage = MiniMessage.miniMessage();
-	public ChatLogger(String name) {
+	private final AstralDupe astralDupe;
+	public ChatLogger(AstralDupe astral, String name) {
 		super(name);
+		this.astralDupe = astral;
 	}
 
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onChat(AsyncChatEvent event){
+		AstralPlayer player = astralDupe.astralPlayer(event.getPlayer());
+		if (player.isStaffChatEnabled()){
+			return;
+		}
 		String date = dateFormat.format(Date.from(Instant.now()));
 		String serialized = miniMessage.serialize(event.message());
-		String untagged = miniMessage.stripTags(serialized);
-		log("**CHAT LOG MM** ["+ date +"]" + event.getPlayer().getName() + ": ``"+serialized+"``"
-				+"\n**CHAT LOG** ["+ date +"]" + event.getPlayer().getName() + ": ``"+untagged+"``");
+		log((AstralDupe.dev ? "**DEV SERVER** " : "")+"**CHAT** ["+ date +"] " + event.getPlayer().getName() + " (``"+event.getPlayer().getUniqueId()+"``)" + ": ``"+serialized+"``");
 	}
 }

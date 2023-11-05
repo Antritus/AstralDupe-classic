@@ -1,7 +1,7 @@
 package me.antritus.astraldupe.commands;
 
-import com.github.antritus.astral.utils.ColorUtils;
 import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.utils.ColorUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -81,10 +81,11 @@ public class SuffixCommand extends AstralCommand {
 			Material material = Material.valueOf(
 					(String) map.get("material")
 			);
+			int priority = (int) (map.get("priority") != null ? map.get("priority") : 0);
 			Component formatComp = miniMessage.deserialize(format);
 			Component descriptionComp = miniMessage.deserialize(description);
-			Suffix suffix = new Suffix(name, category, formatComp, descriptionComp, material);
-			suffixes.put(suffix.name, suffix);
+			Suffix suffix = new Suffix(name, category, priority, formatComp, descriptionComp, material);
+			suffixes.put(suffix.name.toLowerCase(), suffix);
 		}
 	}
 
@@ -149,14 +150,16 @@ public class SuffixCommand extends AstralCommand {
 		private final String name;
 		private final String permission;
 		private final String category;
+		private final int priority;
 		private final Component format;
 		private final Component description;
 		private final Material material;
 
 		@Contract(pure = true)
-		public Suffix(String name, String category, Component format, Component description, Material material) {
+		public Suffix(String name, String category, int priority, Component format, Component description, Material material) {
 			this.name = name;
 			this.category = category;
+			this.priority = priority;
 			this.format = format;
 			this.permission = "astraldupe.suffix." + name.toLowerCase();
 			this.description = description;
@@ -215,7 +218,9 @@ public class SuffixCommand extends AstralCommand {
 			inventory.setItem(inventory.getSize() - 5, reset);
 
 			int i = 0;
-			for (Suffix suffix : suffixCommand.suffixes.values()) {
+			List<Suffix> suffixList = new ArrayList<>(suffixCommand.suffixes.values().stream().toList());
+			suffixList.sort(new SuffixComparator());
+			for (Suffix suffix : suffixList) {
 				ItemStack suffixItem = new ItemStack(suffix.material);
 				ItemMeta itemMeta = suffixItem.getItemMeta();
 				List<Component> lore = new ArrayList<>();
@@ -249,7 +254,7 @@ public class SuffixCommand extends AstralCommand {
 				lore.add(non_italic.appendSpace());
 				itemMeta.lore(lore);
 
-				Component playerName = Utils.format(Utils.getPrefix(player) + player.displayName());
+				Component playerName = Utils.format((Utils.getPrefix(player)) + miniMessage.serialize(player.displayName()));
 
 
 				Component itemName = non_italic
@@ -277,6 +282,13 @@ public class SuffixCommand extends AstralCommand {
 		}
 	}
 
+	private static class SuffixComparator implements java.util.Comparator<Suffix> {
+		@Override
+		public int compare(Suffix a, Suffix  b) {
+			return a.priority - b.priority;
+		}
+	}
+
 	private record MenuListener(SuffixCommand suffixCommand) implements Listener {
 		private MenuListener(SuffixCommand suffixCommand) {
 			this.suffixCommand = suffixCommand;
@@ -290,6 +302,9 @@ public class SuffixCommand extends AstralCommand {
 				event.setCancelled(true);
 				event.setResult(Event.Result.DENY);
 				ItemStack itemStack = event.getCurrentItem();
+				if (event.getCurrentItem()==null){
+					return;
+				}
 				assert itemStack != null;
 				ItemMeta meta = itemStack.getItemMeta();
 				if (meta.getPersistentDataContainer().has(key_suffix)) {

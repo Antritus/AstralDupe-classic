@@ -1,6 +1,5 @@
 package xyz.prorickey.classicdupe;
 
-import com.github.antritus.astral.utils.ColorUtils;
 import me.antritus.astral.cosmiccapital.api.CosmicCapitalAPI;
 import me.antritus.astral.cosmiccapital.api.managers.IAccountManager;
 import me.antritus.astral.cosmiccapital.api.types.IAccount;
@@ -15,10 +14,7 @@ import me.antritus.astral.fluffycombat.api.events.CombatEnterEvent;
 import me.antritus.astral.fluffycombat.api.events.CombatFullEndEvent;
 import me.antritus.astral.fluffycombat.manager.CombatManager;
 import me.antritus.astraldupe.AstralDupe;
-import me.antritus.astraldupe.utils.HealthUtils;
-import me.antritus.astraldupe.utils.PingUtils;
-import me.antritus.astraldupe.utils.PlayerUtils;
-import me.antritus.astraldupe.utils.TPSUtils;
+import me.antritus.astraldupe.utils.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -101,7 +97,7 @@ public class Scoreboard implements Listener {
                         board.registerNewObjective(player.getUniqueId().toString(), Criteria.DUMMY, Component.text("dummy")) :
                         board.getObjective(player.getUniqueId().toString());
                 String displayName = "<color:#8128f7><bold>AstralDupe";
-                if(Utils.isVanished(player)) displayName = "<color:751ac9><bold>AstralDupe <red><b>(V)";
+                if(Utils.isVanished(player)) displayName = AstralDupe.astralDupe+" <red><b>(V)";
                 if(obj.getDisplaySlot() != DisplaySlot.SIDEBAR) obj.setDisplaySlot(DisplaySlot.SIDEBAR);
                 if(!obj.displayName().equals(Utils.format(displayName))) obj.displayName(Utils.format(displayName));
 
@@ -109,7 +105,7 @@ public class Scoreboard implements Listener {
                 if(data == null) return;
 
                 if (AstralDupe.restartInProgress)
-                    updateTeamScore(obj, board, 15, Utils.format("<dark_red><b>SERVER REBOOTING"));
+                    updateTeamScore(obj, board, 14, Utils.format("<dark_red><b>SERVER REBOOTING"));
                 updateTeamScore(obj, board, 14, ColorUtils.translateComp(""));
                 updateTeamScore(obj, board, 13, Utils.format("<gray> | <white>Rank: <gold>"+Utils.getPrefix(player)));
                 if (AstralDupe.factionsAPI!= null){
@@ -123,7 +119,7 @@ public class Scoreboard implements Listener {
                         updateTeamScore(obj, board, 12, Utils.format("<gray> | <white>Clan: <yellow>"+faction.getName()));
                     }
                 } else {
-                    updateTeamScore(obj, board, 12, Utils.format("<gray> | <white>Clan: <dark_red><b>TODO"));
+                    updateTeamScore(obj, board, 12, Utils.format("<gray> | <white>Clan: <dark_red><b>SOON"));
                 }
                 String formatPing = PingUtils.getPingFormatMs(player);
                 updateTeamScore(obj, board, 11, Utils.format("<gray> | <white>Ping: <green>"+formatPing));
@@ -146,7 +142,8 @@ public class Scoreboard implements Listener {
 
                 FluffyCombat fluffyCombat = AstralDupe.fluffyCombat;
                 CombatManager combatManager = fluffyCombat.getCombatManager();
-                if (combatManager.hasTags(player)){
+                boolean disabledCombat = true;
+                if (combatManager.hasTags(player) && !disabledCombat){
                     CombatTag combatTag = combatManager.getLatest(player);
                     assert combatTag != null;
                     CombatUser combatUser = combatTag.getAttacker();
@@ -161,7 +158,7 @@ public class Scoreboard implements Listener {
                     } else if (opponent instanceof Player opponentPlayer){
                         health = HealthUtils.getFormattedHealth(opponentPlayer);
                     }
-                    String faction = "<dark_red><b>TODO";
+                    String faction = "<dark_red><b>SOON";
                     if (AstralDupe.factionsAPI != null){
                         FactionsAPI<?> factionsAPI = AstralDupe.factionsAPI;
                         UserDatabase userDatabase = factionsAPI.getUserDatabase();
@@ -198,16 +195,17 @@ public class Scoreboard implements Listener {
                     double tps = TPSUtils.getTPS();
                     String tpsFormat = TPSUtils.getFormattedTPS(tps);
                     double tpsPercent = TPSUtils.getTPSPercent(tps);
-                    int tpsPercent2 = (int) tpsPercent*100;
-                    updateTeamScore(obj, board, 8, Utils.format("<gray> | <white>TPS: <white>"+tpsFormat +" <gray>("+(tpsPercent2)+"%)"));
-                    updateTeamScore(obj, board, 7, Utils.format("<gray> | <white>Online: <aqua>"+ PlayerUtils.getVisiblePlayers(player).size()));
-                    if (tps<7){
-                        updateTeamScore(obj, board, 7, Utils.format("<dark_red><b>CONTACT ADMIN!"));
-                        updateTeamScore(obj, board, 6, Utils.format("<dark_red><b>TPS IS LOW!"));
+                    int tpsPercent2 = (int) tpsPercent * 100;
+                    updateTeamScore(obj, board, 8, Utils.format("<gray> | <white>TPS: <white>" + tpsFormat + " <gray>(" + (tpsPercent2) + "%)"));
+                    updateTeamScore(obj, board, 7, Utils.format("<gray> | <white>Online: <aqua>" + PlayerUtils.getVisiblePlayers(player).size()));
+                    if (tps < 7) {
+                        updateTeamScore(obj, board, 6, Utils.format("<dark_red><b>CONTACT ADMIN!"));
+                        updateTeamScore(obj, board, 5, Utils.format("<dark_red><b>TPS IS LOW!"));
                     }
-                    updateTeamScore(obj, board, 3, Utils.format("<gray> | <white>Uptime: <yellow>"+
+                    updateTeamScore(obj, board, 6, Utils.format("<gray> | <white>Uptime: <yellow>" +
                             Metrics.getServerMetrics().getServerUptimeFormatted()));
-                    updateTeamScore(obj, board, 4, Utils.format("<gray> | <white>Joins: <white>"+0));
+                    updateTeamScore(obj, board, 5, Utils.format("<gray> | <white>Beta:<green> true"));
+//                    updateTeamScore(obj, board, 5, Utils.format("<gray> | <white>Joins: <white>" + AstralDupe.getInstance().joins()));
                 }
                 updateTeamScore(obj, board, 2, Utils.format(" "));
                 if (AstralDupe.restartInProgress)

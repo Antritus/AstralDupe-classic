@@ -1,4 +1,4 @@
-package me.antritus.astraldupe.discord_loggers;
+package me.antritus.astraldupe.loggers;
 
 import me.antritus.astraldupe.Logger;
 import net.dv8tion.jda.api.JDA;

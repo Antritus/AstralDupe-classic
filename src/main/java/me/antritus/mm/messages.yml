@@ -1,0 +1,50 @@
+
+
+placeholders:
+  - name: prefix
+    value: "<red><b>Astral<reset>"
+    # This defaults to "type: default"
+  - name: legacy-example
+    value: "&c&lAstral<reset>" # Need to end every message with &r to reduce the risk of mini message parsing correctly
+    type: legacy # This parses the legacy chat colors in the placeholder parser. It also parses using the mini message api
+  - name: message-example
+    value: combat.enter.chat
+    type: message
+  - name: default-example
+    value: "<red><b>Astral<reset>"
+    type: default
+
+combat:
+  enter:
+    enabled: true
+    chat: "%prefix% <red>You're in combat! Do not log out!"
+    action-bar: "<red>You are currently in combat!"
+    title: "<red><b>COMBAT"
+    subtitle: "<gray>You have been hit! You are now in combat!"
+  leave: "%prefix% <red>You're no longer in combat!"
+  log:
+    enabled: false
+
+
+join-message:
+  serializer: legacy
+  chat: "%legacy-prefix% %player% &cleft the &7server"
+
+quit-message:
+  enabled: false
+
+chat-format:
+  serializer: both
+  chat: "%luckperms_prefix%%player%%luckperms_suffix5 &7> &f%message%"
+  default-placeholders:
+    - name: luckperms_prefix #If luckperms isn't found in the server, these placeholders will replace the placeholders
+      value: ""
+    - name: luckperms_suffix
+      value: ""
+
+faction-join:
+  join:
+    chat:
+      - ""
+      - "You have joined a new faction!"
+      - ""

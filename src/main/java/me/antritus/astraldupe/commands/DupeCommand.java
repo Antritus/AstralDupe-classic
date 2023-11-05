@@ -1,9 +1,9 @@
 package me.antritus.astraldupe.commands;
 
-import com.github.antritus.astral.utils.ColorUtils;
 import me.antritus.astral.fluffycombat.manager.CombatManager;
 import me.antritus.astraldupe.AstralDupe;
-import me.antritus.astrolapi.minecraft.ShulkerBoxUtils;
+import me.antritus.astraldupe.utils.ColorUtils;
+import me.antritus.astraldupe.utils.ShulkerBoxUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
@@ -33,6 +33,7 @@ public class DupeCommand extends AstralCommand {
 		if(commandSender instanceof Player player) {
 			CombatManager combatManager = AstralDupe.fluffyCombat.getCombatManager();
 			if (combatManager.hasTags(player)){
+				cooldown.putIfAbsent(player.getUniqueId(), 0L);
 				if (cooldown.get(player.getUniqueId())>System.currentTimeMillis()){
 					main.getMessageManager().message(player, "dupe.cooldown");
 					return true;
@@ -44,69 +45,37 @@ public class DupeCommand extends AstralCommand {
 				main.messageManager().message(player, "dupe.illegal-item.hand");
 				return true;
 			}
-			if (!checkItem(hand)){
+			if (!checkItem(hand, false)){
 				main.getMessageManager().message(player, "dupe.illegal-item.hand");
 				return true;
 			}
-			if (!checkBundle(hand)){
-				main.getMessageManager().message(player, "dupe.illegal-item.bundle");
-				return true;
-			}
-			if (!checkShulker(hand)){
-				main.getMessageManager().message(player, "dupe.illegal-item.shulker");
-				return true;
-			}
 			if (combatManager.hasTags(player)) {
-				if (!checkCombat(hand)) {
+				if (!checkItem(hand, false)) {
 					main.getMessageManager().message(player, "dupe.illegal-item.combat");
 					return true;
 				}
 			}
-			int cAmount = hand.getAmount();
-			if(strings.length == 0) {
-				ItemStack newHand = hand.clone();
-				int newAmount = getDupeAmount(1, cAmount);
-				if (cAmount<64){
-					if (cAmount+newAmount>64){
-						int left = 64-cAmount;
-						newAmount-=left;
-						player.getInventory().setItemInMainHand(hand.clone());
-						player.getInventory().getItemInMainHand().setAmount(64);
-					}
-				}
-				newHand.setAmount(newAmount);
-				player.getInventory().addItem(newHand);
+			int amount = 1;
+			if(strings.length>0 && isNumeric(strings[0]))
+				amount = Integer.parseInt(strings[0]);
+			if (amount<1){
+				main.getMessageManager().message(commandSender, "dupe.negative");
+				return true;
 			}
-			else {
-				if(!isNumeric(strings[0])) return true;
-				int dupeAmount = Integer.parseInt(strings[0]);
-				if (dupeAmount<1){
-					main.getMessageManager().message(commandSender, "dupe.negative");
-					return true;
-				}
-				if (dupeAmount>8){
-					main.getMessageManager().message(commandSender, "dupe.over-limit");
-					return true;
-				}
-				ItemStack newHand = hand.clone();
-				int newAmount = getDupeAmount(Integer.parseInt(strings[0]), cAmount);
-				if (cAmount<64){
-					if (cAmount+newAmount>64){
-						int left = 64-cAmount;
-						newAmount-=left;
-						player.getInventory().setItemInMainHand(hand.clone());
-						player.getInventory().getItemInMainHand().setAmount(64);
-					}
-				}
-				newHand.setAmount(newAmount);
-				player.getInventory().addItem(newHand);
-				main.getMessageManager().message(player, "dupe.super-duper","%times%="+dupeAmount);
+			if (amount>8){
+				main.getMessageManager().message(commandSender, "dupe.over-limit");
+				return true;
+			}
+			for (int i = 0; i < amount; i++){
+				ItemStack item = player.getInventory().getItemInMainHand().clone();
+				player.getInventory().addItem(item);
+			}
+			if (amount>1){
+				main.getMessageManager().message(player, "dupe.super-duper","%times%="+amount);
 			}
 		} else {
 			main.getMessageManager().message(commandSender, "command-parse.player-only");
 		}
-		//main.getMessageManager().message(commandSender, "example!");
-		//main.getMessageManager().message(commandSender, "Hey %placeholder%! This is built-in placeholder from messages.yml: %prefix%", "%placeholder%=Antritus");
 		return true;
 	}
 
@@ -130,27 +99,35 @@ public class DupeCommand extends AstralCommand {
 
 
 	private boolean checkCombat(ItemStack itemStack){
-		return true;
+		Material material = itemStack.getType();
+		return material != Material.TOTEM_OF_UNDYING
+				&& material != Material.POTION
+				&& material != Material.SPLASH_POTION
+				&& material != Material.LINGERING_POTION
+				&& material != Material.EXPERIENCE_BOTTLE
+				&& material != Material.ENDER_PEARL;
 	}
 	private boolean checkPotion(ItemStack hand) {
 		return true;
 	}
-	private boolean checkItem(ItemStack itemStack){
+	private boolean checkItem(ItemStack itemStack, boolean combat){
 		if (itemStack.getType().equals(Material.BUNDLE)){
-			return checkBundle(itemStack);
+			return checkBundle(itemStack, combat);
 		} else if (ShulkerBoxUtils.getShulkerBox(itemStack) != null){
-			return checkShulker(itemStack);
+			return checkShulker(itemStack, combat);
+		} else if (combat && !checkCombat(itemStack)) {
+			return false;
 		}
 		return AstralDupe.illegalDupes.stream().noneMatch(material -> material.equals(itemStack.getType()));
 	}
-	private boolean checkBundle(ItemStack itemStack) {
+	private boolean checkBundle(ItemStack itemStack, boolean combat) {
 		if (itemStack.getType() != Material.BUNDLE) {
 			return true;
 		}
 		BundleMeta bundleMeta = (BundleMeta) itemStack.getItemMeta();
-		return bundleMeta.getItems().stream().filter(Objects::nonNull).noneMatch(this::checkItem);
+		return bundleMeta.getItems().stream().filter(Objects::nonNull).noneMatch(item->this.checkItem(item, combat));
 	}
-	private boolean checkShulker(ItemStack itemStack){
+	private boolean checkShulker(ItemStack itemStack, boolean combat){
 		// It gets the block form of the item.
 		// If the item is not shulker a box, it returns null
 		if (itemStack == null){
@@ -165,7 +142,7 @@ public class DupeCommand extends AstralCommand {
 			if (item == null){
 				continue;
 			}
-			if (!checkItem(item)){
+			if (!checkItem(item, combat)){
 				return false;
 			}
 		}
@@ -173,17 +150,6 @@ public class DupeCommand extends AstralCommand {
 	}
 
 
-	private int getDupeAmount(int timesDupe, int cAmount) {
-		int result = cAmount;
-
-		for (int i = 0; i < timesDupe; i++) {
-			result = result * 2;
-		}
-
-		result = result - cAmount;
-
-		return result;
-	}
 
 	private static boolean isNumeric(String str){
 		return str != null && str.matches("[0-9.]+");

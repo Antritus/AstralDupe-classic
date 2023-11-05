@@ -8,7 +8,6 @@ import xyz.prorickey.classicdupe.ClassicDupe;
 import xyz.prorickey.classicdupe.Utils;
 import xyz.prorickey.classicdupe.commands.default1.PrivateMessageCMD;
 import xyz.prorickey.classicdupe.commands.moderator.CspyCMD;
-import xyz.prorickey.classicdupe.commands.moderator.StaffChatCMD;
 
 import java.util.HashMap;
 
@@ -16,8 +15,6 @@ public class QuitEvent implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        if(JoinEvent.randomTaskMap.get(e.getPlayer()) != null) JoinEvent.randomTaskMap.get(e.getPlayer()).cancel();
-        StaffChatCMD.staffChatPlayers.remove(e.getPlayer());
         PrivateMessageCMD.lastInConvo.remove(e.getPlayer());
         ClassicDupe.getDatabase().getHomesDatabase().unloadPlayer(e.getPlayer());
         ClassicDupe.getDatabase().getPlayerDatabase().playerDataUnload(e.getPlayer().getUniqueId());

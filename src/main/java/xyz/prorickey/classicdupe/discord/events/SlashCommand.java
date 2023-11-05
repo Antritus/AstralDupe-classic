@@ -16,5 +16,4 @@ public class SlashCommand extends ListenerAdapter {
             case "unlink" -> UnlinkDCMD.execute(event);
         }
     }
-
 }

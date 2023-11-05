@@ -1,47 +1,70 @@
 package me.antritus.astraldupe.listeners;
 
-import com.github.antritus.astral.utils.ColorUtils;
 import io.papermc.paper.event.player.AsyncChatDecorateEvent;
+import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.nms.ItemConverter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Material;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Objects;
 import java.util.regex.Pattern;
+
+import static me.antritus.astraldupe.MessageManager.placeholder;
 
 public class ChatItemListener implements Listener {
 	@SuppressWarnings("UnstableApiUsage")
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.LOW)
 	public void onDecorate(AsyncChatDecorateEvent e) {
 		Player player = e.player().getPlayer();
 		if (player==null){
 			return;
 		}
-		// ^ part of v2
 		MiniMessage mm = MiniMessage.miniMessage();
-		// serialize it to normal string format (STRING)
 		String serialized = mm.serialize(e.originalMessage());
-		// Creating component here, so we don't need to set result 2 tims
 		Component component = mm.deserialize(serialized);
-		// Showing [item] in chat if he/she has permissions.
-		if (player.hasPermission("astroldp.chat.item")) {
-			Component itemComponent;
-			if (player.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
-				itemComponent = Component.text().append(ColorUtils.translateComp("<white><bold>").append(player.name())).append(ColorUtils.translateComp("'s hand")).build();
-			} else {
-				ItemStack itemStack = player.getInventory().getItemInMainHand();
-				itemComponent = Component.text().append((itemStack.getItemMeta().displayName() != null) ? Objects.requireNonNull(itemStack.getItemMeta().displayName()) : Component.translatable(itemStack.translationKey())).hoverEvent(itemStack).build();
-			}
+		if (player.hasPermission("astraldupe.chat.item")) {
+			final String itemFlag = "<hover:show_item:%key%:%amount%:%nbt%>";
+			ItemStack item = player.getInventory().getItemInMainHand();
+			CompoundTag tagsCompoundTag = ItemConverter.tagsNBT(item);
+			String fixedFlag = itemFlag.replace("%key%", item.translationKey());
+			fixedFlag = itemFlag.replace("%amount%", String.valueOf(item.getAmount()));
+			fixedFlag = itemFlag.replace("%nbt%", tagsCompoundTag.getAsString());
+
+			ItemMeta meta = item.getItemMeta();
+
+			Component displayName = meta.displayName() != null ? meta.displayName() : Component.translatable(item.translationKey());
+			assert displayName != null;
+			String serializedName = mm.serialize(displayName);
+
+
+
+			String[] flags = new String[]{
+					placeholder("item", fixedFlag),
+					placeholder("amount", String.valueOf(item.getAmount())),
+					placeholder("displayname", serializedName),
+					placeholder("player", mm.serialize(player.name())),
+					placeholder("player_displayname", mm.serialize(player.displayName()))
+			};
+			AstralDupe astralDupe = AstralDupe.getInstance();
+
+			Component hoverComponent = AstralDupe.getInstance().messageManager().parse(true,
+					"chat.item.item", flags);
+			if (item.getType().isAir())
+				hoverComponent = astralDupe.messageManager().parse(true,
+						"chat.item.air", flags);
+
+			final Component finalHoverComponent = hoverComponent;
 			component = component.replaceText((builder) -> {
-				builder.match(Pattern.compile("\\[(?i)item]")).replacement(itemComponent);
+				builder.match(Pattern.compile("\\[(?i)item]")).replacement(finalHoverComponent);
 			});
 			component = component.replaceText((builder) -> {
-				builder.match(Pattern.compile("\\[(?i)i]")).replacement(itemComponent);
+				builder.match(Pattern.compile("\\[(?i)i]")).replacement(finalHoverComponent);
 			});
 		}
 		e.result(component);

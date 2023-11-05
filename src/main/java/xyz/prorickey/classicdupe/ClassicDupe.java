@@ -1,7 +1,6 @@
 package xyz.prorickey.classicdupe;
 
 import me.antritus.astraldupe.AstralDupe;
-import me.antritus.astraldupe.ForRemoval;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,7 +20,6 @@ import xyz.prorickey.classicdupe.commands.default1.*;
 import xyz.prorickey.classicdupe.commands.moderator.*;
 import xyz.prorickey.classicdupe.commands.perk.*;
 import xyz.prorickey.classicdupe.database.Database;
-import xyz.prorickey.classicdupe.database.PlayerVaultDatabase;
 import xyz.prorickey.classicdupe.discord.BoosterService;
 import xyz.prorickey.classicdupe.discord.ClassicDupeBot;
 import xyz.prorickey.classicdupe.events.*;
@@ -37,9 +35,6 @@ public class ClassicDupe extends JavaPlugin {
     public static ClassicDupeBot bot;
     public static LuckPerms lpapi;
     public static Database database;
-    @ForRemoval(reason = "Removing clans fully.")
-    @Deprecated(forRemoval = true)
-    public static PlayerVaultDatabase pvdatabase;
 
     public static final List<ItemStack> randomItems = new ArrayList<>();
 
@@ -67,7 +62,6 @@ public class ClassicDupe extends JavaPlugin {
 
 
         database = new Database();
-        pvdatabase = new PlayerVaultDatabase(this);
 
 
         bot = new ClassicDupeBot(this);
@@ -117,7 +111,6 @@ public class ClassicDupe extends JavaPlugin {
         commands.add(new NightVisionCMD((AstralDupe) this));
         commands.add(new PrivateMessageCMD((AstralDupe) this));
         commands.add(new PrivateMessageReplyCMD((AstralDupe) this));
-        commands.add(new RandomCMD((AstralDupe) this));
         commands.add(new ReportCMD((AstralDupe) this));
         commands.add(new RulesCMD((AstralDupe) this));
         commands.add(new SetHomeCMD((AstralDupe) this));
@@ -131,14 +124,12 @@ public class ClassicDupe extends JavaPlugin {
         commands.add(new CspyCMD((AstralDupe) this));
         commands.add(new MutechatCMD((AstralDupe) this));
         commands.add(new SpecCMD((AstralDupe) this));
-        commands.add(new StaffChatCMD((AstralDupe) this));
         commands.add(new StaffTeleportCMD((AstralDupe) this));
         commands.add(new CraftCMD((AstralDupe) this));
         commands.add(new EnderChestCMD((AstralDupe) this));
         commands.add(new FeedCMD((AstralDupe) this));
         commands.add(new HatCMD((AstralDupe) this));
         commands.add(new NicknameCMD((AstralDupe) this));
-        commands.add(new PlayerVaultCMD((AstralDupe) this));
         commands.add(new RenameCMD((AstralDupe) this));
         commands.add(new RepairCMD((AstralDupe) this));
 
@@ -149,11 +140,8 @@ public class ClassicDupe extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new QuitEvent(), this);
         getServer().getPluginManager().registerEvents(new Chat(), this);
         getServer().getPluginManager().registerEvents(new BlockPlace(), this);
-        getServer().getPluginManager().registerEvents(new VoidTeleport(), this);
         getServer().getPluginManager().registerEvents(new DeathEvent(), this);
         getServer().getPluginManager().registerEvents(new EntitySpawnEvent(), this);
-        getServer().getPluginManager().registerEvents(new GoldenAppleCooldown(), this);
-        getServer().getPluginManager().registerEvents(new PearlCooldown(), this);
         getServer().getPluginManager().registerEvents(new CSPY(), this);
         getServer().getPluginManager().registerEvents(new BoosterService(), this);
 
@@ -198,7 +186,6 @@ public class ClassicDupe extends JavaPlugin {
 
     public static LuckPerms getLuckPerms() { return lpapi; }
     public static Database getDatabase() { return database; }
-    public static PlayerVaultDatabase getPVDatabase() { return pvdatabase; }
 
     public static List<String> getOnlinePlayerUsernames() {
         List<String> list = new ArrayList<>();
