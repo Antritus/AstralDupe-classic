@@ -97,9 +97,9 @@ public class JoinEvent implements Listener {
                     cancel();
                     return;
                 }
-                Long time = nakedProtection.get(player);
+                Long time = nakedProtection.get(player.getUniqueId());
                 if(time + (10*60*1000) < System.currentTimeMillis()) {
-                    nakedProtection.remove(player);
+                    nakedProtection.remove(player.getUniqueId());
                     if(player.isOnline()) player.sendMessage(Utils.cmdMsg("<red>You are no longer protected by naked protection"));
                 }
             }
