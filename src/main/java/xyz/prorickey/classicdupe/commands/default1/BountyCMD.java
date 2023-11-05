@@ -1,11 +1,11 @@
 package xyz.prorickey.classicdupe.commands.default1;
 
-import com.github.antritus.astral.utils.ColorUtils;
 import me.antritus.astral.cosmiccapital.api.CosmicCapitalAPI;
 import me.antritus.astral.cosmiccapital.api.managers.IAccountManager;
 import me.antritus.astral.cosmiccapital.api.types.IAccount;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.commands.AstralCommand;
+import me.antritus.astraldupe.utils.ColorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
