@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * @since 1.0.0-snapshot
+ * @author antritus
+ */
 public class ShulkerBoxUtils {
 	/**
 	 * Gets shulker block state of given shulker box

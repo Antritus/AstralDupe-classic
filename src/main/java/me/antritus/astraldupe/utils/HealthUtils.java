@@ -4,6 +4,10 @@ import org.bukkit.entity.Player;
 
 import java.text.DecimalFormat;
 
+/**
+ * @since 1.0.0-snapshot
+ * @author antritus
+ */
 public final class HealthUtils {
 	private HealthUtils() {}
 
@@ -13,7 +17,7 @@ public final class HealthUtils {
 		}
 
 		DecimalFormat numberFormat = new DecimalFormat("." + "0".repeat(Math.max(0, decimalPlaces)));
-		return Double.parseDouble(numberFormat.format(player.getHealth()));
+		return Double.parseDouble(numberFormat.format(player.getHealth()).replace(",", "."));
 	}
 
 	public static double getFormattedHearts(Player player, int decimalPlaces) {
@@ -28,4 +32,3 @@ public final class HealthUtils {
 		return getFormattedHealth(player, 1) / 2;
 	}
 }
-

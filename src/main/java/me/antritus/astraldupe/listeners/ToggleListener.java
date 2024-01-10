@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import static org.bukkit.event.EventPriority.HIGH;
 
 public class ToggleListener implements Listener {
-	private static Random random = new Random(System.currentTimeMillis());
+	private static final Random random = new Random(System.currentTimeMillis());
 	private final Map<UUID, ScheduledTask> runnable = new HashMap<>();
 	private final AstralDupe astralDupe;
 
@@ -30,7 +31,7 @@ public class ToggleListener implements Listener {
 	}
 
 	@EventHandler(priority = HIGH)
-	public void onPlayerJoin(PlayerJoinEvent event){
+	public void onPlayerJoin(@NotNull PlayerJoinEvent event){
 		AstralPlayer astralPlayer = astralDupe.astralPlayer(event.getPlayer());
 		Player player = event.getPlayer();
 		ScheduledTask task = astralDupe.getServer().getAsyncScheduler().runAtFixedRate(
@@ -40,23 +41,28 @@ public class ToggleListener implements Listener {
 						int randomInt = random.nextInt(AstralDupe.randomItems.size());
 						ItemStack itemStack = AstralDupe.randomItems.get(randomInt);
 						Map<Integer, ItemStack> items = player.getInventory().addItem(itemStack);
-						if (items.size()>0){
-							World world = player.getWorld();
-							Location location = player.getLocation();
-							items.values().forEach(item->{
-								world.dropItemNaturally(location, itemStack);
+						if (!items.isEmpty()){
+							astralDupe.getServer().getScheduler().runTask(astralDupe, ()->{
+								World world = player.getWorld();
+								Location location = player.getLocation();
+								items.values().forEach(item->{
+									world.dropItemNaturally(location, itemStack);
+								});
 							});
 						}
+						astralPlayer.addReceived(1);
+						AstralDupe.globalReceived+=1;
 					}
 				},
-				0,
+				15,
 				15,
 				TimeUnit.SECONDS
 		);
+		runnable.put(player.getUniqueId(), task);
 	}
 
 	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent event){
+	public void onPlayerQuit(@NotNull PlayerQuitEvent event){
 		ScheduledTask task = runnable.get(event.getPlayer().getUniqueId());
 		task.cancel();
 		runnable.remove(event.getPlayer().getUniqueId());

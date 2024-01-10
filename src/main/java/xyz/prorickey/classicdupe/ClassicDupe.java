@@ -69,7 +69,6 @@ public class ClassicDupe extends JavaPlugin {
         new JoinEvent.JoinEventTasks().runTaskTimer(this, 0, 20);
         new LeaderBoardTask().runTaskTimer(this, 0, 20*60);
         new LinkCMD.LinkCodeTask().runTaskTimer(this, 0, 20);
-        new Scoreboard.ScoreboardTask().runTaskTimer(this, 0, 10);
 
         //new Clans(this);
 
@@ -115,7 +114,6 @@ public class ClassicDupe extends JavaPlugin {
         commands.add(new RulesCMD((AstralDupe) this));
         commands.add(new SetHomeCMD((AstralDupe) this));
         commands.add(new SpawnCMD((AstralDupe) this));
-        commands.add(new StatsCMD((AstralDupe) this));
         commands.add(new TrashCMD((AstralDupe) this));
         commands.add(new UnlinkCMD((AstralDupe) this));
         commands.add(new WorldsizeCMD((AstralDupe) this));
@@ -144,17 +142,6 @@ public class ClassicDupe extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EntitySpawnEvent(), this);
         getServer().getPluginManager().registerEvents(new CSPY(), this);
         getServer().getPluginManager().registerEvents(new BoosterService(), this);
-
-        // Checking if cosmic capital is found.
-        // This is set, so we know if it is a beta season and cosmic capital
-        // is still in development.
-        try {
-            Class.forName("me.antritus.astral.cosmiccapital.api.CosmicCapitalAPI");
-            ShopCMD.reloadShop();
-            commands.add(new ShopCMD((AstralDupe) this));
-            commands.add(new BountyCMD((AstralDupe) this));
-        } catch (ClassNotFoundException ignore) {
-        }
 
 
         //ticker

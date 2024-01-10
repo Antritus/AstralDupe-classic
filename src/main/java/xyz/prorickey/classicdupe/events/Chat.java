@@ -1,11 +1,8 @@
 package xyz.prorickey.classicdupe.events;
 
+import bet.astral.messagemanager.placeholder.LegacyPlaceholder;
 import io.papermc.paper.event.player.AsyncChatDecorateEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
-import me.antritus.astral.factions.api.FactionsAPI;
-import me.antritus.astral.factions.api.FactionsAPIProvider;
-import me.antritus.astral.factions.api.data.Faction;
-import me.antritus.astral.factions.api.data.User;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.entity.AstralPlayer;
 import net.kyori.adventure.key.Key;
@@ -31,7 +28,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static me.antritus.astraldupe.MessageManager.placeholder;
 
 @SuppressWarnings("UnstableApiUsage")
 public class Chat implements Listener {
@@ -91,7 +87,7 @@ public class Chat implements Listener {
             e.getPlayer().sendMessage(Utils.cmdMsg("<red>Your message has been blocked by the filter"));
             return;
         }
-        if(mutedChat && !e.getPlayer().hasPermission("astraldupe.mutechat.bypass")) {
+        if(mutedChat && !e.getPlayer().hasPermission("astraldupe.staff.mutechat.bypass")) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(Utils.cmdMsg("<red>The chat is currently muted"));
             return;
@@ -106,23 +102,9 @@ public class Chat implements Listener {
             double leftD = (double) left /1000;
             String format = decimalFormat.format(leftD);
             astralDupe.messageManager().message(e.getPlayer(), "chat.cooldown",
-                    placeholder("cooldown", format));
+                    new LegacyPlaceholder("cooldown", format));
 
             return;
-        }
-
-        String clanName = null;
-        String clanColor = "<yellow>";
-        try {
-            Class.forName("me.antritus.astral.factions.api.data.Faction");
-            FactionsAPI<?> factionsAPI = FactionsAPIProvider.get();
-            User user = factionsAPI.getUserDatabase().getKnownNonNull(e.getPlayer().getUniqueId());
-            Faction faction = user.getFactionInstance();
-            if (faction != null){
-                clanName = faction.getName();
-                //clanColor = faction.getColor();
-            }
-        } catch (ClassNotFoundException ignore) {
         }
 
         {
@@ -158,11 +140,9 @@ public class Chat implements Listener {
                 player.playSound(Sound.sound(Key.key("block.note_block.pling"), Sound.Source.MASTER, 1, 1));
         }
 
-        Component finalName = name;
-        String finalClanName = clanName;
+        final Component finalName = name;
         e.renderer((player, sourceDisplayName, message, viewer) ->
-                Utils.format((finalClanName != null ? "<dark_gray>[" + clanColor + finalClanName + "<dark_gray>] " : ""))
-                        .append(finalName)
+                    finalName
                         .append(Utils.format((Utils.getSuffix(player) != null) ? " " + Utils.convertColorCodesToAdventure(Utils.getSuffix(player))  : ""))
                         .append(Utils.format(" <gray>\u00BB <white>"))
                         .append(message)

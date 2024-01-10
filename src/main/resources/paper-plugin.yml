@@ -1,4 +1,3 @@
-#file: noinspection YAMLSchemaValidation
 main: me.antritus.astraldupe.AstralDupe
 loader: me.antritus.astraldupe.AstralDupeLoader
 name: AstralDupe
@@ -15,30 +14,22 @@ description: Dupe core of astral dupe. This uses ClassicDupe plugin in the inter
 
 
 dependencies:
-  bootstrap:
-    Infuse:
-      required: true
-      load: OMIT
   server:
-    v2Discord:
+    LuckPerms:
       load: BEFORE
       required: true
       join-classpath: true
-    LuckPerms:
-      load: AFTER
-      required: true
-      join-classpath: true
     PlaceholderAPI:
-      load: AFTER
+      load: BEFORE
       required: true
     spark:
-      load: AFTER
+      load: BEFORE
       required: true
     CosmicCapital:
       load: BEFORE
       required: false
     Wormhole:
-      load: AFTER
+      load: BEFORE
       required: false
     Fluffy:
       load: BEFORE

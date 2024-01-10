@@ -1,23 +1,25 @@
 package me.antritus.astraldupe;
 
 
+import bet.astral.messagemanager.MessageManager;
+import bet.astral.messagemanager.placeholder.Placeholder;
 import me.antritus.astral.cosmiccapital.api.CosmicCapitalAPI;
-import me.antritus.astral.cosmiccapital.api.providers.EconomyProvider;
-import me.antritus.astral.factions.api.FactionsAPI;
-import me.antritus.astral.factions.api.FactionsAPIProvider;
+import me.antritus.astral.cosmiccapital.api.providers.CosmicCapitalProvider;
 import me.antritus.astral.fluffycombat.FluffyCombat;
 import me.antritus.astraldupe.anticheat.FlagStackSize;
-import me.antritus.astraldupe.commands.DupeCommand;
-import me.antritus.astraldupe.commands.StoreAnnouncementCommand;
-import me.antritus.astraldupe.commands.SuffixCommand;
-import me.antritus.astraldupe.commands.ToggleCommand;
+import me.antritus.astraldupe.commands.*;
 import me.antritus.astraldupe.commands.staff.low.StaffChatCommand;
 import me.antritus.astraldupe.entity.AstralPlayer;
-import me.antritus.astraldupe.listeners.*;
+import me.antritus.astraldupe.listeners.ChatItemListener;
+import me.antritus.astraldupe.listeners.JoinListener;
+import me.antritus.astraldupe.listeners.PortalFixerListener;
+import me.antritus.astraldupe.listeners.ToggleListener;
 import me.antritus.astraldupe.loggers.ChatLogger;
 import me.antritus.astraldupe.loggers.MessageLogger;
 import me.antritus.astraldupe.loggers.StaffChatLogger;
+import me.antritus.astraldupe.utils.Configuration;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.MusicInstrument;
@@ -34,26 +36,27 @@ import org.bukkit.inventory.meta.MusicInstrumentMeta;
 import org.jetbrains.annotations.NotNull;
 import xyz.prorickey.classicdupe.ClassicDupe;
 
+import java.io.File;
 import java.util.*;
 
 public class AstralDupe extends ClassicDupe {
 	private static final String discord = "discord.gg/uh6h7faR9p";
 	public static final String astralColor = "<color:#7f29f0>";
 	public static final String astralDupe = "<click:open_url:'"+"https://"+discord+"'><hover:show_text:'<red>AstralDoop\n<gray>Report Bugs: <white>"+discord+"'><b>"+astralColor+"Astral<RESET>";
-
 	public final static boolean dev = false;
+	public static int globalDuped = 0;
+	public static int globalReceived = 0;
 	public final static int season = 0;
-	public final static String seasonFormat = "<dark_aqua>B<aqua>E<dark_aqua>T<aqua>A<reset>";
+	public final static String seasonFormat = "<reset><b><dark_aqua>B<aqua>E<dark_aqua>T<aqua>A<reset>";
 	public static AstralDupeEconomy economy;
 	public static MessageLogger messageLogger;
 	public static ChatLogger chatLogger;
 	public StaffChatLogger staffChatLogger;
 	private static AstralDupe instance;
-	public static FactionsAPI<?> factionsAPI;
-	public static CosmicCapitalAPI cosmicCapital;
+	public static CosmicCapitalAPI<?> cosmicCapital;
 	public static FluffyCombat fluffyCombat;
 	public static List<Material> illegalDupes = new ArrayList<>();
-	private MessageManager messageManager;
+	private MessageManager<AstralDupe> messageManager;
 	private JoinListener joinListener;
 	private Map<UUID, AstralPlayer> players = new LinkedHashMap<>();
 
@@ -61,18 +64,13 @@ public class AstralDupe extends ClassicDupe {
 	public void onEnable() {
 		super.onEnable();
 		instance = this;
-		messageManager = new MessageManager(this);
-		try {
-			Class.forName("me.antritus.astral.factions.api.FactionsAPI");
-			factionsAPI = FactionsAPIProvider.get();
-		} catch (ClassNotFoundException ignored) {
-		}
+		Configuration messagesYML = new Configuration(this, new File(getDataFolder(), "messages.yml"));
+		messageManager = new MessageManager<>(this, messagesYML, new HashMap<>());
+		messageManager.overrideDefaultPlaceholder("prefix", new Placeholder("prefix", MiniMessage.miniMessage().deserialize(astralDupe)));
 
 		if (getServer().getPluginManager().getPlugin("CosmicCapital") != null) {
-			cosmicCapital = EconomyProvider.getAPI();
+			cosmicCapital = CosmicCapitalProvider.getAPI();
 			economy = new AstralDupeEconomy(this);
-			register(new BountyClaimListener());
-			register(new GiveKillMoneyListener());
 		}
 
 		if (getServer().getPluginManager().getPlugin("Fluffy") != null)
@@ -103,7 +101,7 @@ public class AstralDupe extends ClassicDupe {
 		register(staffChatLogger);
 
 		register(new ChatItemListener());
-		register(new PortalFixerListener());
+		register(new PortalFixerListener(this));
 		register(new ToggleListener(this));
 
 
@@ -114,6 +112,7 @@ public class AstralDupe extends ClassicDupe {
 		commands.add(new StoreAnnouncementCommand(this));
 		commands.add(new StaffChatCommand(this));
 		commands.add(new ToggleCommand(this));
+		commands.add(new ToggleInfoCommand(this));
 
 		commandMap.registerAll("astraldupe", commands);
 		SuffixCommand.suffixCommand.loadSuffixes();
@@ -162,13 +161,13 @@ public class AstralDupe extends ClassicDupe {
 
 
 	@NotNull
-	public MessageManager messageManager() {
+	public MessageManager<AstralDupe> messageManager() {
 		return messageManager;
 	}
 
 	@NotNull
 	@Deprecated(forRemoval = true)
-	public MessageManager getMessageManager() {
+	public MessageManager<AstralDupe> getMessageManager() {
 		return messageManager;
 	}
 

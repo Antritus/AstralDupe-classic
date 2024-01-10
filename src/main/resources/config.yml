@@ -60,6 +60,7 @@ economy:
           - material: bedrock
             cost: 1
             lore: "<yellow>Penis"
+            undupable: true
 ranks:
   owner:
     homes: 3

@@ -1,5 +1,6 @@
 package me.antritus.astraldupe.commands;
 
+import bet.astral.messagemanager.placeholder.LegacyPlaceholder;
 import me.antritus.astraldupe.AstralDupe;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -36,7 +37,7 @@ public class StoreAnnouncementCommand extends AstralCommand{
 				}
 			}
 		} else {
-			main.getMessageManager().message(sender, "command-parse.console-only", "%command%=console-store-broadcast");
+			main.getMessageManager().message(sender, "command-parse.console-only", new LegacyPlaceholder("command", "console-store-broadcast"));
 		}
 		return true;
 	}

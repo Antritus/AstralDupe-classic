@@ -2,6 +2,10 @@ package me.antritus.astraldupe.utils;
 
 import org.bukkit.entity.Player;
 
+/**
+ * @since 1.0.0-snapshot
+ * @author antritus
+ */
 public final class PingUtils {
 	private PingUtils(){}
 
@@ -31,6 +35,9 @@ public final class PingUtils {
 
 	public static String getPingFormatMs(Player player){
 		int ping = getPing(player);
+		if (ping == 0){
+			return "<dark_green>Loading...";
+		}
 		if (ping < 60){
 			return "<green>"+ping+"ms";
 		}

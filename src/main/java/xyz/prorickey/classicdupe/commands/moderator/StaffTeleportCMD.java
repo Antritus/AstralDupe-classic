@@ -22,7 +22,7 @@ public class StaffTeleportCMD extends AstralCommand {
 
     public StaffTeleportCMD(AstralDupe astralDupe) {
         super(astralDupe, "staffteleport");
-        setAliases(List.of("st"));
+        setAliases(List.of("stp", "st"));
         setPermission("astraldupe.staff.teleport");
     }
 

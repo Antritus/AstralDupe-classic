@@ -1,8 +1,10 @@
 package me.antritus.astraldupe.commands.staff.low;
 
+import bet.astral.messagemanager.MessageManager;
+import bet.astral.messagemanager.placeholder.LegacyPlaceholder;
+import bet.astral.messagemanager.placeholder.Placeholder;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import me.antritus.astraldupe.AstralDupe;
-import me.antritus.astraldupe.MessageManager;
 import me.antritus.astraldupe.commands.AstralCommand;
 import me.antritus.astraldupe.entity.AstralPlayer;
 import me.antritus.astraldupe.loggers.StaffChatLogger;
@@ -25,8 +27,6 @@ import xyz.prorickey.classicdupe.discord.ClassicDupeBot;
 
 import java.util.List;
 
-import static me.antritus.astraldupe.MessageManager.placeholder;
-
 public class StaffChatCommand extends AstralCommand implements Listener {
 	private final StaffChatLogger logger;
 
@@ -40,7 +40,7 @@ public class StaffChatCommand extends AstralCommand implements Listener {
 
 	@Override
 	public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
-		MessageManager mM = main.messageManager();
+		MessageManager<AstralDupe> mM = main.messageManager();
 		if (args.length==0){
 			if (sender instanceof Player player) {
 				AstralPlayer astralPlayer = main.astralPlayer(player);
@@ -48,7 +48,7 @@ public class StaffChatCommand extends AstralCommand implements Listener {
 				mM.message(sender, ("staff-chat.toggle."+astralPlayer.isStaffChatEnabled()).toLowerCase());
 				return true;
 			} else {
-				mM.message(sender, "command-parse.incorrect-format", placeholder("command", "staffchat <message>"));
+				mM.message(sender, "command-parse.incorrect-format", new LegacyPlaceholder("command", "staffchat <message>"));
 				return true;
 			}
 		} else {
@@ -68,9 +68,9 @@ public class StaffChatCommand extends AstralCommand implements Listener {
 			} else if (sender instanceof RemoteConsoleCommandSender){
 				senderName = "REMOTE_CONSOLE";
 			}
-			String[] placeholders = new String[]{
-					placeholder("who", senderName),
-					placeholder("message", message)
+			Placeholder[] placeholders = new Placeholder[]{
+					new LegacyPlaceholder("who", senderName),
+					new LegacyPlaceholder("message", message)
 			};
 			Bukkit.getOnlinePlayers().stream().filter(p->p.hasPermission("astraldupe.staff.chat")).forEach(player->{
 				mM.message(player, "staff-chat.format", placeholders);
@@ -102,9 +102,9 @@ public class StaffChatCommand extends AstralCommand implements Listener {
 		Component message = event.message();
 		String serialized = MiniMessage.miniMessage().serialize(message);
 
-		String[] placeholders = new String[]{
-				placeholder("who", event.getPlayer().getName()),
-				placeholder("message", serialized)
+		Placeholder[] placeholders = new Placeholder[]{
+				new LegacyPlaceholder("who", event.getPlayer().getName()),
+				new LegacyPlaceholder("message", serialized)
 		};
 		Bukkit.getOnlinePlayers().stream().filter(p->p.hasPermission("astraldupe.staff.chat")).forEach(player->{
 			main.messageManager().message(player, "staff-chat.format", placeholders);

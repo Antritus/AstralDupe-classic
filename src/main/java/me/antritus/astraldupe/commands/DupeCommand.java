@@ -1,7 +1,9 @@
 package me.antritus.astraldupe.commands;
 
+import bet.astral.messagemanager.placeholder.LegacyPlaceholder;
 import me.antritus.astral.fluffycombat.manager.CombatManager;
 import me.antritus.astraldupe.AstralDupe;
+import me.antritus.astraldupe.entity.AstralPlayer;
 import me.antritus.astraldupe.utils.ColorUtils;
 import me.antritus.astraldupe.utils.ShulkerBoxUtils;
 import org.bukkit.Material;
@@ -66,12 +68,17 @@ public class DupeCommand extends AstralCommand {
 				main.getMessageManager().message(commandSender, "dupe.over-limit");
 				return true;
 			}
-			for (int i = 0; i < amount; i++){
+			AstralPlayer astralPlayer = AstralDupe.getInstance().astralPlayer(player);
+			for (int i = 0; i < amount; i++)//noinspection GrazieInspection
+			{
 				ItemStack item = player.getInventory().getItemInMainHand().clone();
 				player.getInventory().addItem(item);
+				// Keep the amount of items duped
+				astralPlayer.addDuped(item.getAmount());
+				AstralDupe.globalDuped+=item.getAmount();
 			}
 			if (amount>1){
-				main.getMessageManager().message(player, "dupe.super-duper","%times%="+amount);
+				main.getMessageManager().message(player, "dupe.super-duper", new LegacyPlaceholder("times", String.valueOf(amount)));
 			}
 		} else {
 			main.getMessageManager().message(commandSender, "command-parse.player-only");

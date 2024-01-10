@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe;
 
+import me.antritus.astraldupe.AstralDupe;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
@@ -26,7 +27,7 @@ public class Utils {
 
     public static Component format(String text) { return MiniMessage.miniMessage().deserialize(text); }
     public static Component cmdMsg(String text) {
-        return format(Config.getConfig().getString("prefix") + " " + text);
+        return format(AstralDupe.astralDupe + " " + text);
     }
 
     public static String convertColorCodesToAdventure(String text) {

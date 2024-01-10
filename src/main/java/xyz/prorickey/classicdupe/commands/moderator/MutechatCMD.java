@@ -18,6 +18,7 @@ public class MutechatCMD extends AstralCommand {
 
     public MutechatCMD(AstralDupe astralDupe) {
         super(astralDupe, "mutechat");
+        setAliases(List.of("mchat"));
         setPermission("astraldupe.staff.mutechat");
     }
 

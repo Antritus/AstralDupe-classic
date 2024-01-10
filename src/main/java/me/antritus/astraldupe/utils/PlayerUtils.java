@@ -8,6 +8,10 @@ import xyz.prorickey.classicdupe.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @since 1.0.0-snapshot
+ * @author antritus
+ */
 public class PlayerUtils {
 	public static List<Player> getVisiblePlayers(CommandSender player) {
 		List<Player> players = new ArrayList<>();

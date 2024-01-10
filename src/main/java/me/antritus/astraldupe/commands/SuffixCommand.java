@@ -1,5 +1,6 @@
 package me.antritus.astraldupe.commands;
 
+import bet.astral.messagemanager.placeholder.LegacyPlaceholder;
 import me.antritus.astraldupe.AstralDupe;
 import me.antritus.astraldupe.utils.ColorUtils;
 import net.kyori.adventure.text.Component;
@@ -61,7 +62,7 @@ public class SuffixCommand extends AstralCommand {
 			menus.get(player.getUniqueId()).open(player);
 			return true;
 		} else {
-			main.messageManager().message(sender, "command-parse.player-only", "%command%=suffix");
+			main.messageManager().message(sender, "command-parse.player-only", new LegacyPlaceholder("command", "suffix"));
 		}
 		return true;
 	}
@@ -190,11 +191,11 @@ public class SuffixCommand extends AstralCommand {
 			ItemMeta footerMeta = background.getItemMeta();
 			footerMeta.displayName(
 					miniMessage.deserialize("<red>"));
-			background.setItemMeta(footerMeta);
+			footer.setItemMeta(footerMeta);
 
 			ItemMeta resetMeta = reset.getItemMeta();
 			resetMeta.displayName(
-					miniMessage.deserialize("<red<Reset Suffix")
+					miniMessage.deserialize("<red>Reset Suffix")
 							.decoration(TextDecoration.ITALIC, false));
 			resetMeta.
 					getPersistentDataContainer()
@@ -236,9 +237,6 @@ public class SuffixCommand extends AstralCommand {
 						.deserialize("<dark_gray> | <gray>Suffix: <white>").append(suffix.format)
 				));
 				lore.add(non_italic.append(miniMessage
-						.deserialize("<dark_gray> | <gray>Name: <white>" + suffix.name)
-				));
-				lore.add(non_italic.append(miniMessage
 						.deserialize("<dark_gray> | <gray>Description: <white>").append(suffix.description)));
 
 
@@ -259,7 +257,8 @@ public class SuffixCommand extends AstralCommand {
 
 				Component itemName = non_italic
 						.append(playerName)
-						.append(ColorUtils.translateComp((Utils.getSuffix(player) != null) ? " " + Utils.convertColorCodesToAdventure(Utils.getSuffix(player)) : ""))
+						.appendSpace()
+						.append(suffix.format)
 						.append(ColorUtils.translateComp(" <gray>» <white>"))
 						.append(ColorUtils.translateComp("Hey!"));
 				itemMeta.displayName(itemName);
@@ -299,12 +298,12 @@ public class SuffixCommand extends AstralCommand {
 		@SuppressWarnings("unused")
 		public void onInventoryClick(InventoryClickEvent event) {
 			if (event.getInventory().getHolder() instanceof SuffixMenu) {
+				if (event.getSlot()>60||event.getSlot()<0){
+					return;
+				}
 				event.setCancelled(true);
 				event.setResult(Event.Result.DENY);
 				ItemStack itemStack = event.getCurrentItem();
-				if (event.getCurrentItem()==null){
-					return;
-				}
 				assert itemStack != null;
 				ItemMeta meta = itemStack.getItemMeta();
 				if (meta.getPersistentDataContainer().has(key_suffix)) {
@@ -313,7 +312,7 @@ public class SuffixCommand extends AstralCommand {
 					if (event.getWhoClicked().hasPermission(suffix.permission)) {
 						suffixCommand.setSuffix(event.getWhoClicked().getUniqueId(), suffix);
 						MiniMessage mM = MiniMessage.miniMessage();
-						suffixCommand.main.messageManager().message(event.getWhoClicked(), "suffix.set", "%suffix%=" + mM.serialize(suffix.format));
+						suffixCommand.main.messageManager().message(event.getWhoClicked(), "suffix.set", new LegacyPlaceholder("suffix", mM.serialize(suffix.format)));
 					} else {
 						suffixCommand.main.messageManager().message(event.getWhoClicked(), "suffix.no-permission");
 					}

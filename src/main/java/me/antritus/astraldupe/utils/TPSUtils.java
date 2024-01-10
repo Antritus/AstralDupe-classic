@@ -25,8 +25,10 @@ public class TPSUtils {
 	}
 	public static String getFormattedTPS(double tps){
 		String formatTPS = formatDouble(tps);
-		if (tps>19.85){
-			return "<dark_green>"+20;
+		if (tps>19.99) {
+			return "<dark_green>" + 20;
+		} else if (tps>19.85){
+			return "<dark_green>"+20+"*";
 		} else if (tps>18){
 			return "<green>"+formatTPS;
 		} else if (tps>12){

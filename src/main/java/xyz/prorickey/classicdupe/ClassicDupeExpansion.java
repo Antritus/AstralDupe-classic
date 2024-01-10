@@ -27,7 +27,7 @@ public class ClassicDupeExpansion extends PlaceholderExpansion {
     public boolean persist() { return true; }
 
     @Override
-    public String onRequest(OfflinePlayer player, String params) {
+    public String onRequest(OfflinePlayer player, @NotNull String params) {
         if(params.equalsIgnoreCase("name")) {
             if(player == null) return null;
             PlayerData data = ClassicDupe.getDatabase().getPlayerDatabase().getPlayerData(player.getUniqueId());
@@ -64,5 +64,4 @@ public class ClassicDupeExpansion extends PlaceholderExpansion {
         }
         return null;
     }
-
 }

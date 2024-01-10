@@ -1,5 +1,6 @@
 package xyz.prorickey.classicdupe.database;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import xyz.prorickey.classicdupe.ClassicDupe;
@@ -16,11 +17,14 @@ public class Database {
     static Connection linkingConn;
     static Connection homesConn;
     static Connection bountyConn;
-    private FilterDatabase filterDatabase;
-    private PlayerDatabase playerDatabase;
-    private LinkingDatabase linkingDatabase;
-    private HomesDatabase homesDatabase;
-    private BountyDatabase bountyDatabase;
+    @Getter
+    private final FilterDatabase filterDatabase;
+    @Getter
+    private final PlayerDatabase playerDatabase;
+    @Getter
+    private final LinkingDatabase linkingDatabase;
+    @Getter
+    private final HomesDatabase homesDatabase;
 
     public Database() {
         try {
@@ -46,7 +50,6 @@ public class Database {
                 playerDatabase = new PlayerDatabase(playerConn);
                 linkingDatabase = new LinkingDatabase(linkingConn);
                 homesDatabase = new HomesDatabase(homesConn);
-                bountyDatabase = new BountyDatabase(bountyConn);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -101,11 +104,5 @@ public class Database {
     public Location getSpawn(String name) {
         return spawns.get(name);
     }
-
-    public FilterDatabase getFilterDatabase() { return filterDatabase; }
-    public PlayerDatabase getPlayerDatabase() { return playerDatabase; }
-    public LinkingDatabase getLinkingDatabase() { return linkingDatabase; }
-    public HomesDatabase getHomesDatabase() { return homesDatabase; }
-    public BountyDatabase getBountyDatabase() { return bountyDatabase; }
 
 }

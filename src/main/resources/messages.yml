@@ -36,6 +36,7 @@ staff-chat:
 toggle:
   true: "%prefix% <yellow>You will now receive random items every 15 seconds!"
   false: "%prefix% <yellow>You will no longer receive random items every 15 seconds!"
+  info: "%prefix% <yellow>There are <white>%items% <yellow>items in the rotation. Pre-made: enchanted books, decorated pots, goat horns, fireworks"
 
 chat:
   cooldown: "%prefix% <yellow>You're on a chat cooldown! Wait %cooldown%s!"
