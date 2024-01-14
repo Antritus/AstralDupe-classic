@@ -25,14 +25,11 @@ repositories {
 
 dependencies {
     implementation group: 'com.h2database', name: 'h2', version: '2.1.214'
-    implementation('org.mariadb.jdbc:mariadb-java-client:3.1.4')
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.4'
 
     implementation 'bet.astral:MessageManager:1.5-dev'
-    implementation 'bet.astral:Auth:1.0'
     // combat manager
     compileOnly ('me.antritus:FluffyCombat:1.1')
-    // TPA
-    compileOnly 'me.antritus:Wormhole:1.2'
     // Economy
     //compileOnly 'me.antritus:CosmicCapitalAPI:1.2.4'
     compileOnly ('me.antritus:CosmicCapitalAPI:1.2.5')
